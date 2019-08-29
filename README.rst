@@ -3,10 +3,23 @@ Root Image Editor
 
 First project of the Digital Image Processing course.
 
+Install dependencies
+--------------------
+
+pip install -r requirements.txt
+
+Running
+-------
+
+At Linux:
+$ python3 ./scripts/main.py
+
 Features
 --------
 
-- TO DO
+Implemented filters:
+- Negative
+- Logarithmic
 
 Contribute
 ----------
