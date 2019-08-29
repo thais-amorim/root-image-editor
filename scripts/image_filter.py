@@ -24,3 +24,9 @@ def apply_logarithmic(img_name, img):
 def compute_log(pixel):
     c = 255/math.log(255+1,10);
     return c * math.log(float(1 + pixel[0]),10);
+
+def apply_gamma_correction(img_name, img, exponent):
+    for i in range(img.shape[0]):
+        for j in range(img.shape[1]):
+            img[i][j] = (255/(256 ** exponent)) * ((1 + img[i][j]) ** exponent)
+    save_image('images/' + img_name, img)

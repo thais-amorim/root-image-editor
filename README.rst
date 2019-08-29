@@ -12,12 +12,14 @@ Running
 -------
 
 At Linux:
+
 $ python3 ./scripts/main.py
 
 Features
 --------
 
 Implemented filters:
+
 - Negative
 - Logarithmic
 
