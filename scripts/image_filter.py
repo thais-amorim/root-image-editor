@@ -30,3 +30,9 @@ def apply_gamma_correction(img_name, img, exponent):
         for j in range(img.shape[1]):
             img[i][j] = (255/(256 ** exponent)) * ((1 + img[i][j]) ** exponent)
     save_image('images/' + img_name, img)
+
+def draw_histogram(img_name, img):
+    data = img.copy().flatten()
+    plt.hist(data, 256)
+    plt.savefig('images/' + img_name) #save_image() doesn't work here. It needs investigation!
+    plt.close()

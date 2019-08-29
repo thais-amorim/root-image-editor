@@ -6,12 +6,10 @@ First project of the Digital Image Processing course.
 Install dependencies
 --------------------
 
-pip install -r requirements.txt
+$ pip install -r requirements.txt
 
 Running
 -------
-
-At Linux:
 
 $ python3 ./scripts/main.py
 
@@ -22,6 +20,7 @@ Implemented filters:
 
 - Negative
 - Logarithmic
+- Gamma correction
 
 Contribute
 ----------
