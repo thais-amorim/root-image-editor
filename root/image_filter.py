@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import imageio
 import matplotlib.pyplot as plt
 import numpy as np
@@ -58,29 +60,48 @@ def apply_equalized_histogram(img_name, img):
     save_image(img_name, equalized_img.astype('uint8'))
     draw_histogram("hist_"+img_name,equalized_img)
 
-def apply_median(img, filter_size, img_name):
+def get_empty_image_with_same_dimensions(img):
     data = np.array(img)
     height = data.shape[0]
     width = data.shape[1]
-    data_final = np.zeros((height, width), np.uint8)
+    empty_image = np.zeros((height, width), np.uint8)
+    return empty_image, data
 
-    temp = []
-    indexer = filter_size // 2
-    for i in range(len(data)):
-        for j in range(len(data[0])):
-            for z in range(filter_size):
-                if i + z - indexer < 0 or i + z - indexer > len(data) - 1:
-                    for c in range(filter_size):
-                        temp.append(0)
-                elif j + z - indexer < 0 or j + indexer > len(data[0]) - 1:
-                    temp.append(0)
-                else:
-                    for k in range(filter_size):
-                        temp.append(data[i + z - indexer][j + k - indexer])
+# Return odd size N, where N >= 3 and filter would be a matrix N x N
+def format_size(size):
+    min_size = 3
+    if size < 3:
+        result = min_size
+    elif (size % 2) == 0:
+        result = size + 1
+    else:
+        result = size
 
-            temp.sort()
-            data_final[i][j] = temp[len(temp) // 2]
-            temp = []
+    return result
 
-    save_image(img_name, data_final.astype('uint8'))
-    draw_histogram("hist_"+img_name,data_final)
+
+def get_median(filter_size, i, j, data):
+    filter_size = format_size(filter_size)
+    mid_position = filter_size // 2
+    neighbors = []
+    for z in range(filter_size):
+        if i + z - mid_position < 0 or i + z - mid_position > len(data) - 1:
+            for c in range(filter_size):
+                neighbors.append(0)
+        elif j + z - mid_position < 0 or j + mid_position > len(data[0]) - 1:
+            neighbors.append(0)
+        else:
+            for k in range(filter_size):
+                neighbors.append(data[i + z - mid_position][j + k - mid_position])
+
+    neighbors.sort()
+    return neighbors[len(neighbors) // 2]
+
+def apply_median(img, filter_size, img_name):
+    obtained, original = get_empty_image_with_same_dimensions(img)
+    for i in range(len(original)):
+        for j in range(len(original[0])):
+            obtained[i][j] = get_median(filter_size,i,j,original)
+
+    save_image(img_name, obtained.astype('uint8'))
+    draw_histogram("hist_"+img_name,obtained)

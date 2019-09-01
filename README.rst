@@ -21,11 +21,17 @@ Implemented filters:
 - Negative
 - Logarithmic
 - Gamma correction
+- Histogram Equalization
+- Median
+
+Other:
+
+- Draw histogram of any image
 
 Contribute
 ----------
 
-- Issue Tracker: github.com/thasmarinho/root-image-editor/issues
+- Issue Tracker: https://github.com/thasmarinho/root-image-editor/issues
 - Source Code: https://github.com/thasmarinho/root-image-editor
 
 License
