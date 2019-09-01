@@ -11,7 +11,7 @@ $ pip install -r requirements.txt
 Running
 -------
 
-$ python3 ./scripts/main.py
+$ python3 ./root/main.py
 
 Testing
 -------

@@ -104,3 +104,15 @@ def apply_median(img, filter_size, img_name):
 
     save_image(img_name, obtained.astype('uint8'))
     draw_histogram("hist_"+img_name,obtained)
+
+def apply_piecewise_linear(img_name, img, coordinates_x, coordinates_y):
+    x = np.array(range(0, _max_pixel+1), dtype=np.uint8)
+    interp = np.interp(x, coordinates_x, coordinates_y)
+    obtained = img.copy()
+    for i in range(obtained.shape[0]):
+        for j in range(obtained.shape[1]):
+            index = int(np.round(obtained[i][j]))
+            obtained[i][j] = interp[index]
+
+    draw_histogram(img_name, obtained)
+    save_image(img_name, obtained)
