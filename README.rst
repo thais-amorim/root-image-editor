@@ -13,6 +13,11 @@ Running
 
 $ python3 ./scripts/main.py
 
+Testing
+-------
+
+$ pytest
+
 Features
 --------
 
