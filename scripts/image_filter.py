@@ -57,3 +57,30 @@ def apply_equalized_histogram(img_name, img):
 
     save_image(img_name, equalized_img.astype('uint8'))
     draw_histogram("hist_"+img_name,equalized_img)
+
+def apply_median(img, filter_size, img_name):
+    data = np.array(img)
+    height = data.shape[0]
+    width = data.shape[1]
+    data_final = np.zeros((height, width), np.uint8)
+
+    temp = []
+    indexer = filter_size // 2
+    for i in range(len(data)):
+        for j in range(len(data[0])):
+            for z in range(filter_size):
+                if i + z - indexer < 0 or i + z - indexer > len(data) - 1:
+                    for c in range(filter_size):
+                        temp.append(0)
+                elif j + z - indexer < 0 or j + indexer > len(data[0]) - 1:
+                    temp.append(0)
+                else:
+                    for k in range(filter_size):
+                        temp.append(data[i + z - indexer][j + k - indexer])
+
+            temp.sort()
+            data_final[i][j] = temp[len(temp) // 2]
+            temp = []
+
+    save_image(img_name, data_final.astype('uint8'))
+    draw_histogram("hist_"+img_name,data_final)
