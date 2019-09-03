@@ -25,9 +25,10 @@ Implemented filters:
 
 - Negative
 - Logarithmic
-- Gamma correction
+- Gamma Correction
 - Histogram Equalization
 - Median
+- Piecewise Linear
 
 Other:
 
