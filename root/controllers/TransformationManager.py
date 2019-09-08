@@ -23,24 +23,30 @@ class  TransformationManager(ImageManager):
         # self.save_image(img_name, log_img.astype('uint8'))
 
     def apply_gamma_correction(self,img, gamma):
-        gamma_correction = ((img/_max_pixel) ** (1/gamma))
+        c = _max_pixel / (1+ _max_pixel)**gamma
+        gamma_correction = c * (img**gamma)
+        # gamma_correction = ((img/_max_pixel) ** (1/gamma))
         return gamma_correction
         # self.save_image(img_name, gamma_correction)
 
 
 
 f = TransformationManager()
-img = f.read_image("images/einstein.jpg")
+img = f.read_image("images/fractured-spine.png")
 img = f.rgb_to_gray(img)
 #save_image("save_test.jpg", img.copy())
 img_negative = f.apply_negative(img)
 img_log = f.apply_logarithmic(img)
-img_gamme = f.apply_gamma_correction( img, 1.5)
+img_gamme = f.apply_gamma_correction( img, 6)
 
 f.save_image("results/negative_test.jpg", img_negative)
 f.save_image("results/log_test.jpg", img_log)
-f.save_image("results/gamma_test.jpg", img_gamme)
-
+img_gamme = f.apply_gamma_correction( img, 0.6)
+f.save_image("results/gamma_test6.jpg", img_gamme)
+img_gamme = f.apply_gamma_correction( img, 0.4)
+f.save_image("results/gamma_test4.jpg", img_gamme)
+img_gamme = f.apply_gamma_correction( img, 0.3)
+f.save_image("results/gamma_test3.jpg", img_gamme)
 #apply_logarithmic("log_test.jpg", img.copy())
 #apply_gamma_correction("gamma_test.jpg", img.copy(), 1.5)
 #draw_histogram("histogram_test.jpg", img.copy())
