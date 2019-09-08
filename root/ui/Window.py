@@ -16,11 +16,8 @@ class Window(QMainWindow):
         self.const = Const()
         self.setGeometry(50,50,self.const.WIDTH,self.const.HEIGHT)
         self.setWindowTitle(self.const.WINDOW_TITLE)
-
         self.side_bar = SideBar(self.const.DEFAULT_IMAGE)
         self.imageView = ImageView(self.const.DEFAULT_IMAGE)
-
-
         self.initIcons()
         self.show()
 

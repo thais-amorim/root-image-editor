@@ -14,4 +14,4 @@ img = rgb_to_gray(img)
 
 coordinates_x = np.array([0,10,11,13,14,255])
 coordinates_y = np.array([0,10,11,100,101,255])
-apply_piecewise_linear("piecewise_linear.jpg",img.copy(),coordinates_x,coordinates_y)
+apply_piecewise_linear("results/piecewise_linear.jpg",img.copy(),coordinates_x,coordinates_y)
