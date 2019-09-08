@@ -66,13 +66,14 @@ class MainWindow(Window):
 
         openAction = QAction(QtGui.QIcon('assets/icons/open.png'),"&Abrir Ctrl+O", self)
         saveAction = QAction(QtGui.QIcon('assets/icons/save.png'),"Salvar Ctrl+S", self)
-        saveAllAction = QAction(QtGui.QIcon('assets/icons/save-all.png'),"Salvar Como Ctrl+Shift+S", self)
+        saveAllAction = QAction(QtGui.QIcon('assets/icons/save-as.png'),"Salvar Como Ctrl+Shift+S", self)
         undoAction = QAction(QtGui.QIcon('assets/icons/undo.png'),"Desfazer Ctrl+Z", self)
-        
+        brushAction = QAction(QtGui.QIcon('assets/icons/brush.png'),"Pincel", self)
+
         openAction.triggered.connect(self.fileOpen)
-        saveAction.triggered.connect(self.closeApplication)
-        saveAllAction.triggered.connect(self.closeApplication)
-        undoAction.triggered.connect(self.closeApplication)
+        # saveAction.triggered.connect(self.closeApplication)
+        # saveAllAction.triggered.connect(self.closeApplication)
+        # undoAction.triggered.connect(self.closeApplication)
         
         openAction.setShortcut("Ctrl+O")
         saveAction.setShortcut("Ctrl+S")
@@ -80,10 +81,14 @@ class MainWindow(Window):
         undoAction.setShortcut("Ctrl+Z")
 
         self.toolbar = self.addToolBar("Extraction")
+        
         self.toolbar.addAction(openAction)
         self.toolbar.addAction(saveAction)
         self.toolbar.addAction(saveAllAction)
-        self.toolbar.addAction(undoAction)       
+        self.toolbar.addAction(undoAction)  
+        self.toolbar.addSeparator()
+        self.toolbar.addSeparator()     
+        self.toolbar.addAction(brushAction)       
 
 
 
