@@ -3,7 +3,7 @@ from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5. QtGui import *
-from LeftBar import LeftBar
+from SideBar import SideBar
 from ImageView import ImageView
 import sys
 
@@ -14,40 +14,53 @@ class MainWindow(Window):
         super().__init__()
 
         self.main_layout = QHBoxLayout()
-        self.left_bar = LeftBar()
-        self.imageView = ImageView()
         
-
         self.initToolBar()
         self.initMenuBar()
         self.setLayouts()
         print("Iniciando")
 
     def setLayouts(self):
-        self.main_layout.addWidget(self.left_bar)
+        
         self.main_layout.addWidget(self.imageView)
+        self.main_layout.addWidget(self.side_bar)
         self.main_layout.setStretch(0, 40)
-        self.main_layout.setStretch(1, 200)
+        # self.main_layout.setStretch(1, 200)
+
 
         main_widget = QWidget()
+        main_widget.setObjectName("main-widget")
         main_widget.setLayout(self.main_layout)
+        main_widget.setStyleSheet("QWidget#main-widget{ border:2px solid rgb(150,150, 150);} ")
         self.setCentralWidget(main_widget)
-
-
 
     def initMenuBar(self):
         closeAction = QAction("&Exit", self)
         closeAction.setShortcut("Ctrl+Q")
         closeAction.setStatusTip("Leave The App")
         closeAction.triggered.connect(self.closeApplication)
+
+
+        gaussianFilterAction = QAction("&Gaussian", self)
+        gammaFilterAction = QAction("&Gamma", self)
+        laplaceFilterAction = QAction("&Laplace", self)
+        sobelFilterAction = QAction("&Sobel", self)
+
         self.statusBar()
 
         mainMenu = self.menuBar()
         fileMenu = mainMenu.addMenu("File")
-        editMenu = mainMenu.addMenu("Edit")
+        editMenu = mainMenu.addMenu("Image")
+        filtersMenu = editMenu.addMenu("Filters")
         windowMenu = mainMenu.addMenu("Window")
         helpMenu = mainMenu.addMenu("Help")
+        
         fileMenu.addAction(closeAction)
+
+        filtersMenu.addAction(gaussianFilterAction)
+        filtersMenu.addAction(gammaFilterAction)
+        filtersMenu.addAction(laplaceFilterAction)
+        filtersMenu.addAction(sobelFilterAction)
 
     def initToolBar(self):
 

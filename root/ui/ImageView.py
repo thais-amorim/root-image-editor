@@ -5,13 +5,14 @@ from PyQt5. QtGui import *
 import sys
 
 class ImageView(QWidget):
-    def __init__(self):
+    def __init__(self, image_path):
         super().__init__()        
+        self.setStyleSheet(" border:2px solid rgb(150,150, 150); ")
 
         self.label = QLabel(self)
-        image = QPixmap("images/einstein.jpg")
-        self.label.setPixmap(image)
-        self.label.setGeometry(0,0,image.width(), image.height())
+        self.image = QPixmap(image_path)
+        self.label.setPixmap(self.image)
+        self.label.setGeometry(0,0,self.image.width(), self.image.height())
         self.label.setAlignment(Qt.AlignCenter)
 
         mainLayout = QGridLayout()
@@ -19,5 +20,12 @@ class ImageView(QWidget):
         self.setLayout(mainLayout)
     
     def loadImage(self,name):
-        image = QPixmap(name)
-        self.label.setPixmap(image)
+        self.image = QPixmap(name)
+        self.label.setPixmap(self.image)
+
+    def scale(self, width,height):
+        if width > height:
+           self.image = self.image.scaledToWidth(width)
+        else: 
+            self.image = self.image.scaledToHeight( height)
+        self.label.setPixmap(self.image)

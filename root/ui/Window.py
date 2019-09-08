@@ -2,7 +2,7 @@ from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5. QtGui import *
-from LeftBar import LeftBar
+from SideBar import SideBar
 from ImageView import ImageView
 import sys
 
@@ -13,11 +13,16 @@ class Window(QMainWindow):
         self.initUI()
 
     def initUI(self):
-        self.setGeometry(50,50,Const.WIDTH,Const.HEIGHT)
-        self.setWindowTitle(Const.WINDOW_TITLE)
+        self.const = Const()
+        self.setGeometry(50,50,self.const.WIDTH,self.const.HEIGHT)
+        self.setWindowTitle(self.const.WINDOW_TITLE)
+
+        self.side_bar = SideBar(self.const.DEFAULT_IMAGE)
+        self.imageView = ImageView(self.const.DEFAULT_IMAGE)
+
+
         self.initIcons()
         self.show()
-    
 
     def initIcons(self):
         import ctypes
@@ -31,15 +36,16 @@ class Window(QMainWindow):
 
     def fileOpen(self):
         name,_ = QtWidgets.QFileDialog.getOpenFileName(self,"Open File")
-        file = open(name,'r')
         self.setWindowTitle(name)
         self.imageView.loadImage(name)
+        self.side_bar.loadImage(name)
     
     def closeApplication(self):
         print("Desligando....")
         sys.exit()
 
 class Const():
+    DEFAULT_IMAGE = "images/einstein.jpg"
     WINDOW_TITLE = "PytoShop"
     ICONS_PATH = "assets/icons/"
     WIDTH = 800
