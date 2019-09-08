@@ -20,7 +20,7 @@ class ImageView(QWidget):
         self.setLayout(mainLayout)
     
     def loadImage(self,name):
-        self.image = QPixmap(name)
+        self.image = QPixmap.fromImage(name)
         self.label.setPixmap(self.image)
 
     def scale(self, width,height):

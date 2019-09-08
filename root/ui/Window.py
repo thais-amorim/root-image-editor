@@ -31,12 +31,7 @@ class Window(QMainWindow):
         app_icon.addFile(Const.ICONS_PATH + 'camera-256.png',QSize(256,256))
         self.setWindowIcon(app_icon)   
 
-    def fileOpen(self):
-        name,_ = QtWidgets.QFileDialog.getOpenFileName(self,"Open File")
-        self.setWindowTitle(name)
-        self.imageView.loadImage(name)
-        self.side_bar.loadImage(name)
-    
+
     def closeApplication(self):
         print("Desligando....")
         sys.exit()

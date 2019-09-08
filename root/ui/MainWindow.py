@@ -6,7 +6,11 @@ from PyQt5. QtGui import *
 from SideBar import SideBar
 from ImageView import ImageView
 import sys
+# sys.path.append('../controllers')
+sys.path.insert(0, sys.path[0]+'\\..\\controllers')
+print(sys.path)
 
+from TransformationController import TransformationController
 
 class MainWindow(Window):
     
@@ -18,6 +22,9 @@ class MainWindow(Window):
         self.initToolBar()
         self.initMenuBar()
         self.setLayouts()
+
+        self.transformController = TransformationController()
+
         print("Iniciando")
 
     def setLayouts(self):
@@ -41,8 +48,12 @@ class MainWindow(Window):
         closeAction.triggered.connect(self.closeApplication)
 
 
-        gaussianFilterAction = QAction("&Gaussian", self)
+        negativeFilterAction = QAction("&Negative", self)
+        logFilterAction = QAction("&Logarithmic", self)
         gammaFilterAction = QAction("&Gamma", self)
+
+        gaussianFilterAction = QAction("&Gaussian", self)
+        
         laplaceFilterAction = QAction("&Laplace", self)
         sobelFilterAction = QAction("&Sobel", self)
 
@@ -50,15 +61,21 @@ class MainWindow(Window):
 
         mainMenu = self.menuBar()
         fileMenu = mainMenu.addMenu("File")
-        editMenu = mainMenu.addMenu("Image")
-        filtersMenu = editMenu.addMenu("Filters")
+        imageMenu = mainMenu.addMenu("Image")
+        transformMenu = imageMenu.addMenu("GrayScale Transformations")
+        filtersMenu = imageMenu.addMenu("Filters")
+        
         windowMenu = mainMenu.addMenu("Window")
         helpMenu = mainMenu.addMenu("Help")
         
         fileMenu.addAction(closeAction)
 
+        transformMenu.addAction(negativeFilterAction)
+        transformMenu.addAction(logFilterAction)
+        transformMenu.addAction(gammaFilterAction)
+
         filtersMenu.addAction(gaussianFilterAction)
-        filtersMenu.addAction(gammaFilterAction)
+        
         filtersMenu.addAction(laplaceFilterAction)
         filtersMenu.addAction(sobelFilterAction)
 
@@ -91,10 +108,21 @@ class MainWindow(Window):
         self.toolbar.addAction(brushAction)       
 
 
+    def negative_transform(self):
+        self.transformController.negative_transform(self)
 
 
 
+    def fileOpen(self):
+        name,_ = QtWidgets.QFileDialog.getOpenFileName(self,"Open File")
+        self.setWindowTitle(name)
+        self.transformController.loadImage(name)
+        self.loadImage(self.transformController.getCurrentImage())
 
+
+    def loadImage(self,name):
+        self.imageView.loadImage(name)
+        self.side_bar.loadImage(name)
 
 
 

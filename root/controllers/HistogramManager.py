@@ -34,6 +34,8 @@ class HistogramManager(ImageManager):
         draw_histogram("hist_"+img_name,equalized_img)
 
 
-draw_histogram(img_name, obtained)
-save_image(img_name, obtained)
+h = HistogramManager()
+
+h.draw_histogram(img_name, obtained)
+h.save_image(img_name, obtained)
  
