@@ -16,19 +16,17 @@ def save_image(name, image_as_byte):
 def rgb_to_gray(rgb):
     return np.dot(rgb[...,:3], [0.2989, 0.5870, 0.1140])
 
-def apply_negative(img_name, img):
-    negative = _max_pixel - img
-    save_image(img_name, negative.astype('uint8'))
+def apply_negative(img):
+    return _max_pixel - img
 
-def apply_logarithmic(img_name, img):
+def apply_logarithmic(img):
     max_obtained = np.max(img)
     c = (_max_pixel/np.log(1+max_obtained))
     log_img = c * np.log(1+img)
-    save_image(img_name, log_img.astype('uint8'))
+    return log_img.astype('uint8')
 
 def apply_gamma_correction(img_name, img, gamma):
-    gamma_correction = ((img/_max_pixel) ** (1/gamma));
-    save_image(img_name, gamma_correction)
+    return ((img/_max_pixel) ** (1/gamma))
 
 def draw_histogram(img_name, img):
     data = img.flatten()
@@ -36,7 +34,7 @@ def draw_histogram(img_name, img):
     plt.savefig(_images_path + img_name)
     plt.close()
 
-def apply_equalized_histogram(img_name, img):
+def apply_equalized_histogram(img):
     # Getting the pixel values of the image
     original = np.array(img)
     # Creating a new matrix for the image
@@ -56,8 +54,7 @@ def apply_equalized_histogram(img_name, img):
         for j in range(len(original[0])):
             equalized_img[i][j] = roundVal[np.where(unique_pixels == original[i][j])]
 
-    save_image(img_name, equalized_img.astype('uint8'))
-    draw_histogram("hist_"+img_name,equalized_img)
+    return equalized_img
 
 def get_empty_image_with_same_dimensions(img):
     data = np.array(img)
@@ -78,9 +75,7 @@ def format_size(size):
 
     return result
 
-
-def get_median(filter_size, i, j, data):
-    filter_size = format_size(filter_size)
+def get_neighbors_matrix(filter_size, i, j, data):
     mid_position = filter_size // 2
     neighbors = []
     for z in range(filter_size):
@@ -93,19 +88,25 @@ def get_median(filter_size, i, j, data):
             for k in range(filter_size):
                 neighbors.append(data[i + z - mid_position][j + k - mid_position])
 
+    return neighbors
+
+
+def get_median(filter_size, i, j, data):
+    filter_size = format_size(filter_size)
+    mid_position = filter_size // 2
+    neighbors = get_neighbors_matrix(filter_size, i, j, data)
     neighbors.sort()
     return neighbors[len(neighbors) // 2]
 
-def apply_median(img, filter_size, img_name):
+def apply_median(img, filter_size):
     obtained, original = get_empty_image_with_same_dimensions(img)
     for i in range(len(original)):
         for j in range(len(original[0])):
             obtained[i][j] = get_median(filter_size,i,j,original)
 
-    save_image(img_name, obtained.astype('uint8'))
-    draw_histogram("hist_"+img_name,obtained)
+    return obtained
 
-def apply_piecewise_linear(img_name, img, coordinates_x, coordinates_y):
+def apply_piecewise_linear(img, coordinates_x, coordinates_y):
     x = np.array(range(0, _max_pixel+1), dtype=np.uint8)
     interp = np.interp(x, coordinates_x, coordinates_y)
     obtained = img.copy()
@@ -114,5 +115,19 @@ def apply_piecewise_linear(img_name, img, coordinates_x, coordinates_y):
             index = int(np.round(obtained[i][j]))
             obtained[i][j] = interp[index]
 
-    draw_histogram(img_name, obtained)
-    save_image(img_name, obtained)
+    return obtained
+
+def get_average(filter_size, i, j, data):
+    filter_size = format_size(filter_size)
+    neighbors = get_neighbors_matrix(filter_size, i, j, data)
+    sum_value = sum(neighbors)
+    counter = len(neighbors)
+    return sum_value/counter
+
+def apply_average(img, filter_size):
+    obtained, original = get_empty_image_with_same_dimensions(img)
+    for i in range(len(original)):
+        for j in range(len(original[0])):
+            obtained[i][j] = get_average(filter_size,i,j,original)
+
+    return obtained
