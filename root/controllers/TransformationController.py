@@ -27,6 +27,6 @@ class TransformationController():
 
     def gammaTransform(self,gamma):
         self.current_image  = self.transform.apply_gamma(self.current_image, gamma)
-       return self.current_image
+        return self.current_image
 
 
