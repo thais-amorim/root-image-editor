@@ -5,6 +5,9 @@ from PyQt5. QtGui import *
 from SideBar import SideBar
 from ImageView import ImageView
 import sys
+sys.path.insert(0, sys.path[0]+'\\..\\controllers')
+print(sys.path)
+from TransformationController import TransformationController
 
 class Window(QMainWindow):
 
@@ -14,10 +17,18 @@ class Window(QMainWindow):
 
     def initUI(self):
         self.const = Const()
+
+
+        self.transformController = TransformationController()
+        self.transformController.loadImage(self.const.DEFAULT_IMAGE)
+
+        
         self.setGeometry(50,50,self.const.WIDTH,self.const.HEIGHT)
         self.setWindowTitle(self.const.WINDOW_TITLE)
         self.side_bar = SideBar(self.const.DEFAULT_IMAGE)
-        self.imageView = ImageView(self.const.DEFAULT_IMAGE)
+
+        im = self.transformController.getCurrentImage()
+        self.imageView = ImageView(im)
         self.initIcons()
         self.show()
 

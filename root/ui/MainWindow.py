@@ -7,23 +7,21 @@ from SideBar import SideBar
 from ImageView import ImageView
 import sys
 # sys.path.append('../controllers')
-sys.path.insert(0, sys.path[0]+'\\..\\controllers')
-print(sys.path)
 
-from TransformationController import TransformationController
+
+
 
 class MainWindow(Window):
     
     def __init__(self):
         super().__init__()
-
-        self.main_layout = QHBoxLayout()
         
+        self.main_layout = QHBoxLayout()
         self.initToolBar()
         self.initMenuBar()
         self.setLayouts()
 
-        self.transformController = TransformationController()
+        
 
         print("Iniciando")
 
@@ -49,8 +47,13 @@ class MainWindow(Window):
 
 
         negativeFilterAction = QAction("&Negative", self)
+        negativeFilterAction.triggered.connect(self.negative_transform)
+
         logFilterAction = QAction("&Logarithmic", self)
+        logFilterAction .triggered.connect(self.logarithmic_transform)
+
         gammaFilterAction = QAction("&Gamma", self)
+        gammaFilterAction .triggered.connect(self.gamma_transform)
 
         gaussianFilterAction = QAction("&Gaussian", self)
         
@@ -109,20 +112,28 @@ class MainWindow(Window):
 
 
     def negative_transform(self):
-        self.transformController.negative_transform(self)
+        self.loadImage(self.transformController.negativeTransform())
+      
+    def logarithmic_transform(self):
+        self.loadImage(self.transformController.logarithmicTransform())
 
+    def gamma_transform(self):
+        self.loadImage(self.transformController.gammaTransform(0.3))
 
 
     def fileOpen(self):
         name,_ = QtWidgets.QFileDialog.getOpenFileName(self,"Open File")
         self.setWindowTitle(name)
         self.transformController.loadImage(name)
-        self.loadImage(self.transformController.getCurrentImage())
+        self.openImage(self.transformController.getCurrentImage())
 
-
-    def loadImage(self,name):
+    def openImage(self,name):
         self.imageView.loadImage(name)
         self.side_bar.loadImage(name)
+        
+    def loadImage(self,name):
+        self.imageView.loadImage(name)
+        # self.side_bar.loadImage(name)
 
 
 
