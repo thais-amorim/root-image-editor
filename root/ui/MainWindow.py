@@ -90,15 +90,17 @@ class MainWindow(Window):
         undoAction = QAction(QtGui.QIcon('assets/icons/undo.png'),"Desfazer Ctrl+Z", self)
         brushAction = QAction(QtGui.QIcon('assets/icons/brush.png'),"Pincel", self)
 
-        openAction.triggered.connect(self.fileOpen)
-        # saveAction.triggered.connect(self.closeApplication)
-        # saveAllAction.triggered.connect(self.closeApplication)
-        # undoAction.triggered.connect(self.closeApplication)
-        
         openAction.setShortcut("Ctrl+O")
         saveAction.setShortcut("Ctrl+S")
         saveAllAction.setShortcut("Ctrl+Shift+S")
-        undoAction.setShortcut("Ctrl+Z")
+        undoAction.setShortcut(QtGui.QKeySequence("Ctrl+Z"))
+
+        openAction.triggered.connect(self.fileOpen)
+        # saveAction.triggered.connect(self.closeApplication)
+        # saveAllAction.triggered.connect(self.closeApplication)
+        undoAction.triggered.connect(self.undoLastAction)
+        
+
 
         self.toolbar = self.addToolBar("Extraction")
         
@@ -118,7 +120,17 @@ class MainWindow(Window):
         self.loadImage(self.transformController.logarithmicTransform())
 
     def gamma_transform(self):
-        self.loadImage(self.transformController.gammaTransform(0.3))
+
+        gamma, ok = QInputDialog.getText(self, 'Gamma Correction', 
+            'Enter gamma value (real):')
+        
+        if ok:
+           self.loadImage(self.transformController.gammaTransform(int(gamma)))
+
+        
+
+    def undoLastAction(self):
+        self.loadImage(self.transformController.undoAction())
 
 
     def fileOpen(self):

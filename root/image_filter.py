@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 
-_max_pixel = 255;
+_max_pixel = 255
 _images_path = 'images/'
 
 def read_image(image_path):

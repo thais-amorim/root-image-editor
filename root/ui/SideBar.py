@@ -56,8 +56,11 @@ class SideBar(QWidget):
         review = QLabel('Propriedade3')
 
         titleEdit = QLineEdit()
+        titleEdit.setReadOnly(True)
         authorEdit = QLineEdit()
+        authorEdit.setReadOnly(True)
         reviewEdit = QTextEdit()
+        reviewEdit.setReadOnly(True)
 
         grid = QVBoxLayout()
         # grid.setSpacing(10)
