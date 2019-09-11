@@ -2,8 +2,8 @@
 
 from image_filter import *
 
-img = read_image("images/averaging_test.jpg")
+img = read_image("images/UNit3.png")
 img = rgb_to_gray(img)
-obtained = apply_average(img.copy(), 15)
-save_image("average.jpg", obtained)
-draw_histogram("hist_average.jpg",obtained)
+obtained = apply_laplace(img.copy())
+save_image("images/laplace_output.jpg", obtained)
+draw_histogram("images/hist_laplace_output.jpg", obtained)
