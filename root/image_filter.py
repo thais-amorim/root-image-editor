@@ -77,6 +77,7 @@ def get_image_dimensions(img):
     width = data.shape[1]
     return height, width
 
+
 def format_size(size):
     '''
     Return odd size N, where N >= 3 and filter would be a matrix N x N
@@ -168,5 +169,19 @@ def apply_laplacian(img):
             value = kernel * original[(row - 1):(row + 2), (col - 1):(col + 2)]
             max_obtained_value = max(0, value.sum())
             obtained[row, col] = min(_MAX_PIXEL, max_obtained_value)
+
+    return obtained
+
+
+def apply_convolution(img, filter_matrix):
+    obtained, original = get_empty_image_with_same_dimensions(img)
+    height, width = get_image_dimensions(img)
+
+    for row in range(1, height - 1):
+        for col in range(1, width - 1):
+            value = filter_matrix * \
+                original[(row - 1):(row + 2), (col - 1):(col + 2)]
+            max_obtained_value = max(0, value.sum())
+            obtained[row, col] = min(max_obtained_value, _MAX_PIXEL)
 
     return obtained
