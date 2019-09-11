@@ -156,23 +156,6 @@ def apply_average(img, filter_size):
     return obtained
 
 
-def apply_laplacian(img):
-    obtained, original = get_empty_image_with_same_dimensions(img)
-    height, width = get_image_dimensions(img)
-    kernel = np.array([
-        [-1, -1, -1],
-        [-1,  8, -1],
-        [-1, -1, -1]])
-
-    for row in range(1, height - 1):
-        for col in range(1, width - 1):
-            value = kernel * original[(row - 1):(row + 2), (col - 1):(col + 2)]
-            max_obtained_value = max(0, value.sum())
-            obtained[row, col] = min(_MAX_PIXEL, max_obtained_value)
-
-    return obtained
-
-
 def apply_convolution(img, filter_matrix):
     obtained, original = get_empty_image_with_same_dimensions(img)
     height, width = get_image_dimensions(img)
@@ -185,3 +168,12 @@ def apply_convolution(img, filter_matrix):
             obtained[row, col] = min(max_obtained_value, _MAX_PIXEL)
 
     return obtained
+
+
+def apply_laplacian(img):
+    kernel = np.array([
+        [-1, -1, -1],
+        [-1,  8, -1],
+        [-1, -1, -1]])
+
+    return apply_convolution(img,kernel)
