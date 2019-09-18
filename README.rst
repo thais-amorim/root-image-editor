@@ -29,6 +29,15 @@ Implemented filters:
 - Histogram Equalization
 - Median
 - Piecewise Linear
+- Average
+- Convolution
+- Laplacian
+- Sobel 
+
+Color conversion:
+
+- RGB to gray via weighted average
+- RGB to gray via simple average
 
 Other:
 
