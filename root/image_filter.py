@@ -15,10 +15,6 @@ def save_image(name, image_as_byte):
     imageio.imwrite(name, image_as_byte)
 
 
-def rgb_to_gray(rgb):
-    return np.dot(rgb[..., :3], [0.2989, 0.5870, 0.1140])
-
-
 def apply_negative(img):
     return _MAX_PIXEL - img
 
