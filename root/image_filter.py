@@ -176,4 +176,70 @@ def apply_laplacian(img):
         [-1,  8, -1],
         [-1, -1, -1]])
 
-    return apply_convolution(img,kernel)
+    return apply_convolution(img, kernel)
+
+
+def apply_sobel(img):
+    #Right sobel matrix
+    filter_x = np.array([
+        [-1, 0, 1],
+        [-2,  0, 2],
+        [-1, 0, 1]])
+
+    #Top sobel matrix
+    filter_y = np.array([
+        [1, 2, 1],
+        [0,  0, 0],
+        [-1, -2, -1]])
+
+    obtained, original = get_empty_image_with_same_dimensions(img)
+    height, width = get_image_dimensions(img)
+
+    for row in range(1, height - 1):
+        for col in range(1, width - 1):
+            value_x = filter_x * \
+                original[(row - 1):(row + 2), (col - 1):(col + 2)]
+            max_obtained_value_x = max(0, value_x.sum())
+            obtained_x = min(max_obtained_value_x, _MAX_PIXEL)
+
+            value_y = filter_x * \
+                original[(row - 1):(row + 2), (col - 1):(col + 2)]
+            max_obtained_value_y = max(0, value_y.sum())
+            obtained_y = min(max_obtained_value_y, _MAX_PIXEL)
+            # calculate the length of the gradient (Pythagorean theorem)
+            obtained[row, col] = np.sqrt(np.square(obtained_x) + np.square(obtained_y))
+
+    return obtained
+
+def sobel_filter(im, k_size):
+
+    img = im.astype(np.float)
+    width, height= img.shape
+
+    assert(k_size == 3 or k_size == 5);
+
+    if k_size == 3:
+        kh = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], dtype = np.float)
+        kv = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]], dtype = np.float)
+    else:
+        kh = np.array([[-1, -2, 0, 2, 1],
+                   [-4, -8, 0, 8, 4],
+                   [-6, -12, 0, 12, 6],
+                   [-4, -8, 0, 8, 4],
+                   [-1, -2, 0, 2, 1]], dtype = np.float)
+        kv = np.array([[1, 4, 6, 4, 1],
+                   [2, 8, 12, 8, 2],
+                   [0, 0, 0, 0, 0],
+                   [-2, -8, -12, -8, -2],
+                   [-1, -4, -6, -4, -1]], dtype = np.float)
+
+    gx = signal.convolve2d(img, kh, mode='same', boundary = 'symm', fillvalue=0)
+    gy = signal.convolve2d(img, kv, mode='same', boundary = 'symm', fillvalue=0)
+
+    g = np.sqrt(gx * gx + gy * gy)
+    g *= 255.0 / np.max(g)
+
+    #plt.figure()
+    #plt.imshow(g, cmap=plt.cm.gray)
+
+    return g
