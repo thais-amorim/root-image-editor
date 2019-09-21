@@ -1,17 +1,26 @@
-#!/usr/bin/python
+from PyQt5 import QtWidgets, QtGui
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5. QtGui import *
 
-from image_filter import *
+import sys
 
-img = read_image("images/einstein.jpg")
-img = rgb_to_gray(img)
-#save_image("save_test.jpg", img.copy())
-#apply_negative("negative_test.jpg", img.copy())
-#apply_logarithmic("log_test.jpg", img.copy())
-#apply_gamma_correction("gamma_test.jpg", img.copy(), 1.5)
-#draw_histogram("histogram_test.jpg", img.copy())
-#apply_equalized_histogram("eq_test.jpg", img.copy())
-#apply_median(img.copy(), -5, "median2.jpg")
+sys.path.insert(0, sys.path[0]+'\\ui')
+print(sys.path)
+from MainWindow import MainWindow
 
-coordinates_x = np.array([0,10,11,13,14,255])
-coordinates_y = np.array([0,10,11,100,101,255])
-apply_piecewise_linear("results/piecewise_linear.jpg",img.copy(),coordinates_x,coordinates_y)
+app = QApplication([])
+GUI = MainWindow()
+app.exec_()
+
+
+# from PIL import Image
+# import numpy as np
+
+# def PIL2array(img):
+#     return numpy.array(img.getdata(),
+#                     numpy.uint8).reshape(img.size[1], img.size[0], 3)
+
+# img = Image.open('images/einstein.jpg').convert('LA')
+# img = np.asarray(img.getdata()).reshape(img.size[1], img.size[0], -1)
+# print(img)

@@ -125,7 +125,7 @@ class MainWindow(Window):
             'Enter gamma value (real):')
         
         if ok:
-           self.loadImage(self.transformController.gammaTransform(int(gamma)))
+           self.loadImage(self.transformController.gammaTransform(float(gamma)))
 
         
 
@@ -149,6 +149,3 @@ class MainWindow(Window):
 
 
 
-app = QApplication([])
-GUI = MainWindow()
-app.exec_()
