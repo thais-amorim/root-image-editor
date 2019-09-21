@@ -28,9 +28,9 @@ class ImageManager():
 
     #Converte a imagem de 8bits para escala de cinza
     def rgb_to_gray(self,rgb):
-        # return np.dot(rgb[...,:3], [0.2989, 0.5870, 0.1140])
-        img = Image.open(rgb).convert('LA')
-        return np.asarray(img.getdata()).reshape(img.size[1], img.size[0], -1)
+        return np.dot(rgb[...,:3], [0.2989, 0.5870, 0.1140])
+        # img = Image.open(rgb).convert('LA')
+        # return np.asarray(img.getdata()).reshape(img.size[1], img.size[0], -1)
 
     # Return odd size N, where N >= 3 and filter would be a matrix N x N
     def format_size(self,size):
