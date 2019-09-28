@@ -5,6 +5,7 @@ import numpy as np
 import math
 from PIL import Image
 
+_MIN_PIXEL = 0
 _MAX_PIXEL = 255
 
 
@@ -14,6 +15,15 @@ def read_image(image_path):
 
 def save_image(name, image_as_byte):
     imageio.imwrite(name, image_as_byte)
+
+
+def normalize_image(img):
+    min_input = img.min()
+    max_input = img.max()
+
+    min_output = _MIN_PIXEL
+    max_output = _MAX_PIXEL
+    return (img - min_input) * ((max_output - min_output) / (max_input - min_input) + min_output)
 
 
 def apply_negative(img):
@@ -153,16 +163,20 @@ def apply_average(img, filter_size):
     return obtained
 
 
+def convolve(filter_matrix, img, row, col):
+    value = filter_matrix * \
+        img[(row - 1):(row + 2), (col - 1):(col + 2)]
+    max_obtained_value = max(0, value.sum())
+    return min(max_obtained_value, _MAX_PIXEL)
+
+
 def apply_convolution(img, filter_matrix):
     obtained, original = get_empty_image_with_same_dimensions(img)
     height, width = get_image_dimensions(img)
 
     for row in range(1, height - 1):
         for col in range(1, width - 1):
-            value = filter_matrix * \
-                original[(row - 1):(row + 2), (col - 1):(col + 2)]
-            max_obtained_value = max(0, value.sum())
-            obtained[row, col] = min(max_obtained_value, _MAX_PIXEL)
+            obtained[row, col] = convolve(filter_matrix, original, row, col)
 
     return obtained
 
@@ -173,7 +187,12 @@ def apply_laplacian(img):
         [-1,  8, -1],
         [-1, -1, -1]])
 
-    return apply_convolution(img, kernel)
+    obtained = apply_convolution(img, kernel)
+
+    norm_obtained = normalize_image(obtained)
+    sharpened = img + norm_obtained
+    norm_sharpened = normalize_image(sharpened)
+    return norm_obtained, norm_sharpened
 
 
 def apply_sobel(img):
