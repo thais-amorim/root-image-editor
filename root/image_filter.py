@@ -3,6 +3,7 @@ import imageio
 import matplotlib.pyplot as plt
 import numpy as np
 import math
+from PIL import Image
 
 _MAX_PIXEL = 255
 
@@ -176,66 +177,53 @@ def apply_laplacian(img):
 
 
 def apply_sobel(img):
-    #Right sobel matrix
-    filter_x = np.array([
-        [-1, 0, 1],
-        [-2,  0, 2],
-        [-1, 0, 1]])
+    # Horizontal sobel matrix
+    horizontal = np.array([
+        [-1,    0,    1],
+        [-2,    0,    2],
+        [-1,    0,    1]])
 
-    #Top sobel matrix
-    filter_y = np.array([
-        [1, 2, 1],
-        [0,  0, 0],
-        [-1, -2, -1]])
+    # Vertical sobel matrix
+    vertical = np.array([
+        [-1,   -2,    -1],
+        [0,     0,     0],
+        [1,     2,     1]])
 
-    obtained, original = get_empty_image_with_same_dimensions(img)
     height, width = get_image_dimensions(img)
 
-    for row in range(1, height - 1):
-        for col in range(1, width - 1):
-            value_x = filter_x * \
-                original[(row - 1):(row + 2), (col - 1):(col + 2)]
-            max_obtained_value_x = max(0, value_x.sum())
-            obtained_x = min(max_obtained_value_x, _MAX_PIXEL)
+    # define images with 0s
+    new_horizontal_image = np.zeros((height, width))
+    new_vertical_image = np.zeros((height, width))
+    new_gradient_image = np.zeros((height, width))
 
-            value_y = filter_x * \
-                original[(row - 1):(row + 2), (col - 1):(col + 2)]
-            max_obtained_value_y = max(0, value_y.sum())
-            obtained_y = min(max_obtained_value_y, _MAX_PIXEL)
-            # calculate the length of the gradient (Pythagorean theorem)
-            obtained[row, col] = np.sqrt(np.square(obtained_x) + np.square(obtained_y))
+    for i in range(1, height - 1):
+        for j in range(1, width - 1):
+            horizontal_grad = (horizontal[0, 0] * img[i - 1, j - 1]) + \
+                (horizontal[0, 1] * img[i - 1, j]) + \
+                (horizontal[0, 2] * img[i - 1, j + 1]) + \
+                (horizontal[1, 0] * img[i, j - 1]) + \
+                (horizontal[1, 1] * img[i, j]) + \
+                (horizontal[1, 2] * img[i, j + 1]) + \
+                (horizontal[2, 0] * img[i + 1, j - 1]) + \
+                (horizontal[2, 1] * img[i + 1, j]) + \
+                (horizontal[2, 2] * img[i + 1, j + 1])
 
-    return obtained
+            new_horizontal_image[i - 1, j - 1] = abs(horizontal_grad)
 
-def sobel_filter(im, k_size):
+            vertical_grad = (vertical[0, 0] * img[i - 1, j - 1]) + \
+                (vertical[0, 1] * img[i - 1, j]) + \
+                (vertical[0, 2] * img[i - 1, j + 1]) + \
+                (vertical[1, 0] * img[i, j - 1]) + \
+                (vertical[1, 1] * img[i, j]) + \
+                (vertical[1, 2] * img[i, j + 1]) + \
+                (vertical[2, 0] * img[i + 1, j - 1]) + \
+                (vertical[2, 1] * img[i + 1, j]) + \
+                (vertical[2, 2] * img[i + 1, j + 1])
 
-    img = im.astype(np.float)
-    width, height= img.shape
+            new_vertical_image[i - 1, j - 1] = abs(vertical_grad)
 
-    assert(k_size == 3 or k_size == 5);
+            # Edge Magnitude
+            new_gradient_image[i - 1, j - 1] = np.sqrt(
+                pow(horizontal_grad, 2.0) + pow(vertical_grad, 2.0))
 
-    if k_size == 3:
-        kh = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], dtype = np.float)
-        kv = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]], dtype = np.float)
-    else:
-        kh = np.array([[-1, -2, 0, 2, 1],
-                   [-4, -8, 0, 8, 4],
-                   [-6, -12, 0, 12, 6],
-                   [-4, -8, 0, 8, 4],
-                   [-1, -2, 0, 2, 1]], dtype = np.float)
-        kv = np.array([[1, 4, 6, 4, 1],
-                   [2, 8, 12, 8, 2],
-                   [0, 0, 0, 0, 0],
-                   [-2, -8, -12, -8, -2],
-                   [-1, -4, -6, -4, -1]], dtype = np.float)
-
-    gx = signal.convolve2d(img, kh, mode='same', boundary = 'symm', fillvalue=0)
-    gy = signal.convolve2d(img, kv, mode='same', boundary = 'symm', fillvalue=0)
-
-    g = np.sqrt(gx * gx + gy * gy)
-    g *= 255.0 / np.max(g)
-
-    #plt.figure()
-    #plt.imshow(g, cmap=plt.cm.gray)
-
-    return g
+    return new_gradient_image

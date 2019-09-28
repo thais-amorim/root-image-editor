@@ -2,7 +2,7 @@ import numpy as np
 from math import floor, cos, radians, degrees, acos
 
 
-def get_rgb_layers(img):
+def get_rgb_layers(rgb):
     r = rgb[:, :, 0]
     g = rgb[:, :, 1]
     b = rgb[:, :, 2]
