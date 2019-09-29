@@ -2,14 +2,6 @@ import numpy as np
 from math import floor, cos, radians, degrees, acos
 
 
-def get_rgb_layers(rgb):
-    r = rgb[:, :, 0]
-    g = rgb[:, :, 1]
-    b = rgb[:, :, 2]
-
-    return r, g, b
-
-
 def rgb_to_gray_via_weighted_average(r, g, b):
     return (r * 0.2989) + (g * 0.5870) + (b * 0.1140)
 
