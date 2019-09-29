@@ -9,8 +9,8 @@ _MIN_PIXEL = 0
 _MAX_PIXEL = 255
 
 
-def read_image(image_path):
-    return imageio.imread(image_path, as_gray=False, pilmode="RGB")
+def read_image(image_path, type="RGB"):
+    return imageio.imread(image_path, as_gray=False, pilmode=type)
 
 
 def save_image(name, image_as_byte):
