@@ -163,20 +163,16 @@ def apply_average(img, filter_size):
     return obtained
 
 
-def convolve(filter_matrix, img, row, col):
-    value = filter_matrix * \
-        img[(row - 1):(row + 2), (col - 1):(col + 2)]
-    max_obtained_value = max(0, value.sum())
-    return min(max_obtained_value, _MAX_PIXEL)
-
-
 def apply_convolution(img, filter_matrix):
     obtained, original = get_empty_image_with_same_dimensions(img)
     height, width = get_image_dimensions(img)
 
     for row in range(1, height - 1):
         for col in range(1, width - 1):
-            obtained[row, col] = convolve(filter_matrix, original, row, col)
+            value = filter_matrix * \
+                img[(row - 1):(row + 2), (col - 1):(col + 2)]
+            max_obtained_value = max(0, value.sum())
+            obtained[row, col] = min(max_obtained_value, _MAX_PIXEL)
 
     return obtained
 
@@ -217,28 +213,10 @@ def apply_sobel(img):
 
     for i in range(1, height - 1):
         for j in range(1, width - 1):
-            horizontal_grad = (horizontal[0, 0] * img[i - 1, j - 1]) + \
-                (horizontal[0, 1] * img[i - 1, j]) + \
-                (horizontal[0, 2] * img[i - 1, j + 1]) + \
-                (horizontal[1, 0] * img[i, j - 1]) + \
-                (horizontal[1, 1] * img[i, j]) + \
-                (horizontal[1, 2] * img[i, j + 1]) + \
-                (horizontal[2, 0] * img[i + 1, j - 1]) + \
-                (horizontal[2, 1] * img[i + 1, j]) + \
-                (horizontal[2, 2] * img[i + 1, j + 1])
-
+            horizontal_grad = apply_gradient_core(horizontal, img, i, j)
             new_horizontal_image[i - 1, j - 1] = abs(horizontal_grad)
 
-            vertical_grad = (vertical[0, 0] * img[i - 1, j - 1]) + \
-                (vertical[0, 1] * img[i - 1, j]) + \
-                (vertical[0, 2] * img[i - 1, j + 1]) + \
-                (vertical[1, 0] * img[i, j - 1]) + \
-                (vertical[1, 1] * img[i, j]) + \
-                (vertical[1, 2] * img[i, j + 1]) + \
-                (vertical[2, 0] * img[i + 1, j - 1]) + \
-                (vertical[2, 1] * img[i + 1, j]) + \
-                (vertical[2, 2] * img[i + 1, j + 1])
-
+            vertical_grad = apply_gradient_core(vertical, img, i, j)
             new_vertical_image[i - 1, j - 1] = abs(vertical_grad)
 
             # Edge Magnitude
@@ -246,3 +224,38 @@ def apply_sobel(img):
                 pow(horizontal_grad, 2.0) + pow(vertical_grad, 2.0))
 
     return new_gradient_image
+
+
+def apply_gradient(img, filter_matrix):
+    '''
+    Apply gradient using a single filter_matrix (3x3).
+    '''
+    filter_height, filter_width = get_image_dimensions(filter_matrix)
+    assert filter_height != 3, "Filter Matrix must have height = 3 instead of" + \
+        string(filter_height)
+    assert filter_width != 3, "Filter Matrix must have width = 3 instead of" + \
+        string(filter_width)
+
+    height, width = get_image_dimensions(img)
+
+    # define image with 0s
+    new_gradient_image = np.zeros((height, width))
+
+    for i in range(1, height - 1):
+        for j in range(1, width - 1):
+            grad = apply_gradient_core(filter_matrix, img, i, j)
+            new_gradient_image[i - 1, j - 1] = abs(grad)
+
+    return new_gradient_image
+
+
+def apply_gradient_core(filter_matrix, img, i, j):
+    return (filter_matrix[0, 0] * img[i - 1, j - 1]) + \
+        (filter_matrix[0, 1] * img[i - 1, j]) + \
+        (filter_matrix[0, 2] * img[i - 1, j + 1]) + \
+        (filter_matrix[1, 0] * img[i, j - 1]) + \
+        (filter_matrix[1, 1] * img[i, j]) + \
+        (filter_matrix[1, 2] * img[i, j + 1]) + \
+        (filter_matrix[2, 0] * img[i + 1, j - 1]) + \
+        (filter_matrix[2, 1] * img[i + 1, j]) + \
+        (filter_matrix[2, 2] * img[i + 1, j + 1])
