@@ -72,6 +72,36 @@ class  FourierManager(ImageManager):
         return sF
 
 
+    def ifft(self,fu):
+        """ use recursive method to speed up"""
+        fu = np.asarray(fu, dtype=complex)
+        fu_conjugate = np.conjugate(fu)
+
+        fx = self.fft(fu_conjugate)
+
+        fx = np.conjugate(fx)
+        fx = fx / fu.shape[0]
+
+        return fx
+
+    def ifft2(self,fu):
+        h, w = fu.shape
+
+        fx = np.zeros(fu.shape, dtype=complex)
+
+        if len(fu.shape) == 2:
+            for i in range(h):
+                fx[i, :] = self.ifft(fu[i, :])
+
+            for i in range(w):
+                fx[:, i] = self.ifft(fx[:, i])
+
+        elif len(fu.shape) == 3:
+            for ch in range(3):
+                fx[:, :, ch] = self.ifft(fu[:, :, ch])
+
+        fx = np.real(fx)
+        return fx
 
 
 f  = FourierManager()
@@ -138,11 +168,27 @@ print(np.allclose(shift,shift2))
 
 
 
+y = np.random.rand(10)
+y = f.fft(y)
+obt2 = f.ifft(y)
+expected2 = np.fft.ifft(y)
+
+print(obt2)
+print("------")
+print(expected2)
+
+print("Teste ifft")
+print(np.allclose(obt2,expected2))
 
 
+obt = f.ifft2(obt)
+expected = np.fft.ifft2(expected)
+print("Teste ifft")
+print(np.allclose(obt,expected))
 
-
-
+import matplotlib.pyplot as plt
+plt.imshow(obt)
+plt.show()
 
 
 
