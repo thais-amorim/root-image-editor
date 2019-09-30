@@ -111,35 +111,29 @@ x = img
 obt = f.fft2(x)
 expected = np.fft.fft2(x)
 
-shift = np.fft.fftshift(obt)
-shift2 = f.fftshift(obt)
-print(obt)
-print("------")
-print(shift)
-print("------")
-print(shift2)
-print(np.allclose(shift,shift2))
 
 
 # print(expected)
 # print("------")
 # print(obt)
-# print("Teste fft")
-# print(np.allclose(obt,expected))
+print("Teste fft")
+print(np.allclose(obt,expected))
 
 # obt = f.fft2(img)
 # expected = np.fft.fft2(img)
-# print("Teste fft2")
-# print(np.allclose(obt,expected))
+print("Teste fft2")
+print(np.allclose(obt,expected))
 
-# obt = f.fftshift(obt)
-# expected = np.fft.fftshift(obt)
+
+shift = np.fft.fftshift(obt)
+shift2 = f.fftshift(obt)
 # print(obt)
-# print(expected)
-# print("Teste fftshift")
-# print(np.allclose(obt,expected))
-
-
+# print("------")
+# print(shift)
+# print("------")
+# print(shift2)
+print("Teste shift")
+print(np.allclose(shift,shift2))
 
 
 
