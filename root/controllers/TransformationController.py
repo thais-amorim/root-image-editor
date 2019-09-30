@@ -23,9 +23,6 @@ class TransformationController():
         self.undo_image = self.original_image
         return self.current_image
 
-    def normalize(self, img):
-        return np.interp(img, (img.min(), img.max()), (0, 255))
-
     def negativeTransform(self):
         self.undo_image = self.current_image
         self.current_image  = (self.transform.apply_negative(self.current_image)).astype(np.uint8)

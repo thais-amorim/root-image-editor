@@ -44,6 +44,9 @@ class ImageManager():
 
         return result
 
+    def normalize(self, img):
+        return np.interp(img, (img.min(), img.max()), (0, 255))
+
     def get_empty_image_with_same_dimensions(self,img):
         data = np.array(img)
         height = data.shape[0]

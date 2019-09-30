@@ -134,61 +134,91 @@ img = np.around( f.rgb_to_gray(img))
 
 
 
-x = img
-obt = f.fft2(x)
-expected = np.fft.fft2(x)
+# x = img
+# obt = f.fft2(x)
+# expected = np.fft.fft2(x)
 
-# print(expected)
-# print("------")
-# print(obt)
-print("Teste fft")
-print(np.allclose(obt,expected))
+# # print(expected)
+# # print("------")
+# # print(obt)
+# print("Teste fft")
+# print(np.allclose(obt,expected))
 
-# obt = f.fft2(img)
-# expected = np.fft.fft2(img)
-print("Teste fft2")
-print(np.allclose(obt,expected))
-
-
-shift = np.fft.fftshift(obt)
-shift2 = f.fftshift(obt)
-# print(obt)
-# print("------")
-# print(shift)
-# print("------")
-# print(shift2)
-print("Teste shift")
-print(np.allclose(shift,shift2))
+# # obt = f.fft2(img)
+# # expected = np.fft.fft2(img)
+# print("Teste fft2")
+# print(np.allclose(obt,expected))
 
 
-
-ishift = f.ifftshift(shift2)
-print('Test ishift')
-print(np.allclose(obt,ishift))
+# shift = np.fft.fftshift(obt)
+# shift2 = f.fftshift(obt)
+# # print(obt)
+# # print("------")
+# # print(shift)
+# # print("------")
+# # print(shift2)
+# print("Teste shift")
+# print(np.allclose(shift,shift2))
 
 
 
-y = np.random.rand(10)
-y = f.fft(y)
-obt2 = f.ifft(y)
-expected2 = np.fft.ifft(y)
-
-# print(obt2)
-# print("------")
-# print(expected2)
-
-print("Teste ifft")
-print(np.allclose(obt2,expected2))
+# ishift = f.ifftshift(shift2)
+# print('Test ishift')
+# print(np.allclose(obt,ishift))
 
 
-obt = f.ifftshift(shift)
 
-obt2 = f.ifft2(obt)
-expected = np.fft.ifft2(obt)
-print("Teste ifft2")
-print(np.allclose(obt2,expected))
+# y = np.random.rand(10)
+# y = f.fft(y)
+# obt2 = f.ifft(y)
+# expected2 = np.fft.ifft(y)
+
+# # print(obt2)
+# # print("------")
+# # print(expected2)
+
+# print("Teste ifft")
+# print(np.allclose(obt2,expected2))
+
+
+# obt = f.ifftshift(shift)
+
+# obt2 = f.ifft2(obt)
+# expected = np.fft.ifft2(obt)
+# print("Teste ifft2")
+# print(np.allclose(obt2,expected))
+
+
+
+# img = np.real(shift)
+
+
+# img = np.interp(img, (img.min(), img.max()), (np.amin(img),np.amax(img)))
+
+res = np.fft.fft2(img)
+print('fft2')
+print(res)
+res = np.fft.fftshift(res)
+
+print('fftshift')
+print(res)
+res = np.real(res)
+print('real')
+print(res)
+# res = res.astype(np.uint8)
+
+# res = f.normalize(res)
+
+norm = (res - np.min(res[:]))/(np.max(res[:])-np.min(res[:])) * 255
+# norm = res
+print('norm')
+print(norm)
+print('max')
+print(np.max(norm[:]))
+f.save_image("resultado",norm)
 
 import matplotlib.pyplot as plt
-plt.imshow(obt2,cmap='gray')
+import matplotlib as mpl
+# n = mpl.colors.Normalize(vmin=-0,vmax=255)
+plt.imshow(norm, cmap='gray')
 plt.show()
-
