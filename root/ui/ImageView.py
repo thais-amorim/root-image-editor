@@ -29,7 +29,7 @@ class ImageView(QWidget):
         if type(im) is str:
             im = imageio.imread(im, as_gray=False, pilmode="RGB")
         #normalização, retirar se for necessário
-        im = np.interp(im, (im.min(), im.max()), (0, 255))
+        # im = np.interp(im, (im.min(), im.max()), (0, 255))
         im = im.astype(np.uint8)
         
         qimage = self.toQImage(im)

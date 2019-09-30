@@ -14,7 +14,7 @@ class TransformationController():
 
     def undoAction(self):
         self.current_image = self.undo_image
-        return self.normalize(self.current_image)
+        return self.current_image
 
     def loadImage(self,image):
         img = self.transform.read_image(image)
@@ -29,17 +29,17 @@ class TransformationController():
     def negativeTransform(self):
         self.undo_image = self.current_image
         self.current_image  = (self.transform.apply_negative(self.current_image)).astype(np.uint8)
-        return self.normalize(self.current_image)
+        return self.current_image
 
     def logarithmicTransform(self):
         self.undo_image = self.current_image
         self.current_image  = self.transform.apply_logarithmic(self.current_image)
-        return self.normalize(self.current_image)
+        return self.current_image
 
     def gammaTransform(self,gamma):
         self.undo_image = self.current_image
         self.current_image  = self.transform.apply_gamma_correction(self.current_image, gamma)
-        return self.normalize(self.current_image)
+        return self.current_image
 
     def apply_equalized_histogram(self,img_name, img):
         #TODO

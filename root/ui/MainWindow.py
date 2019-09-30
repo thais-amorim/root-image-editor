@@ -39,13 +39,60 @@ class MainWindow(Window):
         main_widget.setStyleSheet("QWidget#main-widget{ border:2px solid rgb(150,150, 150);} ")
         self.setCentralWidget(main_widget)
 
+
     def initMenuBar(self):
+
+
+        self.statusBar()
+
+        #menu
+        mainMenu = self.menuBar()
+        fileMenu = mainMenu.addMenu("File")
+        imageMenu = mainMenu.addMenu("Image")
+        windowMenu = mainMenu.addMenu("Window")
+        helpMenu = mainMenu.addMenu("Help")
+
+        #fileMenu
         closeAction = QAction("&Exit", self)
         closeAction.setShortcut("Ctrl+Q")
         closeAction.setStatusTip("Leave The App")
         closeAction.triggered.connect(self.closeApplication)
 
+        fileMenu.addAction(closeAction)
 
+        
+   
+
+        #imagemenu
+        colorModeMenu = imageMenu.addMenu("Modos de Cor")
+        imageMenu.addSeparator()
+        transformMenu = imageMenu.addMenu("Transformações")
+        imageMenu.addSeparator()
+        filtersMenu = imageMenu.addMenu("Filters")
+        frequenceFiltersMenu = imageMenu.addMenu("Filtro no Domínio da Frequência")
+        imageMenu.addSeparator()
+        histogramMenu = imageMenu.addMenu("Histogram")
+        imageMenu.addSeparator()
+        stegranographyMenu = imageMenu.addMenu("Esteganografia")
+        imageMenu.addSeparator()
+        chromaKeyMenu = imageMenu.addMenu("Chroma Key")
+        
+        
+
+
+
+
+        #colormode
+        rgbAction = QAction("&RGB",self)
+        grayScaleAction = QAction("&Escala de Cinza",self)
+        hsvAction = QAction("&HSV",self)
+
+        colorModeMenu.addAction(rgbAction)
+        colorModeMenu.addAction(grayScaleAction)
+        colorModeMenu.addAction(hsvAction)
+
+
+        #transformations
         negativeFilterAction = QAction("&Negative", self)
         negativeFilterAction.triggered.connect(self.negative_transform)
 
@@ -53,34 +100,55 @@ class MainWindow(Window):
         logFilterAction .triggered.connect(self.logarithmic_transform)
 
         gammaFilterAction = QAction("&Gamma", self)
-        gammaFilterAction .triggered.connect(self.gamma_transform)
-
-        gaussianFilterAction = QAction("&Gaussian", self)
-        
-        laplaceFilterAction = QAction("&Laplace", self)
-        sobelFilterAction = QAction("&Sobel", self)
-
-        self.statusBar()
-
-        mainMenu = self.menuBar()
-        fileMenu = mainMenu.addMenu("File")
-        imageMenu = mainMenu.addMenu("Image")
-        transformMenu = imageMenu.addMenu("GrayScale Transformations")
-        filtersMenu = imageMenu.addMenu("Filters")
-        
-        windowMenu = mainMenu.addMenu("Window")
-        helpMenu = mainMenu.addMenu("Help")
-        
-        fileMenu.addAction(closeAction)
+        gammaFilterAction.triggered.connect(self.gamma_transform)
 
         transformMenu.addAction(negativeFilterAction)
         transformMenu.addAction(logFilterAction)
         transformMenu.addAction(gammaFilterAction)
 
+        #filters
+        sobelFilterAction = QAction("&Sobel", self)
+        genericConvolutionFilterAction = QAction("&Genérico por Convolução", self)
+        medianFilterAction = QAction("&Filtragem por Mediana", self)
+        meanFilterAction = QAction("&Suaviazação por Média", self)
+        gaussianFilterAction = QAction("&Suavização Gaussiana", self)   
+        sharpFilterAction = QAction("&Aguçamento",self)
+       
+        #filters/sharp
+        laplaceFilterAction = QAction("&Laplaciano", self)
+        highBoostFilterAction = QAction("&HighBoost", self)
+        ##add filters
+        filtersMenu.addAction(genericConvolutionFilterAction)
+        filtersMenu.addAction(medianFilterAction)
+        filtersMenu.addSeparator()
+        filtersMenu.addAction(meanFilterAction)
         filtersMenu.addAction(gaussianFilterAction)
-        
-        filtersMenu.addAction(laplaceFilterAction)
+        filtersMenu.addSeparator()
         filtersMenu.addAction(sobelFilterAction)
+        filtersMenu.addAction(laplaceFilterAction)
+        
+        ##add filters/sharp   
+        sharpFilterMenu = filtersMenu.addMenu("Aguçamento")
+        sharpFilterMenu.addAction(gaussianFilterAction)
+        sharpFilterMenu.addAction(highBoostFilterAction)
+
+        #filtros na frequência
+        spectrumFilterAction = QAction("&Espectro da Transformada de Fourier", self)
+        radialFilterAction = QAction("&Filtros Radiais(Passa alta, baixa ou faixa)", self)
+        geometricFilterAction = QAction("&Média Geométrica", self)
+        harmonicFilterAction = QAction("&Média Harmônica", self)
+        counterharmonicFilterAction = QAction("&Média Contra-harmônica", self)
+
+        frequenceFiltersMenu.addAction (spectrumFilterAction)
+        frequenceFiltersMenu.addSeparator()
+        frequenceFiltersMenu.addAction (radialFilterAction)
+        frequenceFiltersMenu.addSeparator()
+        frequenceFiltersMenu.addAction (geometricFilterAction)
+        frequenceFiltersMenu.addAction (harmonicFilterAction)
+        frequenceFiltersMenu.addAction (counterharmonicFilterAction)
+
+
+
 
     def initToolBar(self):
 
