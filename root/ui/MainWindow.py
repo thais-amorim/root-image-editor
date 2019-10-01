@@ -195,8 +195,6 @@ class MainWindow(Window):
         if ok:
            self.loadImage(self.transformController.gammaTransform(float(gamma)))
 
-        
-
     def undoLastAction(self):
         self.loadImage(self.transformController.undoAction())
 

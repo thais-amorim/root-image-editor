@@ -123,6 +123,27 @@ class  FourierManager(ImageManager):
         return fx
 
 
+    def create_circular_mask(self,h, w, center=None, radius=None):
+
+        if center is None: # use the middle of the image
+            center = [int(w/2), int(h/2)]
+        if radius is None: # use the smallest distance between the center and image walls
+            radius = min(center[0], center[1], w-center[0], h-center[1])
+
+        Y, X = np.ogrid[:h, :w]
+        dist_from_center = np.sqrt((X - center[0])**2 + (Y-center[1])**2)
+
+        mask = dist_from_center <= radius
+        return mask
+
+    def lowPassFilter(self,img,radius):
+        h,w = img.shape
+        mask = self.create_circular_mask(h,w,None,radius)
+        print(mask)
+        masked_img = img.copy()
+        masked_img[~mask] = 0
+        return masked_img
+
 f  = FourierManager()
 
 img = f.read_image("./images/fft.png")
@@ -195,6 +216,8 @@ img = f.rgb_to_gray(img)
 
 # img = np.interp(img, (img.min(), img.max()), (np.amin(img),np.amax(img)))
 
+print('img')
+print(img)
 ft = np.fft.fft2(img)
 print('fft2')
 print(ft)
@@ -205,19 +228,23 @@ print(shift)
 mag = abs(shift)
 print('real')
 print(mag)
-# res = res.astype(np.uint8)
 
-# res = f.normalize(res)
-print('max')
-print(np.max(mag))
-print('min')
-print(np.min(mag))
-norm = (mag - np.min(mag))/(np.max(mag)-np.min(mag)) 
-# norm = res
-print('norm')
-print(norm)
 
-f.save_image("resultado",norm)
+ret = abs(np.fft.ifft2(ft))
+print('ret')
+print(ret)
+
+
+
+
+
+
+
+
+
+
+
+
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -226,5 +253,20 @@ import math
 mag = np.log(mag)
 vmin = np.min(mag)
 vmax = np.max(mag)
+
+mag = f.highPassFilter(mag,100)
+
+shift = f.highPassFilter(shift,40)
+ishift = f.ifftshift(shift)
+p_img = abs(np.fft.ifft2(ishift))
+
 plt.imshow(mag, cmap='gray',norm=plt.Normalize(vmin=vmin, vmax=vmax))
+plt.show()
+
+
+
+plt.subplot(121)
+plt.imshow(img, cmap='gray')
+plt.subplot(122)
+plt.imshow(p_img, cmap='gray')
 plt.show()
