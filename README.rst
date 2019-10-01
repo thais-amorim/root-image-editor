@@ -32,12 +32,14 @@ Implemented filters:
 - Average
 - Convolution
 - Laplacian
-- Sobel 
+- Sobel
 
 Color conversion:
 
 - RGB to gray via weighted average
 - RGB to gray via simple average
+- RGB <-> HSV
+- RGB <-> HSI
 
 Other:
 

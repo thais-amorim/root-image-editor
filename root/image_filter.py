@@ -207,9 +207,9 @@ def apply_sobel(img):
     height, width = get_image_dimensions(img)
 
     # define images with 0s
-    new_horizontal_image = np.zeros((height, width))
-    new_vertical_image = np.zeros((height, width))
-    new_gradient_image = np.zeros((height, width))
+    new_horizontal_image = np.zeros((height, width), np.uint8)
+    new_vertical_image = np.zeros((height, width), np.uint8)
+    new_gradient_image = np.zeros((height, width), np.uint8)
 
     for i in range(1, height - 1):
         for j in range(1, width - 1):
@@ -239,7 +239,7 @@ def apply_gradient(img, filter_matrix):
     height, width = get_image_dimensions(img)
 
     # define image with 0s
-    new_gradient_image = np.zeros((height, width))
+    new_gradient_image = np.zeros((height, width), np.uint8)
 
     for i in range(1, height - 1):
         for j in range(1, width - 1):
@@ -259,3 +259,11 @@ def apply_gradient_core(filter_matrix, img, i, j):
         (filter_matrix[2, 0] * img[i + 1, j - 1]) + \
         (filter_matrix[2, 1] * img[i + 1, j]) + \
         (filter_matrix[2, 2] * img[i + 1, j + 1])
+
+
+def apply_highboost(image, c, filter_size=3):
+    obtained, image = get_empty_image_with_same_dimensions(image)
+    blurred_image = apply_average(image, filter_size)
+    mask = image - blurred_image
+    result = image + (c * mask)
+    return result

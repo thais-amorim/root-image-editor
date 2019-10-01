@@ -12,6 +12,9 @@ def get_rgb_layers(rgb):
 
     return r, g, b
 
+def merge_rgb_layers(red_layer, green_layer, blue_layer):
+    return np.stack([red_channel, green_channel, blue_channel], axis=2)
+
 
 def normalize_max_value(value, pixel):
     if value > 255:
