@@ -125,8 +125,8 @@ class  FourierManager(ImageManager):
 
 f  = FourierManager()
 
-img = f.read_image("./images/photography.jpg")
-img = np.around( f.rgb_to_gray(img))
+img = f.read_image("./images/fft.png")
+img = f.rgb_to_gray(img)
 
 
 
@@ -195,30 +195,36 @@ img = np.around( f.rgb_to_gray(img))
 
 # img = np.interp(img, (img.min(), img.max()), (np.amin(img),np.amax(img)))
 
-res = np.fft.fft2(img)
+ft = np.fft.fft2(img)
 print('fft2')
-print(res)
-res = np.fft.fftshift(res)
+print(ft)
+shift= np.fft.fftshift(ft)
 
 print('fftshift')
-print(res)
-res = np.real(res)
+print(shift)
+mag = abs(shift)
 print('real')
-print(res)
+print(mag)
 # res = res.astype(np.uint8)
 
 # res = f.normalize(res)
-
-norm = (res - np.min(res[:]))/(np.max(res[:])-np.min(res[:])) * 255
+print('max')
+print(np.max(mag))
+print('min')
+print(np.min(mag))
+norm = (mag - np.min(mag))/(np.max(mag)-np.min(mag)) 
 # norm = res
 print('norm')
 print(norm)
-print('max')
-print(np.max(norm[:]))
+
 f.save_image("resultado",norm)
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 # n = mpl.colors.Normalize(vmin=-0,vmax=255)
-plt.imshow(norm, cmap='gray')
+import math 
+mag = np.log(mag)
+vmin = np.min(mag)
+vmax = np.max(mag)
+plt.imshow(mag, cmap='gray',norm=plt.Normalize(vmin=vmin, vmax=vmax))
 plt.show()
