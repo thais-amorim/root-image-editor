@@ -146,7 +146,7 @@ def apply_piecewise_linear(img, coordinates_x, coordinates_y):
     return obtained
 
 
-def get_average(filter_size, i, j, data):
+def get_mean(filter_size, i, j, data):
     filter_size = format_size(filter_size)
     neighbors = get_neighbors_matrix(filter_size, i, j, data)
     sum_value = sum(neighbors)
@@ -154,11 +154,11 @@ def get_average(filter_size, i, j, data):
     return sum_value / counter
 
 
-def apply_average(img, filter_size):
+def apply_mean(img, filter_size):
     obtained, original = get_empty_image_with_same_dimensions(img)
     for i in range(len(original)):
         for j in range(len(original[0])):
-            obtained[i][j] = get_average(filter_size, i, j, original)
+            obtained[i][j] = get_mean(filter_size, i, j, original)
 
     return obtained
 
@@ -261,9 +261,39 @@ def apply_gradient_core(filter_matrix, img, i, j):
         (filter_matrix[2, 2] * img[i + 1, j + 1])
 
 
+def get_mean(filter_size, i, j, data):
+    filter_size = format_size(filter_size)
+    neighbors = get_neighbors_matrix(filter_size, i, j, data)
+    sum_value = sum(neighbors)
+    counter = len(neighbors)
+    return sum_value / counter
+
+
+def apply_mean(img, filter_size):
+    obtained, original = get_empty_image_with_same_dimensions(img)
+    for i in range(len(original)):
+        for j in range(len(original[0])):
+            obtained[i][j] = get_mean(filter_size, i, j, original)
+
+    return obtained
+
+
+def apply_geometric_mean(img, filter_size):
+    obtained, original = get_empty_image_with_same_dimensions(img)
+    for i in range(len(original)):
+        for j in range(len(original[0])):
+            filter_size = format_size(filter_size)
+            neighbors = get_neighbors_matrix(filter_size, i, j, original)
+            prod_value = np.prod(neighbors)
+            counter = len(neighbors)
+            obtained[i][j] = prod_value**(1.0 / counter)
+
+    return obtained
+
+
 def apply_highboost(image, c, filter_size=3):
     obtained, image = get_empty_image_with_same_dimensions(image)
-    blurred_image = apply_average(image, filter_size)
+    blurred_image = apply_mean(image, filter_size)
     mask = image - blurred_image
     result = image + (c * mask)
     return result
