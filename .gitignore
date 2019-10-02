@@ -106,3 +106,9 @@ Pipfile
 
 #VS Code Studio
 *.code-workspace
+
+# virtualenv settings
+include/
+share/
+bin/
+lib64

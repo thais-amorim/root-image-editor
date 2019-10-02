@@ -145,24 +145,6 @@ def apply_piecewise_linear(img, coordinates_x, coordinates_y):
 
     return obtained
 
-
-def get_mean(filter_size, i, j, data):
-    filter_size = format_size(filter_size)
-    neighbors = get_neighbors_matrix(filter_size, i, j, data)
-    sum_value = sum(neighbors)
-    counter = len(neighbors)
-    return sum_value / counter
-
-
-def apply_mean(img, filter_size):
-    obtained, original = get_empty_image_with_same_dimensions(img)
-    for i in range(len(original)):
-        for j in range(len(original[0])):
-            obtained[i][j] = get_mean(filter_size, i, j, original)
-
-    return obtained
-
-
 def apply_convolution(img, filter_matrix):
     obtained, original = get_empty_image_with_same_dimensions(img)
     height, width = get_image_dimensions(img)
@@ -289,7 +271,6 @@ def apply_geometric_mean(img, filter_size):
             obtained[i][j] = prod_value**(1.0 / counter)
 
     return obtained
-
 
 def apply_highboost(image, c, filter_size=3):
     obtained, image = get_empty_image_with_same_dimensions(image)
