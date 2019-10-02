@@ -144,6 +144,24 @@ class  FourierManager(ImageManager):
         masked_img[~mask] = 0
         return masked_img
 
+    def highPassFilter(self,img,radius):
+        h,w = img.shape
+        mask = self.create_circular_mask(h,w,None,radius)
+        print(mask)
+        masked_img = img.copy()
+        masked_img[mask] = 0
+        return masked_img
+
+    def bandPassFilter(self,img,radius_minor,radius_major):
+        h,w = img.shape
+        mask_minor = self.create_circular_mask(h,w,None,radius_minor)
+        mask_major = self.create_circular_mask(h,w,None,radius_major)
+        masked_img = img.copy()
+        masked_img[~mask_major] = 0
+        masked_img[mask_minor] = 0
+        return masked_img
+
+
 f  = FourierManager()
 
 img = f.read_image("./images/fft.png")
@@ -254,9 +272,9 @@ mag = np.log(mag)
 vmin = np.min(mag)
 vmax = np.max(mag)
 
-mag = f.highPassFilter(mag,100)
+mag = f.bandPassFilter(mag,40,100)
 
-shift = f.highPassFilter(shift,40)
+shift = f.bandPassFilter(shift,40,100)
 ishift = f.ifftshift(shift)
 p_img = abs(np.fft.ifft2(ishift))
 
