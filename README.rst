@@ -1,7 +1,18 @@
 Root Image Editor
 ========
-[![Build Status](https://travis-ci.org/thasmarinho/root-image-editor.svg?branch=master)]
-[![Build Status](https://travis-ci.org/thasmarinho/root-image-editor.svg?branch=develop)]
+|master| |develop| |MIT license|
+
+.. |master| image:: https://travis-ci.org/thasmarinho/root-image-editor.svg?branch=master
+    :target: https://travis-ci.org/thasmarinho/root-image-editor
+
+.. |develop| image:: https://travis-ci.org/thasmarinho/root-image-editor.svg?branch=develop
+    :target: https://travis-ci.org/thasmarinho/root-image-editor
+
+.. |MIT license| image:: https://img.shields.io/badge/License-MIT-blue.svg
+    :target: https://lbesson.mit-license.org/
+
+[![Build Status](https://travis-ci.org/thasmarinho/root-image-editor.svg?branch=master)](https://travis-ci.org/thasmarinho/root-image-editor)
+[![Build Status](https://travis-ci.org/thasmarinho/root-image-editor.svg?branch=develop)](https://travis-ci.org/thasmarinho/root-image-editor)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 First project of the Digital Image Processing course.
