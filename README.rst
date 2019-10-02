@@ -11,10 +11,6 @@ Root Image Editor
 .. |MIT license| image:: https://img.shields.io/badge/License-MIT-blue.svg
     :target: https://lbesson.mit-license.org/
 
-[![Build Status](https://travis-ci.org/thasmarinho/root-image-editor.svg?branch=master)](https://travis-ci.org/thasmarinho/root-image-editor)
-[![Build Status](https://travis-ci.org/thasmarinho/root-image-editor.svg?branch=develop)](https://travis-ci.org/thasmarinho/root-image-editor)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
 First project of the Digital Image Processing course.
 
 Install dependencies
@@ -43,10 +39,16 @@ Implemented filters:
 - Histogram Equalization
 - Median
 - Piecewise Linear
-- Average
+- Mean
+- Geometric Mean
 - Convolution
 - Laplacian
 - Sobel
+
+Color filters:
+
+- Sepia
+- Chroma-Key
 
 Color conversion:
 
