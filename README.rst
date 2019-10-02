@@ -1,5 +1,8 @@
 Root Image Editor
 ========
+[![Build Status](https://travis-ci.org/thasmarinho/root-image-editor.svg?branch=master)]
+[![Build Status](https://travis-ci.org/thasmarinho/root-image-editor.svg?branch=develop)]
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 First project of the Digital Image Processing course.
 
