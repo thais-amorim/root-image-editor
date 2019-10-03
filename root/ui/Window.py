@@ -33,9 +33,13 @@ class Window(QMainWindow):
         self.show()
 
     def initIcons(self):
-        import ctypes
-        myappid = u'mycompany.myproduct.subproduct.version' # arbitrary string
-        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+        # import sys
+        # # its win32, maybe there is win64 too?
+        # is_windows = sys.platform.startswith('win')
+        # if(is_windows==False):
+        #     import ctypes
+        #     myappid = u'mycompany.myproduct.subproduct.version' # arbitrary string
+        #     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
         app_icon = QtGui.QIcon()
         app_icon.addFile(Const.ICONS_PATH + 'camera-80.png',QSize(80,80))

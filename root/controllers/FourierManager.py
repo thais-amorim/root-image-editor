@@ -45,7 +45,7 @@ class  FourierManager(ImageManager):
         f = np.zeros((h,w),dtype=np.complex)
         print(f[:,0].shape)
         for i in range (h):
-            f[i,:] = np.fft.fft(img[i,:])
+            f[i,:] = self.fft(img[i,:])
         f1 = np.rot90(f)
         f2 = np.zeros(f1.shape,dtype=np.complex)
         for i in range (w):
@@ -173,15 +173,15 @@ img = f.rgb_to_gray(img)
 
 
 
-# x = img
-# obt = f.fft2(x)
-# expected = np.fft.fft2(x)
+x = img
+obt = f.fft2(x)
+expected = np.fft.fft2(x)
 
-# # print(expected)
-# # print("------")
-# # print(obt)
-# print("Teste fft")
-# print(np.allclose(obt,expected))
+# print(expected)
+# print("------")
+# print(obt)
+print("Teste fft")
+print(np.allclose(obt,expected))
 
 # # obt = f.fft2(img)
 # # expected = np.fft.fft2(img)
@@ -234,25 +234,23 @@ img = f.rgb_to_gray(img)
 
 # img = np.interp(img, (img.min(), img.max()), (np.amin(img),np.amax(img)))
 
-print('img')
-print(img)
-ft = np.fft.fft2(img)
-print('fft2')
-print(ft)
-shift= np.fft.fftshift(ft)
+# print('img')
+# print(img)
+# ft = np.fft.fft2(img)
+# print('fft2')
+# print(ft)
+# shift= np.fft.fftshift(ft)
 
-print('fftshift')
-print(shift)
-mag = abs(shift)
-print('real')
-print(mag)
-
-
-ret = abs(np.fft.ifft2(ft))
-print('ret')
-print(ret)
+# print('fftshift')
+# print(shift)
+# mag = abs(shift)
+# print('real')
+# print(mag)
 
 
+# ret = abs(np.fft.ifft2(ft))
+# print('ret')
+# print(ret)
 
 
 
@@ -264,27 +262,29 @@ print(ret)
 
 
 
-import matplotlib.pyplot as plt
-import matplotlib as mpl
-# n = mpl.colors.Normalize(vmin=-0,vmax=255)
-import math 
-mag = np.log(mag)
-vmin = np.min(mag)
-vmax = np.max(mag)
-
-mag = f.bandPassFilter(mag,40,100)
-
-shift = f.bandPassFilter(shift,40,100)
-ishift = f.ifftshift(shift)
-p_img = abs(np.fft.ifft2(ishift))
-
-plt.imshow(mag, cmap='gray',norm=plt.Normalize(vmin=vmin, vmax=vmax))
-plt.show()
 
 
+# import matplotlib.pyplot as plt
+# import matplotlib as mpl
+# # n = mpl.colors.Normalize(vmin=-0,vmax=255)
+# import math 
+# mag = np.log(mag)
+# vmin = np.min(mag)
+# vmax = np.max(mag)
 
-plt.subplot(121)
-plt.imshow(img, cmap='gray')
-plt.subplot(122)
-plt.imshow(p_img, cmap='gray')
-plt.show()
+# mag = f.bandPassFilter(mag,40,100)
+
+# shift = f.bandPassFilter(shift,40,100)
+# ishift = f.ifftshift(shift)
+# p_img = abs(np.fft.ifft2(ishift))
+
+# plt.imshow(mag, cmap='gray',norm=plt.Normalize(vmin=vmin, vmax=vmax))
+# plt.show()
+
+
+
+# plt.subplot(121)
+# plt.imshow(img, cmap='gray')
+# plt.subplot(122)
+# plt.imshow(p_img, cmap='gray')
+# plt.show()
