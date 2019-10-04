@@ -12,7 +12,7 @@ class  FourierManager(ImageManager):
     def __init__(self):
         super().__init__()
 
-    # def fft(self,x):
+    # def transform_radix2(self,x,bol):
     #     n = len(x)
     #     if n == 1:
     #         return x
@@ -26,14 +26,15 @@ class  FourierManager(ImageManager):
 
     ##Isso é dft na verdade
     def fft(self, x):
-        t = []
-        N = len(x)
-        for k in range(N):
-            a = 0
-            for n in range(N):
-                a += x[n]*cmath.exp(-2j*cmath.pi*k*n*(1/N))
-            t.append(a)
-        return t
+        return self.transform(x,False)
+        # t = []
+        # N = len(x)
+        # for k in range(N):
+        #     a = 0
+        #     for n in range(N):
+        #         a += x[n]*cmath.exp(-2j*cmath.pi*k*n*(1/N))
+        #     t.append(a)
+        # return t
 
     def omega(self,n, m):
         return cmath.exp((2j * cmath.pi * m) / n)
@@ -161,10 +162,87 @@ class  FourierManager(ImageManager):
         masked_img[mask_minor] = 0
         return masked_img
 
+    import cmath, sys
+    if sys.version_info.major == 2:
+        range = xrange
+
+    def convolve(self,x, y, realoutput=True):
+        assert len(x) == len(y)
+        n = len(x)
+        x = self.transform(x, False)
+        y = self.transform(y, False)
+        for i in range(n):
+            x[i] *= y[i]
+        x = self.transform(x, True)
+        
+        # Scaling (because this FFT implementation omits it) and postprocessing
+        if realoutput:
+            return [(val.real / n) for val in x]
+        else:
+            return [(val / n) for val in x]
+
+    def transform_radix2(self,vector, inverse):
+        # Returns the integer whose value is the reverse of the lowest 'bits' bits of the integer 'x'.
+        def reverse(x, bits):
+            y = 0
+            for i in range(bits):
+                y = (y << 1) | (x & 1)
+                x >>= 1
+            return y
+        
+        # Initialization
+        n = len(vector)
+        levels = n.bit_length() - 1
+        if 2**levels != n:
+            raise ValueError("Length is not a power of 2")
+        # Now, levels = log2(n)
+        coef = (2 if inverse else -2) * cmath.pi / n
+        exptable = [cmath.rect(1, i * coef) for i in range(n // 2)]
+        vector = [vector[reverse(i, levels)] for i in range(n)]  # Copy with bit-reversed permutation
+        
+        # Radix-2 decimation-in-time FFT
+        size = 2
+        while size <= n:
+            halfsize = size // 2
+            tablestep = n // size
+            for i in range(0, n, size):
+                k = 0
+                for j in range(i, i + halfsize):
+                    temp = vector[j + halfsize] * exptable[k]
+                    vector[j + halfsize] = vector[j] - temp
+                    vector[j] += temp
+                    k += tablestep
+            size *= 2
+        return vector
+
+    def transform(self,vector, inverse):
+        n = len(vector)
+        if n == 0:
+            return []
+        elif n & (n - 1) == 0:  # Is power of 2
+            return self.transform_radix2(vector, inverse)
+        else:  # More complicated algorithm for arbitrary sizes
+            return self.transform_bluestein(vector, inverse)
+
+    def transform_bluestein(self,vector, inverse):
+        # Find a power-of-2 convolution length m such that m >= n * 2 + 1
+        n = len(vector)
+        if n == 0:
+            return []
+        m = 2**((n * 2).bit_length())
+        
+        coef = (1 if inverse else -1) * cmath.pi / n
+        exptable = [cmath.rect(1, (i * i % (n * 2)) * coef) for i in range(n)]  # Trigonometric table
+        a = [(x * y) for (x, y) in zip(vector, exptable)] + [0] * (m - n)  # Temporary vectors and preprocessing
+        b = exptable[ : n] + [0] * (m - (n * 2 - 1)) + exptable[ : 0 : -1]
+        b = [x.conjugate() for x in b]
+        c = self.convolve(a, b, False)[ : n]  # Convolution
+        return [(x * y) for (x, y) in zip(c, exptable)]  # Postprocessing
+
 
 f  = FourierManager()
 
-img = f.read_image("./images/fft.png")
+img = f.read_image("./images/DFT_no_log.jpg")
 img = f.rgb_to_gray(img)
 
 
@@ -173,15 +251,29 @@ img = f.rgb_to_gray(img)
 
 
 
-x = img
-obt = f.fft2(x)
-expected = np.fft.fft2(x)
+# x = img
+# # obt = f.fft2(x)
+# # expected = np.fft.fft2(x)
+
+# x = np.random.rand(256)
+# # y = np.zeros(16)
+# # y[6:] = x
+
+# obt = np.fft.fft(x)
+# expected = f.transform_bluestein(x,False)
+
+# # print(np.fft.fft(x))
+# # print("-------d")
+# # print(f.transform_bluestein(x,False))
+# print(np.allclose(obt,expected))
 
 # print(expected)
 # print("------")
 # print(obt)
-print("Teste fft")
-print(np.allclose(obt,expected))
+
+
+# print("Teste fft")
+# print(np.allclose(obt,expected))
 
 # # obt = f.fft2(img)
 # # expected = np.fft.fft2(img)
@@ -264,10 +356,23 @@ print(np.allclose(obt,expected))
 
 
 
-# import matplotlib.pyplot as plt
-# import matplotlib as mpl
-# # n = mpl.colors.Normalize(vmin=-0,vmax=255)
-# import math 
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+# n = mpl.colors.Normalize(vmin=-0,vmax=255)
+import math 
+
+img = np.random.rand(500,500)
+
+ft = f.fft2(img)
+
+# ft = np.fft.fft2(img)
+
+print(np.allclose(ft,np.fft.fft2(img)))
+
+# shift = f.fftshift(ft)
+
+# mag = abs(shift)
+
 # mag = np.log(mag)
 # vmin = np.min(mag)
 # vmax = np.max(mag)
@@ -276,7 +381,7 @@ print(np.allclose(obt,expected))
 
 # shift = f.bandPassFilter(shift,40,100)
 # ishift = f.ifftshift(shift)
-# p_img = abs(np.fft.ifft2(ishift))
+# p_img = abs(f.ifft2(ishift))
 
 # plt.imshow(mag, cmap='gray',norm=plt.Normalize(vmin=vmin, vmax=vmax))
 # plt.show()
