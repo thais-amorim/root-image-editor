@@ -1,6 +1,6 @@
 import imageio
 import numpy as np
-from image_filter import normalize_image, get_image_dimensions, get_empty_image_with_same_dimensions, read_image
+from image_filter import get_image_dimensions, get_empty_image_with_same_dimensions
 from PIL import Image
 from skimage import img_as_ubyte
 
@@ -11,6 +11,7 @@ def get_rgb_layers(rgb):
     b = rgb[:, :, 2]
 
     return r, g, b
+
 
 def merge_rgb_layers(red_layer, green_layer, blue_layer):
     return np.stack([red_channel, green_channel, blue_channel], axis=2)
@@ -26,7 +27,7 @@ def normalize_max_value(value, pixel):
 
 def apply_sepia(img):
     height, width = get_image_dimensions(img)
-    obtained, img = t_empty_image_with_same_dimensions(img)
+    obtained, img = get_empty_image_with_same_dimensions(img)
     r_matrix, g_matrix, b_matrix = get_rgb_layers(img)
     for i in range(height):
         for j in range(width):

@@ -4,26 +4,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 from PIL import Image
+from util import normalize_image
 
 _MIN_PIXEL = 0
 _MAX_PIXEL = 255
-
-
-def read_image(image_path, type="RGB"):
-    return imageio.imread(image_path, as_gray=False, pilmode=type)
-
-
-def save_image(name, image_as_byte):
-    imageio.imwrite(name, image_as_byte)
-
-
-def normalize_image(img):
-    min_input = img.min()
-    max_input = img.max()
-
-    min_output = _MIN_PIXEL
-    max_output = _MAX_PIXEL
-    return (img - min_input) * ((max_output - min_output) / (max_input - min_input) + min_output)
 
 
 def apply_negative(img):
@@ -144,6 +128,7 @@ def apply_piecewise_linear(img, coordinates_x, coordinates_y):
             obtained[i][j] = interp[index]
 
     return obtained
+
 
 def apply_convolution(img, filter_matrix):
     obtained, original = get_empty_image_with_same_dimensions(img)
@@ -271,6 +256,39 @@ def apply_geometric_mean(img, filter_size):
             obtained[i][j] = prod_value**(1.0 / counter)
 
     return obtained
+
+
+def apply_geometric_mean(img, filter_size):
+    obtained, original = get_empty_image_with_same_dimensions(img)
+    for i in range(len(original)):
+        for j in range(len(original[0])):
+            filter_size = format_size(filter_size)
+            neighbors = get_neighbors_matrix(filter_size, i, j, original)
+            prod_value = np.prod(neighbors)
+            counter = len(neighbors)
+            obtained[i][j] = prod_value**(1.0 / counter)
+
+    return obtained
+
+
+def get_harmonic_mean(matrix):
+    float_matrix = np.array(matrix).astype(float)
+    sum_value = np.sum(np.reciprocal(float_matrix))
+    counter = len(matrix)
+    result = counter / sum_value
+    return np.around(result, decimals=3)
+
+
+def apply_harmonic_mean(img, filter_size):
+    obtained, original = get_empty_image_with_same_dimensions(img)
+    for i in range(len(original)):
+        for j in range(len(original[0])):
+            filter_size = format_size(filter_size)
+            neighbors = get_neighbors_matrix(filter_size, i, j, original)
+            obtained[i][j] = get_harmonic_mean(neighbors)
+
+    return obtained
+
 
 def apply_highboost(image, c, filter_size=3):
     obtained, image = get_empty_image_with_same_dimensions(image)
