@@ -36,8 +36,10 @@ Implemented filters:
 - Histogram Equalization
 - Median
 - Piecewise Linear
-- Mean
+- Arithmetic Mean
 - Geometric Mean
+- Harmonic Mean
+- Contra-harmonic Mean 
 - Convolution
 - Laplacian
 - Sobel

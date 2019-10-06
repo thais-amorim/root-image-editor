@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import pytest
 import numpy as np
-from root import image_filter as filter
+from root.filter import ImageFilter as filter
 
 
 def test_format_negative_size():
