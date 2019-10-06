@@ -1,5 +1,5 @@
 import pytest
-from root import color_converter as converter
+from root.converter import ColorConverter as converter
 from math import *
 
 
@@ -84,7 +84,8 @@ def test_normalize_to_zero_one_check_interval_r():
     g = 76
     b = 122
 
-    obtained_r, obtained_g, obtained_b = converter.normalize_to_zero_one(r, g, b)
+    obtained_r, obtained_g, obtained_b = converter.normalize_to_zero_one(
+        r, g, b)
     assert obtained_r >= 0
     assert obtained_r <= 1
 
@@ -94,7 +95,8 @@ def test_normalize_to_zero_one_check_r():
     g = 76
     b = 122
 
-    obtained_r, obtained_g, obtained_b = converter.normalize_to_zero_one(r, g, b)
+    obtained_r, obtained_g, obtained_b = converter.normalize_to_zero_one(
+        r, g, b)
     assert obtained_r == 0.12156862745098039
 
 
@@ -103,7 +105,8 @@ def test_normalize_to_zero_one_check_interval_g():
     g = 76
     b = 122
 
-    obtained_r, obtained_g, obtained_b = converter.normalize_to_zero_one(r, g, b)
+    obtained_r, obtained_g, obtained_b = converter.normalize_to_zero_one(
+        r, g, b)
     assert obtained_g >= 0
     assert obtained_g <= 1
 
@@ -113,7 +116,8 @@ def test_normalize_to_zero_one_check_g():
     g = 76
     b = 122
 
-    obtained_r, obtained_g, obtained_b = converter.normalize_to_zero_one(r, g, b)
+    obtained_r, obtained_g, obtained_b = converter.normalize_to_zero_one(
+        r, g, b)
     assert obtained_g == 0.2980392156862745
 
 
@@ -122,7 +126,8 @@ def test_normalize_to_zero_one_check_interval_b():
     g = 76
     b = 122
 
-    obtained_r, obtained_g, obtained_b = converter.normalize_to_zero_one(r, g, b)
+    obtained_r, obtained_g, obtained_b = converter.normalize_to_zero_one(
+        r, g, b)
     assert obtained_b >= 0
     assert obtained_b <= 1
 
@@ -132,8 +137,10 @@ def test_normalize_to_zero_one_check_b():
     g = 76
     b = 122
 
-    obtained_r, obtained_g, obtained_b = converter.normalize_to_zero_one(r, g, b)
+    obtained_r, obtained_g, obtained_b = converter.normalize_to_zero_one(
+        r, g, b)
     assert obtained_b == 0.47843137254901963
+
 
 def test_normalize_rgb_check_interval_r():
     r = 1
@@ -245,6 +252,7 @@ def test_hsi_to_rgb_check_b():
     r, g, b = converter.hsi_to_rgb(h, s, i)
     assert b == 121
 
+
 def test_hsi_to_rgb_rg_sector():
     h = 80
     s = 0.59
@@ -255,6 +263,7 @@ def test_hsi_to_rgb_rg_sector():
     assert g == 113
     assert b == 31
 
+
 def test_hsi_to_rgb_gb_sector():
     h = 210
     s = 0.59
@@ -264,6 +273,7 @@ def test_hsi_to_rgb_gb_sector():
     assert r == 31
     assert g == 76
     assert b == 121
+
 
 def test_hsi_to_rgb_br_sector():
     h = 300
