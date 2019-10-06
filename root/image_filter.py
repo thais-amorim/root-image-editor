@@ -4,10 +4,26 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 from PIL import Image
-from util import normalize_image
 
 _MIN_PIXEL = 0
 _MAX_PIXEL = 255
+
+
+def read_image(image_path, type="RGB"):
+    return imageio.imread(image_path, as_gray=False, pilmode=type)
+
+
+def save_image(name, image_as_byte):
+    imageio.imwrite(name, image_as_byte)
+
+
+def normalize_image(img):
+    min_input = img.min()
+    max_input = img.max()
+
+    min_output = _MIN_PIXEL
+    max_output = _MAX_PIXEL
+    return (img - min_input) * ((max_output - min_output) / (max_input - min_input) + min_output)
 
 
 def apply_negative(img):
@@ -236,24 +252,11 @@ def get_mean(filter_size, i, j, data):
     return sum_value / counter
 
 
-def apply_mean(img, filter_size):
+def apply_mean(img, filter_size=3):
     obtained, original = get_empty_image_with_same_dimensions(img)
     for i in range(len(original)):
         for j in range(len(original[0])):
             obtained[i][j] = get_mean(filter_size, i, j, original)
-
-    return obtained
-
-
-def apply_geometric_mean(img, filter_size):
-    obtained, original = get_empty_image_with_same_dimensions(img)
-    for i in range(len(original)):
-        for j in range(len(original[0])):
-            filter_size = format_size(filter_size)
-            neighbors = get_neighbors_matrix(filter_size, i, j, original)
-            prod_value = np.prod(neighbors)
-            counter = len(neighbors)
-            obtained[i][j] = prod_value**(1.0 / counter)
 
     return obtained
 
@@ -290,7 +293,29 @@ def apply_harmonic_mean(img, filter_size):
     return obtained
 
 
-def apply_highboost(image, c, filter_size=3):
+def get_contra_harmonic_mean(matrix, q):
+    '''
+    Apply gradient using a single filter_matrix (3x3).
+    '''
+    float_matrix = np.array(matrix).astype(float)
+    denominator = np.sum(float_matrix ** q, where=(float_matrix != 0))
+    numerator = np.sum(float_matrix ** (q + 1), where=(float_matrix != 0))
+    result = np.where((denominator == 0.0), 0.0, (numerator / denominator))
+    return np.around(result, decimals=3)
+
+
+def apply_contra_harmonic_mean(img, filter_size, q):
+    obtained, original = get_empty_image_with_same_dimensions(img)
+    for i in range(len(original)):
+        for j in range(len(original[0])):
+            filter_size = format_size(filter_size)
+            neighbors = get_neighbors_matrix(filter_size, i, j, original)
+            obtained[i][j] = get_contra_harmonic_mean(neighbors, q)
+
+    return obtained
+
+
+def apply_highboost(image, c, filter_size):
     obtained, image = get_empty_image_with_same_dimensions(image)
     blurred_image = apply_mean(image, filter_size)
     mask = image - blurred_image

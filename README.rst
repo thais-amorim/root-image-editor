@@ -1,11 +1,8 @@
 Root Image Editor
 ========
-|master| |develop| |MIT license|
+|master| |MIT license|
 
 .. |master| image:: https://travis-ci.org/thasmarinho/root-image-editor.svg?branch=master
-    :target: https://travis-ci.org/thasmarinho/root-image-editor
-
-.. |develop| image:: https://travis-ci.org/thasmarinho/root-image-editor.svg?branch=develop
     :target: https://travis-ci.org/thasmarinho/root-image-editor
 
 .. |MIT license| image:: https://img.shields.io/badge/License-MIT-blue.svg
