@@ -1,6 +1,6 @@
 Root Image Editor
 ========
-|master| |MIT license|
+|master| |MIT license| |Generic badge|
 
 .. |master| image:: https://travis-ci.org/thasmarinho/root-image-editor.svg?branch=master
     :target: https://travis-ci.org/thasmarinho/root-image-editor
@@ -8,12 +8,15 @@ Root Image Editor
 .. |MIT license| image:: https://img.shields.io/badge/License-MIT-blue.svg
     :target: https://lbesson.mit-license.org/
 
+.. |Generic badge| image:: https://img.shields.io/badge/Python-3.7-blue.svg
+    :target:
+
 First project of the Digital Image Processing course.
 
 Install dependencies
 --------------------
 
-$ pip install -r requirements.txt
+$ pip3 install -r requirements.txt
 
 Running
 -------
@@ -23,7 +26,7 @@ $ python3 ./root/main.py
 Testing
 -------
 
-$ pytest
+$ pytest test
 
 Features
 --------
@@ -39,7 +42,7 @@ Implemented filters:
 - Arithmetic Mean
 - Geometric Mean
 - Harmonic Mean
-- Contra-harmonic Mean 
+- Contra-harmonic Mean
 - Convolution
 - Laplacian
 - Sobel
