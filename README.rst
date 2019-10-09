@@ -1,6 +1,6 @@
 Root Image Editor
 ========
-|master| |MIT license| |Generic badge|
+|master| |MIT license| 
 
 .. |master| image:: https://travis-ci.org/thasmarinho/root-image-editor.svg?branch=master
     :target: https://travis-ci.org/thasmarinho/root-image-editor
@@ -8,8 +8,6 @@ Root Image Editor
 .. |MIT license| image:: https://img.shields.io/badge/License-MIT-blue.svg
     :target: https://lbesson.mit-license.org/
 
-.. |Generic badge| image:: https://img.shields.io/badge/Python-3.7-blue.svg
-    :target:
 
 First project of the Digital Image Processing course.
 
