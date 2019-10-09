@@ -77,15 +77,18 @@ class ImageFilter():
 
     @staticmethod
     def get_empty_image_with_same_dimensions(img):
-        height, width = ImageFilter.get_image_dimensions(img)
+        height, width = ImageFilter.get_dimensions(img)
         empty_image = np.zeros((height, width), np.uint8)
         return empty_image, img
 
     @staticmethod
-    def get_image_dimensions(img):
+    def get_dimensions(img):
         data = np.array(img)
         height = data.shape[0]
-        width = data.shape[1]
+        try:
+            width = data.shape[1]
+        except:
+            width = 1
         return height, width
 
     @staticmethod
@@ -155,7 +158,7 @@ class ImageFilter():
     def apply_convolution(img, filter_matrix):
         obtained, original = ImageFilter.get_empty_image_with_same_dimensions(
             img)
-        height, width = ImageFilter.get_image_dimensions(img)
+        height, width = ImageFilter.get_dimensions(img)
 
         for row in range(1, height - 1):
             for col in range(1, width - 1):
@@ -194,7 +197,7 @@ class ImageFilter():
             [0,     0,     0],
             [1,     2,     1]])
 
-        height, width = ImageFilter.get_image_dimensions(img)
+        height, width = ImageFilter.get_dimensions(img)
 
         # define images with 0s
         new_horizontal_image = np.zeros((height, width), np.uint8)
@@ -222,14 +225,14 @@ class ImageFilter():
         '''
         Apply gradient using a single filter_matrix (3x3).
         '''
-        filter_height, filter_width = ImageFilter.get_image_dimensions(
+        filter_height, filter_width = ImageFilter.get_dimensions(
             filter_matrix)
         assert filter_height != 3, "Filter Matrix must have height = 3 instead of" + \
             string(filter_height)
         assert filter_width != 3, "Filter Matrix must have width = 3 instead of" + \
             string(filter_width)
 
-        height, width = ImageFilter.get_image_dimensions(img)
+        height, width = ImageFilter.get_dimensions(img)
 
         # define image with 0s
         new_gradient_image = np.zeros((height, width), np.uint8)
@@ -255,21 +258,21 @@ class ImageFilter():
             (filter_matrix[2, 2] * img[i + 1, j + 1])
 
     @staticmethod
-    def get_mean(filter_size, i, j, data):
-        filter_size = ImageFilter.format_size(filter_size)
-        neighbors = ImageFilter.get_neighbors_matrix(filter_size, i, j, data)
-        sum_value = sum(neighbors)
-        counter = len(neighbors)
-        return sum_value / counter
+    def get_arithmetic_mean(neighbors):
+        sum_value = np.sum(neighbors)
+        height, width = ImageFilter.get_dimensions(neighbors)
+        return sum_value / (height * width)
 
     @staticmethod
-    def apply_mean(img, filter_size=3):
+    def apply_arithmetic_mean(img, filter_size=3):
+        filter_size = ImageFilter.format_size(filter_size)
         obtained, original = ImageFilter.get_empty_image_with_same_dimensions(
             img)
         for i in range(len(original)):
             for j in range(len(original[0])):
-                obtained[i][j] = ImageFilter.get_mean(
+                neighbors = ImageFilter.get_neighbors_matrix(
                     filter_size, i, j, original)
+                obtained[i][j] = ImageFilter.get_arithmetic_mean(neighbors)
 
         return obtained
 
@@ -338,7 +341,7 @@ class ImageFilter():
     def apply_highboost(image, c, filter_size):
         obtained, image = ImageFilter.get_empty_image_with_same_dimensions(
             image)
-        blurred_image = ImageFilter.apply_mean(image, filter_size)
+        blurred_image = ImageFilter.apply_arithmetic_mean(image, filter_size)
         mask = image - blurred_image
         result = image + (c * mask)
         return result
