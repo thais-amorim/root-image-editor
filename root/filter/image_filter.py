@@ -344,4 +344,4 @@ class ImageFilter():
         blurred_image = ImageFilter.apply_arithmetic_mean(image, filter_size)
         mask = image - blurred_image
         result = image + (c * mask)
-        return result
+        return result, mask
