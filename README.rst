@@ -1,5 +1,12 @@
 Root Image Editor
 ========
+|master| |MIT license|
+
+.. |master| image:: https://travis-ci.org/thasmarinho/root-image-editor.svg?branch=master
+    :target: https://travis-ci.org/thasmarinho/root-image-editor
+
+.. |MIT license| image:: https://img.shields.io/badge/License-MIT-blue.svg
+    :target: https://lbesson.mit-license.org/
 
 First project of the Digital Image Processing course.
 
@@ -29,15 +36,25 @@ Implemented filters:
 - Histogram Equalization
 - Median
 - Piecewise Linear
-- Average
+- Arithmetic Mean
+- Geometric Mean
+- Harmonic Mean
+- Contra-harmonic Mean 
 - Convolution
 - Laplacian
-- Sobel 
+- Sobel
+
+Color filters:
+
+- Sepia
+- Chroma-Key
 
 Color conversion:
 
 - RGB to gray via weighted average
 - RGB to gray via simple average
+- RGB <-> HSV
+- RGB <-> HSI
 
 Other:
 
