@@ -2,7 +2,7 @@
 import imageio
 import matplotlib.pyplot as plt
 import numpy as np
-from ..util import ImageUtil as util
+from root.util import ImageUtil as util
 from PIL import Image
 
 _MIN_PIXEL = 0
@@ -229,6 +229,14 @@ class ImageFilter():
         return obtained
 
     @staticmethod
+    def get_geometric_mean(matrix):
+        prod_value = np.prod(matrix)
+        height, width = util.get_dimensions(matrix)
+        counter = height * width
+        result = prod_value**(1.0 / counter)
+        return np.around(result, decimals=3)
+
+    @staticmethod
     def apply_geometric_mean(img, filter_size):
         filter_size = util.format_filter_size(filter_size)
         obtained, original = util.get_empty_image_with_same_dimensions(
@@ -237,9 +245,7 @@ class ImageFilter():
             for j in range(len(original[0])):
                 neighbors = ImageFilter.__get_neighbors_matrix(
                     filter_size, i, j, original)
-                prod_value = np.prod(neighbors)
-                counter = len(neighbors)
-                obtained[i][j] = prod_value**(1.0 / counter)
+                obtained[i][j] = ImageFilter.get_geometric_mean(neighbors)
 
         return obtained
 
