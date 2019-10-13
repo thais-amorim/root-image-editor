@@ -3,6 +3,45 @@ import numpy as np
 
 
 class ScaleConverter():
+    @staticmethod
+    def get_nearest_neighbour_pixel_interpolation(img, oriCol, oriRow):
+        '''TODO finish core algorithm'''
+        out = []
+
+        # Get integer parts of positions
+        modXi = int(posX)
+        modYi = int(posY)
+        # Get fractional parts of positions
+        modXf = posX - modXi
+        modYf = posY - modYi
+        # To avoid going over image bounderies
+        height, width = util.get_dimensions(img)
+        modXiPlusOneLim = min(modXi + 1, width - 1)
+        modYiPlusOneLim = min(modYi + 1, height - 1)
+
+        for channel in range(img.shape[2]):
+            new_channel = modYf * obtained_top + (1. - modYf) * obtained_bottom
+            out.append(int(new_channel + 0.5))
+        return d
+
+    @staticmethod
+    def apply_nearest_neighbour(img, scale):
+        if scale <= 0:
+            return img
+        else:
+            imHeight, imWidth = util.get_dimensions(img)
+            enlargedShape = list(
+                map(int, [imHeight * scale, imWidth * scale, img.shape[2]]))
+            enlargedImg = np.empty(enlargedShape, dtype=np.uint8)
+            enlargedHeight, enlargedWidth = util.get_dimensions(enlargedImg)
+            for row in range(enlargedHeight):
+                for col in range(enlargedWidth):
+                    oriRow = row * rowScale  # Find position in original image
+                    oriCol = col * colScale
+                    enlargedImg[row, col] = ScaleConverter.get_nearest_neighbour_pixel_interpolation(
+                        img, oriCol, oriRow)
+
+            return enlargedImg
 
     @staticmethod
     def get_bilinear_pixel_interpolation(img, posX, posY):
