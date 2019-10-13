@@ -50,3 +50,11 @@ class RgbFilter():
         g = filter.apply_median(g, filter_size)
         b = filter.apply_median(b, filter_size)
         return rgb.merge_rgb_layers(r, g, b)
+
+    @staticmethod
+    def apply_piecewise_linear(img, coordinates_x, coordinates_y):
+        r, g, b = rgb.get_rgb_layers(img)
+        r = filter.apply_piecewise_linear(r, coordinates_x, coordinates_y)
+        g = filter.apply_piecewise_linear(g, coordinates_x, coordinates_y)
+        b = filter.apply_piecewise_linear(b, coordinates_x, coordinates_y)
+        return rgb.merge_rgb_layers(r, g, b)

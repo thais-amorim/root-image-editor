@@ -98,6 +98,22 @@ class ImageFilter():
 
     @staticmethod
     def apply_piecewise_linear(img, coordinates_x, coordinates_y):
+        """Apply Piecewise Linear filter on an image basead on an group of coordinates.
+
+        Parameters
+        ----------
+        img : numpy array
+            The target image where the filter would be applied
+        coordinates_x : array
+            The coordinates X from all points to the interpolated already in the desired order.
+        coordinates_y : array
+            The coordinates Y from all points to the interpolated already in the desired order.
+
+        Returns
+        -------
+        numpy array
+            an array representing the obtained image after apply the filter
+        """
         x = np.array(range(0, _MAX_PIXEL + 1), dtype=np.uint8)
         interp = np.interp(x, coordinates_x, coordinates_y)
         obtained = img.copy()
