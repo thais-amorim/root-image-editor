@@ -11,7 +11,9 @@ def main():
     #r, g, b = rgb.get_rgb_layers(img_rgb)
     #img_gray = converter.rgb_to_gray_via_weighted_average(r, g, b)
     rgbFilter.draw_histogram(img_rgb, "images/results/aranha_hist")
-    #util.save_image("images/negative/output_color.jpg", output_color)
+    obtained = rgbFilter.apply_histogram_equalization(img_rgb)
+    rgbFilter.draw_histogram(obtained, "images/results/obtained_hist")
+    util.save_image("images/negative/output_color.jpg", obtained)
 
 
 if __name__ == "__main__":

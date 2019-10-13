@@ -10,7 +10,6 @@ class RgbFilter():
         r = filter.apply_negative(r)
         g = filter.apply_negative(g)
         b = filter.apply_negative(b)
-        obtained = rgb.merge_rgb_layers(r, g, b)
         return rgb.merge_rgb_layers(r, g, b)
 
     @staticmethod
@@ -19,7 +18,6 @@ class RgbFilter():
         r = filter.apply_logarithmic(r)
         g = filter.apply_logarithmic(g)
         b = filter.apply_logarithmic(b)
-        obtained = rgb.merge_rgb_layers(r, g, b)
         return rgb.merge_rgb_layers(r, g, b)
 
     @staticmethod
@@ -36,3 +34,11 @@ class RgbFilter():
         r = filter.draw_histogram(r, img_name + "_red" + ".jpg", "r")
         g = filter.draw_histogram(g, img_name + "_green" + ".jpg", "g")
         b = filter.draw_histogram(b, img_name + "_blue" + ".jpg", "b")
+
+    @staticmethod
+    def apply_histogram_equalization(img):
+        r, g, b = rgb.get_rgb_layers(img)
+        r = filter.apply_histogram_equalization(r)
+        g = filter.apply_histogram_equalization(g)
+        b = filter.apply_histogram_equalization(b)
+        return rgb.merge_rgb_layers(r, g, b)

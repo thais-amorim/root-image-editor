@@ -36,7 +36,7 @@ class ImageFilter():
         plt.close()
 
     @staticmethod
-    def apply_equalized_histogram(img):
+    def apply_histogram_equalization(img):
         # Getting the pixel values of the image
         original = np.array(img)
         # Creating a new matrix for the image
