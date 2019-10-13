@@ -1,7 +1,7 @@
 import imageio
 import numpy as np
-from ..util import ImageUtil as util
-from ..util import RgbUtil as rgb
+from root.util import ImageUtil as util
+from root.util import RgbUtil as rgb
 from PIL import Image
 from skimage import img_as_ubyte
 

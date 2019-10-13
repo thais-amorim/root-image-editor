@@ -22,11 +22,11 @@ class ImageFilter():
         return log_img.astype('uint8')
 
     @staticmethod
-    def apply_gamma_correction(img_name, img, gamma):
+    def apply_gamma_correction(img, gamma):
         return ((img / _MAX_PIXEL) ** (1 / gamma))
 
     @staticmethod
-    def draw_histogram(img_name, img):
+    def draw_histogram(img, img_name):
         data = img.flatten()
         plt.hist(data, _MAX_PIXEL + 1, [0, 256])
         plt.savefig(img_name)
@@ -128,7 +128,7 @@ class ImageFilter():
             [-1,  8, -1],
             [-1, -1, -1]])
 
-        obtained = apply_convolution(img, kernel)
+        obtained = ImageFilter.apply_convolution(img, kernel)
 
         norm_obtained = util.normalize_image(obtained)
         sharpened = img + norm_obtained

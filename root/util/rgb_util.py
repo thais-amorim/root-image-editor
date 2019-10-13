@@ -13,4 +13,4 @@ class RgbUtil():
 
     @staticmethod
     def merge_rgb_layers(red_layer, green_layer, blue_layer):
-        return np.stack([red_channel, green_channel, blue_channel], axis=2)
+        return np.stack([red_layer, green_layer, blue_layer], axis=2)
