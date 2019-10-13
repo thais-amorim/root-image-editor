@@ -5,7 +5,7 @@ from root.filter import ImageFilter as filter
 
 
 def test_geometric_mean_for_float_array():
-    input = np.array([4, 8, 3, 9, 17])
+    input = np.array([4.0, 8.0, 3.0, 9.0, 17.0])
     obtained = filter.get_geometric_mean(input)
     assert obtained == 6.814
 

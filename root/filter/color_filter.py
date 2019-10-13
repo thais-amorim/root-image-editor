@@ -1,6 +1,7 @@
 import imageio
 import numpy as np
 from ..util import ImageUtil as util
+from ..util import RgbUtil as rgb
 from PIL import Image
 from skimage import img_as_ubyte
 
@@ -8,19 +9,7 @@ from skimage import img_as_ubyte
 class ColorFilter():
 
     @staticmethod
-    def get_rgb_layers(rgb):
-        r = rgb[:, :, 0]
-        g = rgb[:, :, 1]
-        b = rgb[:, :, 2]
-
-        return r, g, b
-
-    @staticmethod
-    def merge_rgb_layers(red_layer, green_layer, blue_layer):
-        return np.stack([red_channel, green_channel, blue_channel], axis=2)
-
-    @staticmethod
-    def normalize_max_value(value, pixel):
+    def __normalize_max_value(value, pixel):
         if value > 255:
             pixel = 255
         else:
@@ -31,7 +20,7 @@ class ColorFilter():
     def apply_sepia(img):
         height, width = util.get_image_dimensions(img)
         obtained, img = util.get_empty_image_with_same_dimensions(img)
-        r_matrix, g_matrix, b_matrix = ColorFilter.get_rgb_layers(img)
+        r_matrix, g_matrix, b_matrix = rgb.get_rgb_layers(img)
         for i in range(height):
             for j in range(width):
                 r, g, b = r_matrix[i][j], g_matrix[i][j], b_matrix[i][j]
@@ -39,9 +28,9 @@ class ColorFilter():
                 tg = int(0.349 * r + 0.686 * g + 0.168 * b)
                 tb = int(0.272 * r + 0.534 * g + 0.131 * b)
 
-                r = ColorFilter.normalize_max_value(tr, r)
-                g = ColorFilter.normalize_max_value(tg, g)
-                b = ColorFilter.normalize_max_value(tb, b)
+                r = ColorFilter.__normalize_max_value(tr, r)
+                g = ColorFilter.__normalize_max_value(tg, g)
+                b = ColorFilter.__normalize_max_value(tb, b)
 
                 obtained[i][j] = [r, g, b]
 
