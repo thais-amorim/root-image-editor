@@ -26,9 +26,12 @@ class ImageFilter():
         return ((img / _MAX_PIXEL) ** (1 / gamma))
 
     @staticmethod
-    def draw_histogram(img, img_name):
+    def draw_histogram(img, img_name, color="black"):
         data = img.flatten()
-        plt.hist(data, _MAX_PIXEL + 1, [0, 256])
+        plt.hist(data, _MAX_PIXEL + 1, [0, 256], color=color, ec=color)
+        plt.grid(axis='y', alpha=0.75)
+        plt.xlabel('Pixel value')
+        plt.ylabel('Amount')
         plt.savefig(img_name)
         plt.close()
 
