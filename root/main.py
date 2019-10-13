@@ -1,4 +1,7 @@
-#!/usr/bin/python
+from PyQt5 import QtWidgets, QtGui
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5. QtGui import *
 
 from filter import ImageFilter as filter
 from filter import ColorFilter as color
