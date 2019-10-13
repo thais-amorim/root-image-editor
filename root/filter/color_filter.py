@@ -1,6 +1,6 @@
 import imageio
 import numpy as np
-from . import ImageFilter
+from ..util import ImageUtil as util
 from PIL import Image
 from skimage import img_as_ubyte
 
@@ -29,8 +29,8 @@ class ColorFilter():
 
     @staticmethod
     def apply_sepia(img):
-        height, width = ImageFilter.get_image_dimensions(img)
-        obtained, img = ImageFilter.get_empty_image_with_same_dimensions(img)
+        height, width = util.get_image_dimensions(img)
+        obtained, img = util.get_empty_image_with_same_dimensions(img)
         r_matrix, g_matrix, b_matrix = ColorFilter.get_rgb_layers(img)
         for i in range(height):
             for j in range(width):
@@ -95,7 +95,7 @@ class ColorFilter():
     @staticmethod
     def add_background(background, img, coord=(0, 0)):
         img = img_as_ubyte(img)
-        x_size, y_size = ImageFilter.get_image_dimensions(img)
+        x_size, y_size = util.get_image_dimensions(img)
 
         (y_begin, x_begin) = coord
         x_end = x_begin + x_size
