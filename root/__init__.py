@@ -7,13 +7,11 @@ from root.util import RgbUtil as rgb
 
 
 def main():
-    img_rgb = util.read_image("images/aranha_trevosa.jpeg")
+    img_rgb = util.read_image("images/median/Fig0335a.jpg")
     #r, g, b = rgb.get_rgb_layers(img_rgb)
     #img_gray = converter.rgb_to_gray_via_weighted_average(r, g, b)
-    rgbFilter.draw_histogram(img_rgb, "images/results/aranha_hist")
-    obtained = rgbFilter.apply_histogram_equalization(img_rgb)
-    rgbFilter.draw_histogram(obtained, "images/results/obtained_hist")
-    util.save_image("images/negative/output_color.jpg", obtained)
+    obtained = rgbFilter.apply_median(img_rgb, 3)
+    util.save_image("images/median/output_color.jpg", obtained)
 
 
 if __name__ == "__main__":

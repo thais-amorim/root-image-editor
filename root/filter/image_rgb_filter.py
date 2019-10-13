@@ -42,3 +42,11 @@ class RgbFilter():
         g = filter.apply_histogram_equalization(g)
         b = filter.apply_histogram_equalization(b)
         return rgb.merge_rgb_layers(r, g, b)
+
+    @staticmethod
+    def apply_median(img, filter_size):
+        r, g, b = rgb.get_rgb_layers(img)
+        r = filter.apply_median(r, filter_size)
+        g = filter.apply_median(g, filter_size)
+        b = filter.apply_median(b, filter_size)
+        return rgb.merge_rgb_layers(r, g, b)

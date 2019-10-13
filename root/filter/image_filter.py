@@ -79,7 +79,6 @@ class ImageFilter():
 
     @staticmethod
     def get_median(filter_size, i, j, data):
-        filter_size = util.format_filter_size(filter_size)
         mid_position = filter_size // 2
         neighbors = ImageFilter.__get_neighbors_matrix(filter_size, i, j, data)
         neighbors.sort()
@@ -87,6 +86,7 @@ class ImageFilter():
 
     @staticmethod
     def apply_median(img, filter_size):
+        filter_size = util.format_filter_size(filter_size)
         obtained, original = util.get_empty_image_with_same_dimensions(
             img)
         for i in range(len(original)):
