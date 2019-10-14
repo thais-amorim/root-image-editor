@@ -83,8 +83,10 @@ class MainWindow(Window):
 
         #colormode
         rgbAction = QAction("&RGB",self)
+        rgbAction.triggered.connect(self.rgb_to_gray)
         grayScaleAction = QAction("&Escala de Cinza",self)
         hsvAction = QAction("&HSV",self)
+        hsvAction.triggered.connect(self.rgb_to_hsv)
 
         colorModeMenu.addAction(rgbAction)
         colorModeMenu.addAction(grayScaleAction)
@@ -118,6 +120,8 @@ class MainWindow(Window):
         meanFilterAction.triggered.connect(self.mean_filtering)
         gaussianFilterAction = QAction("&Suavização Gaussiana", self)   
         sharpFilterAction = QAction("&Aguçamento",self)
+        sepiaFilterAction = QAction("&Sepia",self)
+        sepiaFilterAction.triggered.connect(self.sepia_filter)
        
         geometricFilterAction = QAction("&Média Geométrica", self)
         geometricFilterAction.triggered.connect(self.geometric_filtering)
@@ -137,6 +141,7 @@ class MainWindow(Window):
         filtersMenu.addAction(gradientFilterAction)
         filtersMenu.addAction(laplaceFilterAction)
         filtersMenu.addAction (geometricFilterAction)
+        filtersMenu.addAction(sepiaFilterAction)
         ##add filters/sharp   
         sharpFilterMenu = filtersMenu.addMenu("Aguçamento")
         sharpFilterMenu.addAction(gaussianFilterAction)
@@ -229,24 +234,10 @@ class MainWindow(Window):
         self.loadImage(self.transformController.apply_equalized_histogram())
 
     def generic_convolution(self):
-        dialog = MatrixDialog()
-        if dialog.exec():
-            print(dialog.getInputs())
-            gamma = dialog.getInputs()
-        print("TEXT")
-        print(gamma)
-        lines = gamma.split("\n")
-        table = []
-        i = 0
-        for l in lines:
-            table.append([])
-            table[i] = l.split(' ')
-            i = i+1
-        table = np.array(table)
-        table = np.float_(table)
-        print(table)
-        # print(type(table.dtype))
-        self.loadImage(self.transformController.apply_convolution(table))
+        try:
+            self.loadImage(self.transformController.apply_convolution(self.getMatrixInput()))
+        except:
+            print("Ocorreu um erro")
 
     def sobel_filtering(self):
         self.loadImage(self.transformController.apply_sobel())
@@ -256,8 +247,6 @@ class MainWindow(Window):
         if dialog.exec():
             print(dialog.getInputs())
             gamma = dialog.getInputs()
-        print("TEXT")
-        print(gamma)
         lines = gamma.split("\n")
         table = []
         i = 0
@@ -265,12 +254,18 @@ class MainWindow(Window):
             table.append([])
             table[i] = l.split(' ')
             i = i+1
-        table = np.array(table)
-        table = np.float_(table)
-        print(table)
-        return table
+        try:
+            table = np.array(table)
+            table = np.float_(table)
+            return table
+        except:
+            return None
+     
     def gradient_filtering(self):
-        self.loadImage(self.transformController.apply_gradient(self.getMatrixInput()))
+        try:
+            self.loadImage(self.transformController.apply_gradient(self.getMatrixInput()))
+        except:
+            print("Ocorreu um erro")
     
     def mean_filtering(self):
         size, ok = QInputDialog.getText(self, 'Filtro por Média Aritimética', 
@@ -308,26 +303,16 @@ class MainWindow(Window):
             if ok:
                 self.loadImage(self.transformController.apply_highboost(int(size),int(c)))
 
-    def undoLastAction(self):
-        self.loadImage(self.transformController.undoAction())
 
-    def redoLastAction(self):
-        self.loadImage(self.transformController.redoAction())
-
-    def fileOpen(self):
-        name,_ = QtWidgets.QFileDialog.getOpenFileName(self,"Open File")
-        self.setWindowTitle(name)
-        self.transformController.loadImage(name)
-        self.openImage(self.transformController.getCurrentImage())
-
-    def openImage(self,name):
-        self.imageView.loadImage(name)
-        self.side_bar.loadImage(name)
-        
-    def loadImage(self,name):
-        self.imageView.loadImage(name)
         # self.side_bar.loadImage(name)
+    def rgb_to_gray(self):
+        self.loadImage(self.transformController.rgb_to_gray())
+    
+    def rgb_to_hsv(self):
+        self.loadImage(self.transformController.rgb_to_hsv())
 
+    def sepia_filter(self):
+        self.loadImage(self.transformController.apply_sepia())
 
 class MatrixDialog(QDialog):
     def __init__(self, parent=None):

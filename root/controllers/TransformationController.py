@@ -32,7 +32,9 @@ class TransformationController():
 
     def loadImage(self,image):
         img = filter.read_image(image)
-        self.original_image = converter.rgb_to_gray(img)
+        self.original_image = img
+        if len(img.shape) == 2:
+            self.original_image = converter.rgb_to_gray(self.original_image)
         self.current_image = self.original_image
         self.undo_image = self.original_image
         self.redo_image = self.original_image
@@ -102,6 +104,32 @@ class TransformationController():
         image = filter.apply_contra_harmonic_mean(self.current_image,c,filter_size)
         self.update_memory_images(image)
         return self.current_image
+
+    def rgb_to_gray(self):
+        if len(self.current_image.shape) == 3:
+            image = converter.rgb_to_gray(self.original_image)
+            self.update_memory_images(image)
+        return self.current_image
+
+    def rgb_to_hsv(self):
+        if len(self.current_image.shape) == 3:
+            r,g,b = color.get_rgb_layers(self.original_image)
+            image = converter.rgb_to_hsv(r,g,b)
+            self.update_memory_images(image)
+        return self.current_image
+    
+    def apply_sepia(self):
+        if len(self.current_image.shape) == 3:
+            image =  color.apply_sepia(self.current_image)
+            self.update_memory_images(image)
+            return self.current_image
+
+
+    # def rgb_to_hsv(self):
+    #     if len(self.current_image.shape) == 3:
+    #         image = converter.rgb_to_hsv(self.original_image)
+    #         self.update_memory_images(image)
+    #     return self.current_image
 
     def apply_piecewise_linear(self,img_name, img, coordinates_x, coordinates_y):
         #TODO

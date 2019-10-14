@@ -51,6 +51,25 @@ class Window(QMainWindow):
         print("Desligando....")
         sys.exit()
 
+    def undoLastAction(self):
+        self.loadImage(self.transformController.undoAction())
+
+    def redoLastAction(self):
+        self.loadImage(self.transformController.redoAction())
+
+    def fileOpen(self):
+        name,_ = QtWidgets.QFileDialog.getOpenFileName(self,"Open File")
+        self.setWindowTitle(name)
+        self.transformController.loadImage(name)
+        self.openImage(self.transformController.getCurrentImage())
+
+    def openImage(self,name):
+        self.imageView.loadImage(name)
+        self.side_bar.loadImage(name)
+        
+    def loadImage(self,name):
+        self.imageView.loadImage(name)
+
 class Const():
     DEFAULT_IMAGE = "images/einstein.jpg"
     WINDOW_TITLE = "PytoShop"
