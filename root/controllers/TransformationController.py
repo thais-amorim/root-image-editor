@@ -88,6 +88,20 @@ class TransformationController():
         self.update_memory_images(image)
         return self.current_image
 
+    def apply_harmonic_mean(self, filter_size):
+        image = filter.apply_harmonic_mean(self.current_image,filter_size)
+        self.update_memory_images(image)
+        return self.current_image
+
+    def apply_contra_harmonic_mean(self, filter_size,q):
+        image = filter.apply_contra_harmonic_mean(self.current_image,filter_size,q)
+        self.update_memory_images(image)
+        return self.current_image
+
+    def apply_highboost(self, filter_size,c):
+        image = filter.apply_contra_harmonic_mean(self.current_image,c,filter_size)
+        self.update_memory_images(image)
+        return self.current_image
 
     def apply_piecewise_linear(self,img_name, img, coordinates_x, coordinates_y):
         #TODO

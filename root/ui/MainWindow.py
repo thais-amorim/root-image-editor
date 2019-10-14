@@ -125,6 +125,7 @@ class MainWindow(Window):
         #filters/sharp
         laplaceFilterAction = QAction("&Laplaciano", self)
         highBoostFilterAction = QAction("&HighBoost", self)
+        highBoostFilterAction.triggered.connect(self.hi_boost_filtering)
         ##add filters
         filtersMenu.addAction(genericConvolutionFilterAction)
         filtersMenu.addAction(medianFilterAction)
@@ -146,7 +147,9 @@ class MainWindow(Window):
         radialFilterAction = QAction("&Filtros Radiais(Passa alta, baixa ou faixa)", self)
         
         harmonicFilterAction = QAction("&Média Harmônica", self)
+        harmonicFilterAction.triggered.connect(self.harmonic_filtering)
         counterharmonicFilterAction = QAction("&Média Contra-harmônica", self)
+        counterharmonicFilterAction.triggered.connect(self.contra_harmonic_filtering)
 
         frequenceFiltersMenu.addAction (spectrumFilterAction)
         frequenceFiltersMenu.addSeparator()
@@ -280,6 +283,30 @@ class MainWindow(Window):
             'Entre com o tamanho do filtro: (deve ser maior que 0)')
         if ok:
             self.loadImage(self.transformController.apply_geometric_mean(int(size)))
+
+    def harmonic_filtering(self):
+        size, ok = QInputDialog.getText(self, 'Filtro por Média Harmônica', 
+            'Entre com o tamanho do filtro: (deve ser maior que 0)')
+        if ok:
+            self.loadImage(self.transformController.apply_harmonic_mean(int(size)))
+
+    def contra_harmonic_filtering(self):
+        size, ok = QInputDialog.getText(self, 'Filtro por Média Contra Harmônica', 
+            'Entre com o tamanho do filtro: (deve ser maior que 0)')
+        if ok:
+            q, ok = QInputDialog.getText(self, 'Filtro por Média Harmônica', 
+            'Entre com o valor de q')
+            if ok:
+                self.loadImage(self.transformController.apply_contra_harmonic_mean(int(size),int(q)))
+    
+    def hi_boost_filtering(self):
+        size, ok = QInputDialog.getText(self, 'Filtro por Hi Boost', 
+            'Entre com o tamanho do filtro: (deve ser maior que 0)')
+        if ok:
+            c, ok = QInputDialog.getText(self, 'Filtro por Média Harmônica', 
+            'Entre com o valor de c')
+            if ok:
+                self.loadImage(self.transformController.apply_highboost(int(size),int(c)))
 
     def undoLastAction(self):
         self.loadImage(self.transformController.undoAction())
