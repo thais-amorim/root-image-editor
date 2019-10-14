@@ -76,3 +76,8 @@ class TransformationController():
         image = filter.apply_convolution(self.current_image,filter_matrix)
         self.update_memory_images(image)
         return self.current_image
+
+    def apply_sobel(self):
+        image = filter.apply_sobel(self.current_image)
+        self.update_memory_images(image)
+        return self.current_image

@@ -107,6 +107,7 @@ class MainWindow(Window):
 
         #filters
         sobelFilterAction = QAction("&Sobel", self)
+        sobelFilterAction.triggered.connect(self.sobel_filtering)
         genericConvolutionFilterAction = QAction("&Genérico por Convolução", self)
         genericConvolutionFilterAction.triggered.connect(self.generic_convolution)
         medianFilterAction = QAction("&Filtragem por Mediana", self)
@@ -239,6 +240,9 @@ class MainWindow(Window):
         print(table)
         # print(type(table.dtype))
         self.loadImage(self.transformController.apply_convolution(table))
+
+    def sobel_filtering(self):
+        self.loadImage(self.transformController.apply_sobel())
 
     def undoLastAction(self):
         self.loadImage(self.transformController.undoAction())
