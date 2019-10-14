@@ -4,8 +4,7 @@ import numpy as np
 
 class ScaleConverter():
     @staticmethod
-    def get_nearest_neighbour_pixel_interpolation(img, oriCol, oriRow):
-        '''TODO finish core algorithm'''
+    def get_nearest_neighbour_pixel_interpolation(img, posX, posY):
         out = []
 
         # Get integer parts of positions
@@ -20,28 +19,31 @@ class ScaleConverter():
         modYiPlusOneLim = min(modYi + 1, height - 1)
 
         for channel in range(img.shape[2]):
-            new_channel = modYf * obtained_top + (1. - modYf) * obtained_bottom
-            out.append(int(new_channel + 0.5))
-        return d
+            target = img[modYi, modXi, channel]
+            out.append(int(target + 0.5))
+        return out
 
     @staticmethod
     def apply_nearest_neighbour(img, scale):
         if scale <= 0:
             return img
-        else:
-            imHeight, imWidth = util.get_dimensions(img)
-            enlargedShape = list(
-                map(int, [imHeight * scale, imWidth * scale, img.shape[2]]))
-            enlargedImg = np.empty(enlargedShape, dtype=np.uint8)
-            enlargedHeight, enlargedWidth = util.get_dimensions(enlargedImg)
-            for row in range(enlargedHeight):
-                for col in range(enlargedWidth):
-                    oriRow = row * rowScale  # Find position in original image
-                    oriCol = col * colScale
-                    enlargedImg[row, col] = ScaleConverter.get_nearest_neighbour_pixel_interpolation(
-                        img, oriCol, oriRow)
 
-            return enlargedImg
+        imHeight, imWidth = util.get_dimensions(img)
+        enlargedShape = list(
+            map(int, [imHeight * scale, imWidth * scale, img.shape[2]]))
+        enlargedImg = np.empty(enlargedShape, dtype=np.uint8)
+        enlargedHeight, enlargedWidth = util.get_dimensions(enlargedImg)
+        rowScale = float(imHeight) / float(enlargedHeight)
+        colScale = float(imWidth) / float(enlargedWidth)
+        for row in range(enlargedHeight):
+            for col in range(enlargedWidth):
+                # Find position in original image
+                oriRow = row * rowScale
+                oriCol = col * colScale
+                enlargedImg[row, col] = ScaleConverter.get_nearest_neighbour_pixel_interpolation(
+                    img, oriCol, oriRow)
+
+        return enlargedImg
 
     @staticmethod
     def get_bilinear_pixel_interpolation(img, posX, posY):
@@ -77,20 +79,19 @@ class ScaleConverter():
     def apply_bilinear_interpolation(img, scale):
         if scale <= 0:
             return img
-        else:
-            imHeight, imWidth = util.get_dimensions(img)
-            enlargedShape = list(
-                map(int, [imHeight * scale, imWidth * scale, img.shape[2]]))
-            enlargedImg = np.empty(enlargedShape, dtype=np.uint8)
-            enlargedHeight, enlargedWidth = util.get_dimensions(enlargedImg)
-            rowScale = float(imHeight) / float(enlargedHeight)
-            colScale = float(imWidth) / float(enlargedWidth)
 
-            for row in range(enlargedHeight):
-                for col in range(enlargedWidth):
-                    oriRow = row * rowScale  # Find position in original image
-                    oriCol = col * colScale
-                    enlargedImg[row, col] = ScaleConverter.get_bilinear_pixel_interpolation(
-                        img, oriCol, oriRow)
+        imHeight, imWidth = util.get_dimensions(img)
+        enlargedShape = list(
+            map(int, [imHeight * scale, imWidth * scale, img.shape[2]]))
+        enlargedImg = np.empty(enlargedShape, dtype=np.uint8)
+        enlargedHeight, enlargedWidth = util.get_dimensions(enlargedImg)
+        rowScale = float(imHeight) / float(enlargedHeight)
+        colScale = float(imWidth) / float(enlargedWidth)
+        for row in range(enlargedHeight):
+            for col in range(enlargedWidth):
+                oriRow = row * rowScale  # Find position in original image
+                oriCol = col * colScale
+                enlargedImg[row, col] = ScaleConverter.get_bilinear_pixel_interpolation(
+                    img, oriCol, oriRow)
 
-            return enlargedImg
+        return enlargedImg
