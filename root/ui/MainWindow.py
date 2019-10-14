@@ -6,6 +6,7 @@ from PyQt5. QtGui import *
 from SideBar import SideBar
 from ImageView import ImageView
 import sys
+import numpy as np
 # sys.path.append('../controllers')
 
 
@@ -80,8 +81,6 @@ class MainWindow(Window):
         
 
 
-
-
         #colormode
         rgbAction = QAction("&RGB",self)
         grayScaleAction = QAction("&Escala de Cinza",self)
@@ -109,6 +108,7 @@ class MainWindow(Window):
         #filters
         sobelFilterAction = QAction("&Sobel", self)
         genericConvolutionFilterAction = QAction("&Genérico por Convolução", self)
+        genericConvolutionFilterAction.triggered.connect(self.generic_convolution)
         medianFilterAction = QAction("&Filtragem por Mediana", self)
         medianFilterAction.triggered.connect(self.median_filter)
         meanFilterAction = QAction("&Suaviazação por Média", self)
@@ -151,7 +151,16 @@ class MainWindow(Window):
         frequenceFiltersMenu.addAction (harmonicFilterAction)
         frequenceFiltersMenu.addAction (counterharmonicFilterAction)
 
+    
+        #histogram Menu
+        equalizationAction = QAction("&Equalização por Histograma", self)
+        equalizationAction.triggered.connect(self.histEqualize)
 
+        showHistogramAction = QAction("&Ver Histograma", self)
+
+
+        histogramMenu.addAction(equalizationAction)
+        histogramMenu.addAction(showHistogramAction)
 
 
     def initToolBar(self):
@@ -203,7 +212,33 @@ class MainWindow(Window):
            self.loadImage(self.transformController.gammaTransform(float(gamma)))
     
     def median_filter(self):
-        self.loadImage(self.transformController.apply_median(3))
+        size, ok = QInputDialog.getText(self, 'Filtragem por Median', 
+            'Entre com o tamanho do filtro: (deve ser maior que 0)')
+        if ok:
+            self.loadImage(self.transformController.apply_median(int(size)))
+
+    def histEqualize(self):
+        self.loadImage(self.transformController.apply_equalized_histogram())
+
+    def generic_convolution(self):
+        dialog = MatrixDialog()
+        if dialog.exec():
+            print(dialog.getInputs())
+            gamma = dialog.getInputs()
+        print("TEXT")
+        print(gamma)
+        lines = gamma.split("\n")
+        table = []
+        i = 0
+        for l in lines:
+            table.append([])
+            table[i] = l.split(' ')
+            i = i+1
+        table = np.array(table)
+        table = np.float_(table)
+        print(table)
+        # print(type(table.dtype))
+        self.loadImage(self.transformController.apply_convolution(table))
 
     def undoLastAction(self):
         self.loadImage(self.transformController.undoAction())
@@ -226,4 +261,21 @@ class MainWindow(Window):
         # self.side_bar.loadImage(name)
 
 
+class MatrixDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
 
+        self.matrix = QPlainTextEdit(self)
+        # self.second = QLineEdit(self)
+        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
+
+        layout = QFormLayout(self)
+        layout.addRow("Escreva a matriz", self.matrix)
+        # layout.addRow("Second text", self.second)
+        layout.addWidget(buttonBox)
+
+        buttonBox.accepted.connect(self.accept)
+        buttonBox.rejected.connect(self.reject)
+
+    def getInputs(self):
+        return (self.matrix.toPlainText())

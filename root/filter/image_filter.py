@@ -35,9 +35,9 @@ class ImageFilter():
     @staticmethod
     def apply_logarithmic(img):
         max_obtained = np.max(img)
-        c = (_MAX_PIXEL / np.log(1 + max_obtained))
-        log_img = c * np.log(1 + img)
-        return log_img.astype('uint8')
+        c = (_MAX_PIXEL/np.log(1+_MAX_PIXEL))
+        log_img = c * np.log(img.astype(np.double)+1)
+        return log_img.astype(np.uint8)
 
     @staticmethod
     def apply_gamma_correction(img, gamma):
