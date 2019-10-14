@@ -80,11 +80,22 @@ class ImageFilter():
     @staticmethod
     def get_empty_image_with_same_dimensions(img):
         height, width = ImageFilter.get_dimensions(img)
-        empty_image = np.zeros((height, width), np.uint8)
+        # empty_image = np.zeros((height, width), np.uint8)
+        empty_image = np.zeros(np.shape(img))
         return empty_image, img
 
     @staticmethod
     def get_dimensions(img):
+        data = np.array(img)
+        height = data.shape[0]
+        try:
+            width = data.shape[1]
+        except:
+            width = 1
+        return height, width
+
+    @staticmethod
+    def get_image_dimensions(img):
         data = np.array(img)
         height = data.shape[0]
         try:
