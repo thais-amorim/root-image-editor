@@ -110,10 +110,14 @@ class MainWindow(Window):
         sobelFilterAction = QAction("&Sobel", self)
         genericConvolutionFilterAction = QAction("&Genérico por Convolução", self)
         medianFilterAction = QAction("&Filtragem por Mediana", self)
+        medianFilterAction.triggered.connect(self.median_filter)
         meanFilterAction = QAction("&Suaviazação por Média", self)
         gaussianFilterAction = QAction("&Suavização Gaussiana", self)   
         sharpFilterAction = QAction("&Aguçamento",self)
        
+        
+
+
         #filters/sharp
         laplaceFilterAction = QAction("&Laplaciano", self)
         highBoostFilterAction = QAction("&HighBoost", self)
@@ -156,18 +160,20 @@ class MainWindow(Window):
         saveAction = QAction(QtGui.QIcon('assets/icons/save.png'),"Salvar Ctrl+S", self)
         saveAllAction = QAction(QtGui.QIcon('assets/icons/save-as.png'),"Salvar Como Ctrl+Shift+S", self)
         undoAction = QAction(QtGui.QIcon('assets/icons/undo.png'),"Desfazer Ctrl+Z", self)
+        redoAction = QAction(QtGui.QIcon('assets/icons/redo.png'),"Desfazer Ctrl+R", self)
         brushAction = QAction(QtGui.QIcon('assets/icons/brush.png'),"Pincel", self)
 
         openAction.setShortcut("Ctrl+O")
         saveAction.setShortcut("Ctrl+S")
         saveAllAction.setShortcut("Ctrl+Shift+S")
         undoAction.setShortcut(QtGui.QKeySequence("Ctrl+Z"))
+        redoAction.setShortcut(QtGui.QKeySequence("Ctrl+Y"))
 
         openAction.triggered.connect(self.fileOpen)
         # saveAction.triggered.connect(self.closeApplication)
         # saveAllAction.triggered.connect(self.closeApplication)
         undoAction.triggered.connect(self.undoLastAction)
-        
+        redoAction.triggered.connect(self.redoLastAction)
 
 
         self.toolbar = self.addToolBar("Extraction")
@@ -176,6 +182,7 @@ class MainWindow(Window):
         self.toolbar.addAction(saveAction)
         self.toolbar.addAction(saveAllAction)
         self.toolbar.addAction(undoAction)  
+        self.toolbar.addAction(redoAction) 
         self.toolbar.addSeparator()
         self.toolbar.addSeparator()     
         self.toolbar.addAction(brushAction)       
@@ -194,10 +201,15 @@ class MainWindow(Window):
         
         if ok:
            self.loadImage(self.transformController.gammaTransform(float(gamma)))
+    
+    def median_filter(self):
+        self.loadImage(self.transformController.apply_median(3))
 
     def undoLastAction(self):
         self.loadImage(self.transformController.undoAction())
 
+    def redoLastAction(self):
+        self.loadImage(self.transformController.redoAction())
 
     def fileOpen(self):
         name,_ = QtWidgets.QFileDialog.getOpenFileName(self,"Open File")

@@ -11,8 +11,13 @@ class TransformationController():
 
     def __init__(self):
         super().__init__()
-        self.original_image = self.current_image = self.undo_image = None
+        self.original_image = self.current_image = self.undo_image  = self.redo_image = None
     
+    def update_memory_images(self,image):
+        self.undo_image = self.current_image
+        self.current_image  = image
+        self.redo_image = self.current_image
+
     def getCurrentImage(self):
         return self.current_image
 
@@ -20,34 +25,41 @@ class TransformationController():
         self.current_image = self.undo_image
         return self.current_image
 
+    def redoAction(self):
+        self.current_image = self.redo_image
+        return self.current_image
+
+
     def loadImage(self,image):
         img = filter.read_image(image)
         self.original_image = converter.rgb_to_gray(img)
         self.current_image = self.original_image
         self.undo_image = self.original_image
+        self.redo_image = self.original_image
         return self.current_image
 
     def negativeTransform(self):
-        self.undo_image = self.current_image
-        self.current_image  = (filter.apply_negative(self.current_image)).astype(np.uint8)
+        image  = (filter.apply_negative(self.current_image)).astype(np.uint8)
+        self.update_memory_images(image)
         return self.current_image
 
     def logarithmicTransform(self):
-        self.undo_image = self.current_image
-        self.current_image  = filter.apply_logarithmic(self.current_image)
+        image  = filter.apply_logarithmic(self.current_image)
+        self.update_memory_images(image)
         return self.current_image
 
     def gammaTransform(self,gamma):
-        self.undo_image = self.current_image
-        self.current_image  = filter.apply_gamma_correction(self.current_image, gamma)
+        image  = filter.apply_gamma_correction(self.current_image, gamma)
+        self.update_memory_images(image)
         return self.current_image
 
     def apply_equalized_histogram(self,img_name, img):
         #TODO
         return None
-    def apply_median(self,img, filter_size, img_name):
-        #TODO
-        return None
+    def apply_median(self,filter_size):
+        image = filter.apply_median(self.current_image, filter_size)
+        self.update_memory_images(image)
+        return self.current_image
 
     def apply_piecewise_linear(self,img_name, img, coordinates_x, coordinates_y):
         #TODO
