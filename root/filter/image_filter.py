@@ -40,8 +40,10 @@ class ImageFilter():
         return log_img.astype('uint8')
 
     @staticmethod
-    def apply_gamma_correction(img_name, img, gamma):
-        return ((img / _MAX_PIXEL) ** (1 / gamma))
+    def apply_gamma_correction(img, gamma):
+        c = _MAX_PIXEL / (1+ _MAX_PIXEL)**gamma
+        gamma_correction = c * (img**gamma)
+        return gamma_correction
 
     @staticmethod
     def draw_histogram(img_name, img):
