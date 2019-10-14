@@ -12,7 +12,19 @@ _MAX_PIXEL = 255
 class ImageFilter():
 
     @staticmethod
-    def read_image(image_path, type="RGB"):
+    def isGrayScale(img):
+        if len(img.shape) == 2:
+            return True
+        return False
+
+    @staticmethod
+    def isRGB(img):
+        if len(img.shape) == 3:
+            return True
+        return False
+
+    @staticmethod
+    def read_image(image_path, type="RGBA"):
         return imageio.imread(image_path, as_gray=False, pilmode=type)
 
     @staticmethod
@@ -30,7 +42,14 @@ class ImageFilter():
 
     @staticmethod
     def apply_negative(img):
-        return _MAX_PIXEL - img
+        if len(img.shape) == 2:
+            return _MAX_PIXEL - img
+        else:
+            i = img.copy()
+            i[:,:,0] = _MAX_PIXEL - img[:,:,0]
+            i[:,:,1]= _MAX_PIXEL - img[:,:,1]
+            i[:,:,2] = _MAX_PIXEL - img[:,:,2]
+            return i
 
     @staticmethod
     def apply_logarithmic(img):
@@ -172,14 +191,23 @@ class ImageFilter():
         obtained, original = ImageFilter.get_empty_image_with_same_dimensions(
             img)
         height, width = ImageFilter.get_dimensions(img)
-
-        for row in range(1, height - 1):
-            for col in range(1, width - 1):
-                value = filter_matrix * \
-                    img[(row - 1):(row + 2), (col - 1):(col + 2)]
-                max_obtained_value = max(0, value.sum())
-                obtained[row, col] = min(max_obtained_value, _MAX_PIXEL)
-
+        #Se for grayscale
+        if len(img.shape) == 2:
+            for row in range(1, height - 1):
+                for col in range(1, width - 1):
+                    value = filter_matrix * \
+                        img[(row - 1):(row + 2), (col - 1):(col + 2)]
+                    max_obtained_value = max(0, value.sum())
+                    obtained[row, col] = min(max_obtained_value, _MAX_PIXEL)
+        else:
+            channel = img.shape[2]
+            for c in range (channel):
+                for row in range(1, height - 1):
+                    for col in range(1, width - 1):
+                        value = filter_matrix * \
+                            img[(row - 1):(row + 2), (col - 1):(col + 2),c]
+                        max_obtained_value = max(0, value.sum())
+                        obtained[row, col,c] = min(max_obtained_value, _MAX_PIXEL)           
         return obtained
 
     @staticmethod

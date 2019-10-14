@@ -29,15 +29,14 @@ class TransformationController():
         self.current_image = self.redo_image
         return self.current_image
 
+    def openImage(self,image):
+        img = filter.read_image(image)
+        if len(img.shape) == 2:
+            img = converter.rgb_to_gray(self.original_image)
+        return img
 
     def loadImage(self,image):
-        img = filter.read_image(image)
-        self.original_image = img
-        if len(img.shape) == 2:
-            self.original_image = converter.rgb_to_gray(self.original_image)
-        self.current_image = self.original_image
-        self.undo_image = self.original_image
-        self.redo_image = self.original_image
+        self.update_memory_images(self.openImage(image))
         return self.current_image
 
     def negativeTransform(self):
@@ -106,8 +105,13 @@ class TransformationController():
         return self.current_image
 
     def rgb_to_gray(self):
-        if len(self.current_image.shape) == 3:
-            image = converter.rgb_to_gray(self.original_image)
+        print("RGBA:")
+        print(self.current_image.shape)
+        if self.current_image.shape[2] == 4:
+            print("Shape é RGBA")
+            img =self.current_image[:,:,:3]
+            print(img.shape)
+            image = converter.rgb_to_gray(img)
             self.update_memory_images(image)
         return self.current_image
 
@@ -124,6 +128,12 @@ class TransformationController():
             self.update_memory_images(image)
             return self.current_image
 
+
+    def apply_chroma_key(self,background, coord=(0, 0)):
+        if len(self.current_image.shape) == 3:
+            image =  color.apply_chroma_key(background, self.current_image, coord=(0, 0))
+            self.update_memory_images(image)
+            return self.current_image
 
     # def rgb_to_hsv(self):
     #     if len(self.current_image.shape) == 3:

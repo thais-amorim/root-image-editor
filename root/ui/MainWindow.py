@@ -79,17 +79,22 @@ class MainWindow(Window):
         chromaKeyMenu = imageMenu.addMenu("Chroma Key")
         
         
+        #chroma key menu
+        chromaKeyAction = QAction("&Aplicar Chroma",self)
+        chromaKeyAction.triggered.connect(self.chroma_key)
 
+        chromaKeyMenu.addAction(chromaKeyAction)
 
         #colormode
         rgbAction = QAction("&RGB",self)
-        rgbAction.triggered.connect(self.rgb_to_gray)
+        
         grayScaleAction = QAction("&Escala de Cinza",self)
+        grayScaleAction.triggered.connect(self.rgb_to_gray)
         hsvAction = QAction("&HSV",self)
         hsvAction.triggered.connect(self.rgb_to_hsv)
 
-        colorModeMenu.addAction(rgbAction)
         colorModeMenu.addAction(grayScaleAction)
+        colorModeMenu.addAction(rgbAction)
         colorModeMenu.addAction(hsvAction)
 
 
@@ -313,6 +318,14 @@ class MainWindow(Window):
 
     def sepia_filter(self):
         self.loadImage(self.transformController.apply_sepia())
+
+    def chroma_key(self):
+        # try:
+            name,_ = QtWidgets.QFileDialog.getOpenFileName(self,"Escolha o fundo da chroma key")
+            background = self.transformController.openImage(name)
+            self.loadImage(self.transformController.apply_chroma_key(background))
+        # except:
+        #     print("Ocorreu um erro")
 
 class MatrixDialog(QDialog):
     def __init__(self, parent=None):
