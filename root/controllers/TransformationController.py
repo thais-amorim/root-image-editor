@@ -83,6 +83,12 @@ class TransformationController():
         self.update_memory_images(image)
         return self.current_image
 
+    def apply_geometric_mean(self, filter_size=3):
+        image = filter.apply_geometric_mean(self.current_image,filter_size)
+        self.update_memory_images(image)
+        return self.current_image
+
+
     def apply_piecewise_linear(self,img_name, img, coordinates_x, coordinates_y):
         #TODO
         return None

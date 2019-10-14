@@ -119,8 +119,8 @@ class MainWindow(Window):
         gaussianFilterAction = QAction("&Suavização Gaussiana", self)   
         sharpFilterAction = QAction("&Aguçamento",self)
        
-        
-
+        geometricFilterAction = QAction("&Média Geométrica", self)
+        geometricFilterAction.triggered.connect(self.geometric_filtering)
 
         #filters/sharp
         laplaceFilterAction = QAction("&Laplaciano", self)
@@ -135,7 +135,7 @@ class MainWindow(Window):
         filtersMenu.addAction(sobelFilterAction)
         filtersMenu.addAction(gradientFilterAction)
         filtersMenu.addAction(laplaceFilterAction)
-        
+        filtersMenu.addAction (geometricFilterAction)
         ##add filters/sharp   
         sharpFilterMenu = filtersMenu.addMenu("Aguçamento")
         sharpFilterMenu.addAction(gaussianFilterAction)
@@ -144,7 +144,7 @@ class MainWindow(Window):
         #filtros na frequência
         spectrumFilterAction = QAction("&Espectro da Transformada de Fourier", self)
         radialFilterAction = QAction("&Filtros Radiais(Passa alta, baixa ou faixa)", self)
-        geometricFilterAction = QAction("&Média Geométrica", self)
+        
         harmonicFilterAction = QAction("&Média Harmônica", self)
         counterharmonicFilterAction = QAction("&Média Contra-harmônica", self)
 
@@ -152,7 +152,7 @@ class MainWindow(Window):
         frequenceFiltersMenu.addSeparator()
         frequenceFiltersMenu.addAction (radialFilterAction)
         frequenceFiltersMenu.addSeparator()
-        frequenceFiltersMenu.addAction (geometricFilterAction)
+        
         frequenceFiltersMenu.addAction (harmonicFilterAction)
         frequenceFiltersMenu.addAction (counterharmonicFilterAction)
 
@@ -270,8 +270,17 @@ class MainWindow(Window):
         self.loadImage(self.transformController.apply_gradient(self.getMatrixInput()))
     
     def mean_filtering(self):
-        self.loadImage(self.transformController.apply_arithmetic_mean())
+        size, ok = QInputDialog.getText(self, 'Filtro por Média Aritimética', 
+            'Entre com o tamanho do filtro: (deve ser maior que 0)')
+        if ok:
+            self.loadImage(self.transformController.apply_arithmetic_mean(int(size)))
     
+    def geometric_filtering(self):
+        size, ok = QInputDialog.getText(self, 'Filtro por Média Geométrica', 
+            'Entre com o tamanho do filtro: (deve ser maior que 0)')
+        if ok:
+            self.loadImage(self.transformController.apply_geometric_mean(int(size)))
+
     def undoLastAction(self):
         self.loadImage(self.transformController.undoAction())
 
