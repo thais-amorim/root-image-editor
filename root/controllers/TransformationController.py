@@ -63,16 +63,8 @@ class TransformationController():
         self.update_memory_images(image)
         return self.current_image
 
-    def apply_piecewise_linear(self,img_name, img, coordinates_x, coordinates_y):
-        #TODO
-        return None
+
     def apply_convolution(self, filter_matrix):
-        
-        # import numpy as np
-        # filter_matrix = np.array([[0,0.2,0], [0.2,0.2,0.2], [0,0.2,0]])
-        # print('array dtype')
-        # print(type(filter_matrix.dtype))
-        # print(filter_matrix)
         image = filter.apply_convolution(self.current_image,filter_matrix)
         self.update_memory_images(image)
         return self.current_image
@@ -81,3 +73,18 @@ class TransformationController():
         image = filter.apply_sobel(self.current_image)
         self.update_memory_images(image)
         return self.current_image
+
+    def apply_gradient(self, filter_matrix):
+        image = filter.apply_gradient(self.current_image, filter_matrix)
+        self.update_memory_images(image)
+        return self.current_image
+    def apply_arithmetic_mean(self, filter_size=3):
+        image = filter.apply_arithmetic_mean(self.current_image,filter_size)
+        self.update_memory_images(image)
+        return self.current_image
+
+    def apply_piecewise_linear(self,img_name, img, coordinates_x, coordinates_y):
+        #TODO
+        return None
+
+  

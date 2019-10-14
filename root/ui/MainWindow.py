@@ -108,11 +108,14 @@ class MainWindow(Window):
         #filters
         sobelFilterAction = QAction("&Sobel", self)
         sobelFilterAction.triggered.connect(self.sobel_filtering)
+        gradientFilterAction = QAction("&Gradient Detecção", self)
+        gradientFilterAction.triggered.connect(self.gradient_filtering)
         genericConvolutionFilterAction = QAction("&Genérico por Convolução", self)
         genericConvolutionFilterAction.triggered.connect(self.generic_convolution)
         medianFilterAction = QAction("&Filtragem por Mediana", self)
         medianFilterAction.triggered.connect(self.median_filter)
         meanFilterAction = QAction("&Suaviazação por Média", self)
+        meanFilterAction.triggered.connect(self.mean_filtering)
         gaussianFilterAction = QAction("&Suavização Gaussiana", self)   
         sharpFilterAction = QAction("&Aguçamento",self)
        
@@ -130,6 +133,7 @@ class MainWindow(Window):
         filtersMenu.addAction(gaussianFilterAction)
         filtersMenu.addSeparator()
         filtersMenu.addAction(sobelFilterAction)
+        filtersMenu.addAction(gradientFilterAction)
         filtersMenu.addAction(laplaceFilterAction)
         
         ##add filters/sharp   
@@ -244,6 +248,30 @@ class MainWindow(Window):
     def sobel_filtering(self):
         self.loadImage(self.transformController.apply_sobel())
 
+    def getMatrixInput(self):
+        dialog = MatrixDialog()
+        if dialog.exec():
+            print(dialog.getInputs())
+            gamma = dialog.getInputs()
+        print("TEXT")
+        print(gamma)
+        lines = gamma.split("\n")
+        table = []
+        i = 0
+        for l in lines:
+            table.append([])
+            table[i] = l.split(' ')
+            i = i+1
+        table = np.array(table)
+        table = np.float_(table)
+        print(table)
+        return table
+    def gradient_filtering(self):
+        self.loadImage(self.transformController.apply_gradient(self.getMatrixInput()))
+    
+    def mean_filtering(self):
+        self.loadImage(self.transformController.apply_arithmetic_mean())
+    
     def undoLastAction(self):
         self.loadImage(self.transformController.undoAction())
 
