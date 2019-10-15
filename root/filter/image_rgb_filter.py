@@ -90,3 +90,35 @@ class RgbFilter():
         g = filter.apply_sobel(g)
         b = filter.apply_sobel(b)
         return rgb.merge_rgb_layers(r, g, b)
+
+    @staticmethod
+    def apply_arithmetic_mean(img, filter_matrix):
+        r, g, b = rgb.get_rgb_layers(img)
+        r = filter.apply_arithmetic_mean(r, filter_matrix)
+        g = filter.apply_arithmetic_mean(g, filter_matrix)
+        b = filter.apply_arithmetic_mean(b, filter_matrix)
+        return rgb.merge_rgb_layers(r, g, b)
+
+    @staticmethod
+    def apply_geometric_mean(img, filter_matrix):
+        r, g, b = rgb.get_rgb_layers(img)
+        r = filter.apply_geometric_mean(r, filter_matrix)
+        g = filter.apply_geometric_mean(g, filter_matrix)
+        b = filter.apply_geometric_mean(b, filter_matrix)
+        return rgb.merge_rgb_layers(r, g, b)
+
+    @staticmethod
+    def apply_harmonic_mean(img, filter_matrix):
+        r, g, b = rgb.get_rgb_layers(img)
+        r = filter.apply_harmonic_mean(r, filter_matrix)
+        g = filter.apply_harmonic_mean(g, filter_matrix)
+        b = filter.apply_harmonic_mean(b, filter_matrix)
+        return rgb.merge_rgb_layers(r, g, b)
+
+    @staticmethod
+    def apply_contra_harmonic_mean(img, filter_matrix, q):
+        r, g, b = rgb.get_rgb_layers(img)
+        r = filter.apply_contra_harmonic_mean(r, filter_matrix, q)
+        g = filter.apply_contra_harmonic_mean(g, filter_matrix, q)
+        b = filter.apply_contra_harmonic_mean(b, filter_matrix, q)
+        return rgb.merge_rgb_layers(r, g, b)
