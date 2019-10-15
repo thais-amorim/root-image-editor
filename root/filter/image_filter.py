@@ -386,3 +386,22 @@ class ImageFilter():
         mask = image - blurred_image
         result = image + (c * mask)
         return result, mask
+
+   @staticmethod
+    def adjust_brightness (img, br):
+        """
+        0 < br < 1: decrease brightness
+        br = 1: no changes
+        br >: increase brightness
+        """
+        height,width = util.get_dimensions(img)
+        obtained = np.zeros((height, width, 3), np.uint8)
+
+        for i in range(height):
+            for j in range(width):
+                for k in range(img.shape[2]):
+                    b = img[i][j][k] * br
+                    if b > 255:
+                        b = 255
+                    obtained[i][j][k] = b
+        return obtained.astype(np.uint8)
