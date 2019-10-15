@@ -75,11 +75,20 @@ class MainWindow(Window):
         imageMenu.addSeparator()
         histogramMenu = imageMenu.addMenu("Histogram")
         imageMenu.addSeparator()
-        stegranographyMenu = imageMenu.addMenu("Esteganografia")
+        steganographyMenu = imageMenu.addMenu("Esteganografia")
+        imageMenu.addMenu(steganographyMenu)
         imageMenu.addSeparator()
         chromaKeyMenu = imageMenu.addMenu("Chroma Key")
         
         
+        #Esteganografia
+        steganographyAction = QAction("Escrever Mensagem",self)
+        steganographyAction.triggered.connect(self.steganography)
+        steganographyMenu.addAction(steganographyAction)
+
+        steganographyAction = QAction("Ler Mensagem",self)
+        steganographyAction.triggered.connect(self.steganography_read)
+        steganographyMenu.addAction(steganographyAction)
         #chroma key menu
         chromaKeyAction = QAction("&Aplicar Chroma",self)
         chromaKeyAction.triggered.connect(self.chroma_key)
@@ -199,7 +208,7 @@ class MainWindow(Window):
         redoAction.setShortcut(QtGui.QKeySequence("Ctrl+Y"))
 
         openAction.triggered.connect(self.fileOpen)
-        # saveAction.triggered.connect(self.closeApplication)
+        saveAction.triggered.connect(self.saveFile)
         # saveAllAction.triggered.connect(self.closeApplication)
         undoAction.triggered.connect(self.undoLastAction)
         redoAction.triggered.connect(self.redoLastAction)
@@ -359,6 +368,27 @@ class MainWindow(Window):
         # except:
         #     print("Ocorreu um erro")
 
+    def steganography(self):
+        name,_ = QtWidgets.QFileDialog.getOpenFileName(self,"Escolha a imagem para esteganografar")
+        if name:
+            text, ok = QInputDialog.getText(self, 'Filtro por Hi Boost', 
+            'Entre com o tamanho do filtro: (deve ser maior que 0)')
+            if ok and text:
+                image = self.transformController.steganograph_encode(name, text)
+                name2,t = QtWidgets.QFileDialog.getSaveFileName(self, 'Escolha  onde salvar a imagem esteganografada',"","BMP (*.bmp)")
+                if name2:
+                    self.transformController.saveImage(name2,image)
+
+    def steganography_read(self):
+        name,_ = QtWidgets.QFileDialog.getOpenFileName(self,"Escolha a imagem para esteganografar")
+        if name:
+            text = self.transformController.steganograph_decode(name)
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Information)
+            msg.setText("A seguinte mensagem está codificada na imagem: ")
+            msg.setInformativeText(text)
+            msg.setWindowTitle("Esteganografia")
+            msg.exec_()
 class MatrixDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)

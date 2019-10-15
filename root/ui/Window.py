@@ -9,6 +9,8 @@ sys.path.insert(0, sys.path[0]+'\\..\\controllers')
 print(sys.path)
 from TransformationController import TransformationController
 
+_FILE_TYPES = "bmp(*.bmp);;jpg(*.jpg);;png(*.png)"
+
 class Window(QMainWindow):
 
     def __init__(self):
@@ -56,6 +58,14 @@ class Window(QMainWindow):
 
     def redoLastAction(self):
         self.loadImage(self.transformController.redoAction())
+
+    def saveFile(self):
+        
+        name,t = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File',"",_FILE_TYPES)
+        if name:
+            self.transformController.save(name)
+            print("FILENAME")
+            print(name)
 
     def fileOpen(self):
         name,_ = QtWidgets.QFileDialog.getOpenFileName(self,"Open File")

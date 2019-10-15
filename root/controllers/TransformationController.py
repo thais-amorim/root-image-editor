@@ -4,6 +4,7 @@ import numpy as np
 
 from filter import ImageFilter as filter
 from filter import ColorFilter as color
+from filter import SteganographyTool as stegano
 from converter import ColorConverter as converter
 from FourierManager import FourierManager
 
@@ -53,6 +54,13 @@ class TransformationController():
     def loadImage(self,image):
         self.update_memory_images(self.openImage(image))
         return self.current_image
+
+    def saveImage(self, name,image):
+        filter.save_image(name,image)
+    
+    def save(self, name):
+        filter.save_image(name,self.current_image)
+
 
     def negativeTransform(self):
         image  = (filter.apply_negative(self.current_image)).astype(np.uint8)
@@ -183,9 +191,9 @@ class TransformationController():
             return self.current_image
 
 
-    def apply_chroma_key(self,background, coord=(0, 0)):
+    def apply_chroma_key(self,background,faixa =30):
         if len(self.current_image.shape) == 3:
-            image =  color.apply_chroma_key(background, self.current_image, coord=(0, 0))
+            image =  color.apply_chroma_key(background, self.current_image,faixa)
             self.update_memory_images(image)
             return self.current_image
 
@@ -199,4 +207,8 @@ class TransformationController():
         #TODO
         return None
 
-  
+    def steganograph_encode(self, image,text):
+        return stegano.encode(image, text)
+
+    def steganograph_decode(self, image):
+        return stegano.decode(image)

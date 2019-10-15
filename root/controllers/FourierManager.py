@@ -240,6 +240,7 @@ class  FourierManager(ImageManager):
         return [(x * y) for (x, y) in zip(c, exptable)]  # Postprocessing
 
 
+
 f  = FourierManager()
 
 img = f.read_image("./images/DFT_no_log.jpg")
