@@ -1,12 +1,15 @@
 Root Image Editor
 ========
-|master| |MIT license|
+|master| |codecov| |MIT license|
 
 .. |master| image:: https://travis-ci.org/thasmarinho/root-image-editor.svg?branch=master
     :target: https://travis-ci.org/thasmarinho/root-image-editor
 
 .. |MIT license| image:: https://img.shields.io/badge/License-MIT-blue.svg
     :target: https://lbesson.mit-license.org/
+
+.. |codecov| image:: https://codecov.io/gh/thasmarinho/root-image-editor/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/thasmarinho/root-image-editor/
 
 
 First project of the Digital Image Processing course.
