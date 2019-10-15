@@ -58,3 +58,19 @@ class RgbFilter():
         g = filter.apply_piecewise_linear(g, coordinates_x, coordinates_y)
         b = filter.apply_piecewise_linear(b, coordinates_x, coordinates_y)
         return rgb.merge_rgb_layers(r, g, b)
+
+    @staticmethod
+    def apply_convolution(img, filter_matrix):
+        r, g, b = rgb.get_rgb_layers(img)
+        r = filter.apply_convolution(r, filter_matrix)
+        g = filter.apply_convolution(g, filter_matrix)
+        b = filter.apply_convolution(b, filter_matrix)
+        return rgb.merge_rgb_layers(r, g, b)
+
+    @staticmethod
+    def apply_laplacian(img):
+        r, g, b = rgb.get_rgb_layers(img)
+        r, r_sharpened = filter.apply_laplacian(r)
+        g, g_sharpened = filter.apply_laplacian(g)
+        b, b_sharpened = filter.apply_laplacian(b)
+        return rgb.merge_rgb_layers(r, g, b), rgb.merge_rgb_layers(r_sharpened, g_sharpened, b_sharpened)

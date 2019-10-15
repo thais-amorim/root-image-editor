@@ -2,6 +2,9 @@
 import imageio
 import numpy as np
 
+_MIN_PIXEL = 0
+_MAX_PIXEL = 255
+
 
 class ImageUtil():
 
