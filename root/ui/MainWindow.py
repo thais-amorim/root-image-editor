@@ -25,7 +25,7 @@ class MainWindow(Window):
 
         
 
-        print("Iniciando")
+        # print("Iniciando")
 
     def setLayouts(self):
         

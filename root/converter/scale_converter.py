@@ -95,3 +95,37 @@ class ScaleConverter():
                     img, oriCol, oriRow)
 
         return enlargedImg
+
+    
+    #TODO
+    def nnrotate(image, angle):
+    height, width = image.shape[:2]
+    output = np.zeros_like(image, dtype=np.uint8)
+    angle = angle * np.pi / 180
+
+    for x in range(width):
+        for y in range(height):
+            i = int(x+angle)
+            j = int(y+angle)
+            print(i,j)
+            output[x,y] = image[i,j]
+
+    return output
+
+
+    # RGB and Grayscale Image
+    def bilinearRotate(image, angle):
+        width, height = image.shape[:2]
+        output = np.zeros_like(image, dtype=np.uint8)
+        angle = angle * np.pi / 180 
+        center_x = width / 2
+        center_y = height / 2
+
+        for x in range(width):
+            for y in range(height):
+                xp = int((x - center_x) * np.cos(angle) - (y - center_y) * np.sin(angle) + center_x)
+                yp = int((x - center_x) * np.sin(angle) + (y - center_y) * np.cos(angle) + center_y)
+                if 0 <= xp < width and 0 <= yp < height:
+                    output[x, y] = i[xp, yp]
+
+        return output
