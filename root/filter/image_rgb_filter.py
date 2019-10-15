@@ -74,3 +74,19 @@ class RgbFilter():
         g, g_sharpened = filter.apply_laplacian(g)
         b, b_sharpened = filter.apply_laplacian(b)
         return rgb.merge_rgb_layers(r, g, b), rgb.merge_rgb_layers(r_sharpened, g_sharpened, b_sharpened)
+
+    @staticmethod
+    def apply_gradient(img, filter_matrix):
+        r, g, b = rgb.get_rgb_layers(img)
+        r = filter.apply_gradient(r, filter_matrix)
+        g = filter.apply_gradient(g, filter_matrix)
+        b = filter.apply_gradient(b, filter_matrix)
+        return rgb.merge_rgb_layers(r, g, b)
+
+    @staticmethod
+    def apply_sobel(img):
+        r, g, b = rgb.get_rgb_layers(img)
+        r = filter.apply_sobel(r)
+        g = filter.apply_sobel(g)
+        b = filter.apply_sobel(b)
+        return rgb.merge_rgb_layers(r, g, b)
