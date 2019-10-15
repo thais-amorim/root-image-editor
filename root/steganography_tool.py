@@ -1,101 +1,131 @@
-from PIL import Image
+from PIL import Image 
 
+class SteganographyTool():
 
-class SteganographyTool:
-    '''
-    Class for hiding text messages within an image.
-    Supported image formats: BMP, JPG
-
-    :param message_path: The path of the message that should be hidden, it can be a text or image.
-    :param image_path: The path of the image in which to hide the message.
-    '''
-
-
-def __init__(self, message_path=None, image_path=None):
-    self.__message_path = message_path
-    self.__image_path = image_path
-    self.__image_as_bytes = None
-    self.__message = None
-    self.__file_type = None
-    self.__max_image_size = None
-
-    # It is mandatory to have an image as entry
-    assert self.__image_path is not None
-
-    # Get the file type from message path
-    if self.__message_path is None:
-        self.__file_type = None
-    else:
-        self.__file_type = self.__message_path.split('.')[-1]
-    # Analyze image attributes
-    self.gather_image_attributes()
-
-
-def gather_image_attributes(self):
-    '''
-    Opens the target image file and gathers details.
-    '''
-    try:
-        self.__image_as_bytes = Image.open(self.__image_path)
-        # Get the carrier image name and type from the path
-        self.__image_type = self.__image_path.split('.')[-1]
-        # Get the total number of pixels that can be manipulated
-        height = self.__image_as_bytes.size[0]
-        width = self.__image_as_bytes.size[1]
-        self.__max_image_size = width * height
-    except Exception as error:
-        raise Exception(
-            'Error analyzing image: {} - {}'.format(self.__image_path, str(error)))
-
-
-def get_LSB(value):
-    if value & 1 == 0:
-        return '0'
-    else:
-        return '1'
-
-
-def Set_LSB(value, bit):
-    if bit == '0':
-        value = value & 254
-    else:
-        value = value | 1
-    return value
-
-
-def _select_encode(self):
-    '''
-    Select encode method based on image mode.
-    Supported image modes: L (Black and White), RGB (Colorful)
-    '''
-    image_mode = ''.join(self.__image_as_bytes.getbands())
-    if image_mode == 'L':
-        self.L_replace_bits(self.__message_to_hide)
-    elif image_mode in ['RGB', 'BGR']:
-        self.RGB_replace_bits(self.__message_to_hide)
-    else:
-        print(image_mode + " is not a supported image mode for encoding :(")
-
-
-def _select_decode(self):
-    '''
-    Select decode method based on image mode.
-    Supported image modes: L (Black and White), RGB (Colorful)
-    '''
-    image_mode = ''.join(self.__image_as_bytes.getbands())
-    if image_mode == 'L':  # Black or White images
-        self.L_replace_bits(self.__message_to_hide)
-    elif image_mode in ['RGB', 'BGR']:
-        self.RGB_replace_bits(self.__message_to_hide)
-    else:
-        print(image_mode + " is not a supported image mode for decoding :(")
-
-
-def encode(img, message):
-    self._select_encode()
-    return "image with the encoded message"
-
-
-def decode(img):
-    self._select_decode()
-    return "secret decoded message"
+    # Convert encoding data into 8-bit binary 
+    # form using ASCII value of characters 
+    def genData(data): 
+            
+            # list of binary codes 
+            # of given data 
+            newd = []  
+            
+            for i in data: 
+                newd.append(format(ord(i), '08b')) 
+            return newd 
+            
+    # Pixels are modified according to the 
+    # 8-bit binary data and finally returned 
+    def modPix(pix, data): 
+        
+        datalist = genData(data) 
+        lendata = len(datalist) 
+        imdata = iter(pix) 
+    
+        for i in range(lendata): 
+            
+            # Extracting 3 pixels at a time 
+            pix = [value for value in imdata.__next__()[:3] +
+                                    imdata.__next__()[:3] +
+                                    imdata.__next__()[:3]] 
+                                        
+            # Pixel value should be made  
+            # odd for 1 and even for 0 
+            for j in range(0, 8): 
+                if (datalist[i][j]=='0') and (pix[j]% 2 != 0): 
+                    
+                    if (pix[j]% 2 != 0): 
+                        pix[j] -= 1
+                        
+                elif (datalist[i][j] == '1') and (pix[j] % 2 == 0): 
+                    pix[j] -= 1
+                    
+            # Eigh^th pixel of every set tells  
+            # whether to stop ot read further. 
+            # 0 means keep reading; 1 means the 
+            # message is over. 
+            if (i == lendata - 1): 
+                if (pix[-1] % 2 == 0): 
+                    pix[-1] -= 1
+            else: 
+                if (pix[-1] % 2 != 0): 
+                    pix[-1] -= 1
+    
+            pix = tuple(pix) 
+            yield pix[0:3] 
+            yield pix[3:6] 
+            yield pix[6:9] 
+    
+    def encode_enc(newimg, data): 
+        w = newimg.size[0]
+        print(newimg.getdata())
+        (x, y) = (0, 0) 
+        
+        for pixel in modPix(newimg.getdata(), data): 
+            
+            # Putting modified pixels in the new image 
+            newimg.putpixel((x, y), pixel) 
+            if (x == w - 1): 
+                x = 0
+                y += 1
+            else: 
+                x += 1
+                
+    # Encode data into image 
+    def encode(image, data): 
+        # img = input("Enter image name(with extension): ") 
+        # image = Image.open(img, 'r') 
+        
+        # data = input("Enter data to be encoded: ") 
+        if (len(data) == 0): 
+            raise ValueError('Texto está vazio.') 
+            
+        newimg = image.copy() 
+        encode_enc(newimg, data) 
+        
+        new_img_name = input("Enter the name of new image(with extension): ")
+        newimg.save(new_img_name, 'bmp') 
+        return new_img_name
+    
+    # Decode the data in the image 
+    def decode(image): 
+        # img = input("Enter image name(with extension): ") 
+        # image = Image.open(img, 'r') 
+        
+        data = '' 
+        imgdata = iter(image.getdata()) 
+        
+        while (True): 
+            pixels = [value for value in imgdata.__next__()[:3] +
+                                    imgdata.__next__()[:3] +
+                                    imgdata.__next__()[:3]] 
+            # string of binary data 
+            binstr = '' 
+            
+            for i in pixels[:8]: 
+                if (i % 2 == 0): 
+                    binstr += '0'
+                else: 
+                    binstr += '1'
+                    
+            data += chr(int(binstr, 2)) 
+            if (pixels[-1] % 2 != 0): 
+                return data 
+                
+    # # Main Function         
+    # def main(): 
+    #     a = int(input(":: Welcome to Steganography ::\n"
+    #                         "1. Encode\n2. Decode\n")) 
+    #     if (a == 1): 
+    #         encode() 
+            
+    #     elif (a == 2): 
+    #         print("Decoded word - " + decode()) 
+    #     else: 
+    #         raise Exception("Enter correct input") 
+            
+    # # Driver Code 
+    # if name == '__main__' : 
+        
+    #     # Calling main function 
+    #     main()
