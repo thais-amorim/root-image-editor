@@ -27,8 +27,8 @@ class Window(QMainWindow):
         self.setWindowTitle(self.const.WINDOW_TITLE)
         self.side_bar = SideBar(self.const.DEFAULT_IMAGE)
 
-        im = self.transformController.getCurrentImage()
-        self.imageView = ImageView(im)
+        self.im = self.transformController.getCurrentImage()
+        self.imageView = ImageView(self.im)
         self.initIcons()
         self.show()
 
@@ -59,9 +59,10 @@ class Window(QMainWindow):
 
     def fileOpen(self):
         name,_ = QtWidgets.QFileDialog.getOpenFileName(self,"Open File")
-        self.setWindowTitle(name)
-        self.transformController.loadImage(name)
-        self.openImage(self.transformController.getCurrentImage())
+        if name:
+            self.setWindowTitle(name)
+            self.transformController.loadImage(name)
+            self.openImage(self.transformController.getCurrentImage())
 
     def openImage(self,name):
         self.imageView.loadImage(name)

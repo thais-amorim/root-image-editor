@@ -5,18 +5,25 @@ import numpy as np
 from filter import ImageFilter as filter
 from filter import ColorFilter as color
 from converter import ColorConverter as converter
-
+from FourierManager import FourierManager
 
 class TransformationController():
 
     def __init__(self):
         super().__init__()
         self.original_image = self.current_image = self.undo_image  = self.redo_image = None
-    
+        self.complete_fourier  = self.current_complete_fourier = self.fourier_image = self.undo_fourier = self.redo_fourier = None
+        self.fourierManager = FourierManager()
+
     def update_memory_images(self,image):
         self.undo_image = self.current_image
         self.current_image  = image
-        self.redo_image = self.current_image
+        self.redo_image = self.current_image.copy()
+    
+    def update_fourier_memory_images(self,image):
+        self.undo_fourier = self.fourier_image
+        self.fourier_image  = image
+        self.redo_fourier = self.fourier_image.copy()
 
     def getCurrentImage(self):
         return self.current_image
@@ -28,6 +35,14 @@ class TransformationController():
     def redoAction(self):
         self.current_image = self.redo_image
         return self.current_image
+
+    def undoFourierAction(self):
+        self.fourier_image = self.undo_fourier
+        return self.fourier_image
+
+    def redoFourierAction(self):
+        self.fourier_image = self.redo_fourier
+        return self.fourier_image
 
     def openImage(self,image):
         img = filter.read_image(image)
@@ -122,6 +137,45 @@ class TransformationController():
             self.update_memory_images(image)
         return self.current_image
     
+    def apply_fourier(self):
+        ft = self.fourierManager.fft2(self.current_image)
+        shift = self.fourierManager.fftshift(ft)
+        self.fourier_image = shift
+        self.current_complete_fourier = shift.copy()
+        mag = abs(shift)
+        mag = np.log(mag)
+        mag = filter.normalize_image(mag)
+        mag = mag.astype(np.uint8).copy()
+        
+        self.update_fourier_memory_images(mag)
+
+        return self.fourier_image
+
+    def apply_low_pass(self, radius):
+        image = self.fourierManager.lowPassFilter(self.fourier_image,radius)
+        # self.current_complete_fourier = self.fourierManager.lowPassFilter(self.current_complete_fourier,radius)
+        self.update_fourier_memory_images(image)
+        return self.fourier_image
+        
+    def apply_high_pass(self, radius):
+        image = self.fourierManager.highPassFilter(self.fourier_image,radius)
+        # self.current_complete_fourier = self.fourierManager.highPassFilter(self.current_complete_fourier,radius)
+        self.update_fourier_memory_images(image)
+        return self.fourier_image
+
+    def apply_band_pass(self, radius_minor,radius_major):
+        image = self.fourierManager.bandPassFilter(self.fourier_image,radius_minor,radius_major)
+        self.update_fourier_memory_images(image)
+        return self.fourier_image
+
+    def apply_inverse_fourier(self):
+        shift = self.current_complete_fourier
+        shift[np.where (self.fourier_image  == 0)] = 0
+        ishift = self.fourierManager.ifftshift(shift)
+        p_img = abs(self.fourierManager.ifft2(ishift))
+        # image = self.fourierManager
+        return p_img 
+
     def apply_sepia(self):
         if len(self.current_image.shape) == 3:
             image =  color.apply_sepia(self.current_image)

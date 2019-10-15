@@ -356,18 +356,18 @@ img = f.rgb_to_gray(img)
 
 
 
-import matplotlib.pyplot as plt
-import matplotlib as mpl
-# n = mpl.colors.Normalize(vmin=-0,vmax=255)
-import math 
+# import matplotlib.pyplot as plt
+# import matplotlib as mpl
+# # n = mpl.colors.Normalize(vmin=-0,vmax=255)
+# import math 
 
-img = np.random.rand(500,500)
+# img = np.random.rand(500,500)
 
-ft = f.fft2(img)
+# ft = f.fft2(img)
 
-# ft = np.fft.fft2(img)
+# # ft = np.fft.fft2(img)
 
-print(np.allclose(ft,np.fft.fft2(img)))
+# print(np.allclose(ft,np.fft.fft2(img)))
 
 # shift = f.fftshift(ft)
 

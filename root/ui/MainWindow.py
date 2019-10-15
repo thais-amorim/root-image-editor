@@ -5,6 +5,7 @@ from PyQt5.QtCore import *
 from PyQt5. QtGui import *
 from SideBar import SideBar
 from ImageView import ImageView
+from FourierModal import FourierModal
 import sys
 import numpy as np
 # sys.path.append('../controllers')
@@ -154,6 +155,7 @@ class MainWindow(Window):
 
         #filtros na frequência
         spectrumFilterAction = QAction("&Espectro da Transformada de Fourier", self)
+        spectrumFilterAction.triggered.connect(self.fourier_spectrum)
         radialFilterAction = QAction("&Filtros Radiais(Passa alta, baixa ou faixa)", self)
         
         harmonicFilterAction = QAction("&Média Harmônica", self)
@@ -297,7 +299,7 @@ class MainWindow(Window):
             q, ok = QInputDialog.getText(self, 'Filtro por Média Harmônica', 
             'Entre com o valor de q')
             if ok:
-                self.loadImage(self.transformController.apply_contra_harmonic_mean(int(size),int(q)))
+                self.loadImage(self.transformController.apply_contra_harmonic_mean(int(size),float(q)))
     
     def hi_boost_filtering(self):
         size, ok = QInputDialog.getText(self, 'Filtro por Hi Boost', 
@@ -306,7 +308,36 @@ class MainWindow(Window):
             c, ok = QInputDialog.getText(self, 'Filtro por Média Harmônica', 
             'Entre com o valor de c')
             if ok:
-                self.loadImage(self.transformController.apply_highboost(int(size),int(c)))
+                self.loadImage(self.transformController.apply_highboost(int(size),float(c)))
+    
+    def fourier_spectrum(self):
+        # mag = self.transformController.apply_fourier()
+        # mag = mag.astype(np.uint8)
+        # print("Shape da Magnitude")
+        # print(mag.shape)
+        # print("strides")
+        # print(mag.strides[0])
+        # print(mag.shape[0])
+        # print(mag.shape[1])
+        # print(mag.data)
+
+
+        # print("IM:")
+        # im = self.transformController.current_image
+        # print(im.shape)
+        # print(im)
+        # print("im data")
+        # print(im.strides[0])
+        # print(im.shape[0])
+        # print(im.shape[1])
+        # print(im.data)
+        w = FourierModal(self.transformController)
+        if w.exec_():
+            self.loadImage(self.transformController.apply_inverse_fourier())
+            print("Success!")
+        else:
+            print("Cancel!")
+
 
 
         # self.side_bar.loadImage(name)
@@ -322,8 +353,9 @@ class MainWindow(Window):
     def chroma_key(self):
         # try:
             name,_ = QtWidgets.QFileDialog.getOpenFileName(self,"Escolha o fundo da chroma key")
-            background = self.transformController.openImage(name)
-            self.loadImage(self.transformController.apply_chroma_key(background))
+            if name:
+                background = self.transformController.openImage(name)
+                self.loadImage(self.transformController.apply_chroma_key(background))
         # except:
         #     print("Ocorreu um erro")
 
