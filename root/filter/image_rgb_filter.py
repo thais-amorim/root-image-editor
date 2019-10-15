@@ -122,3 +122,11 @@ class RgbFilter():
         g = filter.apply_contra_harmonic_mean(g, filter_matrix, q)
         b = filter.apply_contra_harmonic_mean(b, filter_matrix, q)
         return rgb.merge_rgb_layers(r, g, b)
+
+    @staticmethod
+    def apply_highboost(img, c, filter_matrix):
+        r, g, b = rgb.get_rgb_layers(img)
+        r = filter.apply_highboost(r, c, filter_matrix)
+        g = filter.apply_highboost(g, c, filter_matrix)
+        b = filter.apply_highboost(b, c, filter_matrix)
+        return rgb.merge_rgb_layers(r, g, b)
