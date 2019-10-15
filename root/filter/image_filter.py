@@ -155,6 +155,26 @@ class ImageFilter():
         return norm_obtained, norm_sharpened
 
     @staticmethod
+    def create_gaussian_kernel(filter_size, sigma):
+        """
+        Creates a 2D gaussian kernel using filter_size and sigma
+        """
+        filter_size = util.format_filter_size(filter_size)
+        ax = np.linspace(-(filter_size - 1) / 2.,
+                         (filter_size - 1) / 2., filter_size)
+        xx, yy = np.meshgrid(ax, ax)
+
+        kernel = np.exp(-0.5 * (np.square(xx) +
+                                np.square(yy)) / np.square(sigma))
+
+        return kernel / np.sum(kernel)
+
+    @staticmethod
+    def apply_gaussian(img, filter_size=3, sigma=1.):
+        kernel = ImageFilter.create_gaussian_kernel(filter_size, sigma)
+        return ImageFilter.apply_convolution(img, kernel)
+
+    @staticmethod
     def apply_sobel(img):
         # Horizontal sobel matrix
         horizontal = np.array([
