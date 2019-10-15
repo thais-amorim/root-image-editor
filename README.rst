@@ -1,6 +1,6 @@
 Root Image Editor
 ========
-|master| |MIT license| 
+|master| |MIT license|
 
 .. |master| image:: https://travis-ci.org/thasmarinho/root-image-editor.svg?branch=master
     :target: https://travis-ci.org/thasmarinho/root-image-editor
@@ -19,7 +19,7 @@ $ pip3 install -r requirements.txt
 Running
 -------
 
-$ python3 ./root/main.py
+$ python3 main.py
 
 Testing
 -------

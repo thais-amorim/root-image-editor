@@ -333,9 +333,8 @@ class ImageFilter():
 
     @staticmethod
     def apply_highboost(image, c, filter_size):
-        obtained, image = util.get_empty_image_with_same_dimensions(
-            image)
-        blurred_image = ImageFilter.apply_arithmetic_mean(image, filter_size)
-        mask = image - blurred_image
+        blurred = ImageFilter.apply_arithmetic_mean(image, filter_size)
+        mask = image - blurred
         result = image + (c * mask)
-        return result, mask
+
+        return result.astype(np.uint8)
