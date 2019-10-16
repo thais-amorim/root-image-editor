@@ -96,7 +96,7 @@ class ScaleConverter():
 
         return enlargedImg
 
-    
+
     #TODO
     def nnrotate(image, angle):
     height, width = image.shape[:2]
@@ -117,7 +117,7 @@ class ScaleConverter():
     def bilinearRotate(image, angle):
         width, height = image.shape[:2]
         output = np.zeros_like(image, dtype=np.uint8)
-        angle = angle * np.pi / 180 
+        angle = angle * np.pi / 180
         center_x = width / 2
         center_y = height / 2
 
