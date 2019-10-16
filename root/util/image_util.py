@@ -7,9 +7,26 @@ _MAX_PIXEL = 255
 
 
 class ImageUtil():
+<<<<<<< HEAD
 
     @staticmethod
     def read_image(image_path, type="RGB"):
+=======
+    @staticmethod
+    def isGrayScale(img):
+        if len(img.shape) == 2:
+            return True
+        return False
+
+    @staticmethod
+    def isRgb(img):
+        if len(img.shape) == 3:
+            return True
+        return False
+
+    @staticmethod
+    def read_image(image_path, type="RGBA"):
+>>>>>>> merge_frontend_develop
         return imageio.imread(image_path, as_gray=False, pilmode=type)
 
     @staticmethod

@@ -96,9 +96,15 @@ class ScaleConverter():
 
         return enlargedImg
 
+<<<<<<< HEAD
     
     @staticmethod
     def apply_rotate_nearest(image, angle):
+=======
+
+    #TODO
+    def nnrotate(image, angle):
+>>>>>>> merge_frontend_develop
         height, width = image.shape[:2]
         output = np.zeros_like(image, dtype=np.uint8)
         angle = angle * np.pi / 180
@@ -118,7 +124,7 @@ class ScaleConverter():
     def apply_rotate_bilinear(image, angle):
         width, height = image.shape[:2]
         output = np.zeros_like(image, dtype=np.uint8)
-        angle = angle * np.pi / 180 
+        angle = angle * np.pi / 180
         center_x = width / 2
         center_y = height / 2
 

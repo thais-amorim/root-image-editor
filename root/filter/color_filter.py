@@ -1,6 +1,8 @@
 import imageio
 import numpy as np
-from . import ImageFilter
+from root.util import ImageUtil as util
+from root.util import RgbUtil as rgb
+from root.converter import ColorConverter as converter
 from PIL import Image
 from skimage import img_as_ubyte
 import math
@@ -8,19 +10,7 @@ import math
 class ColorFilter():
 
     @staticmethod
-    def get_rgb_layers(rgb):
-        r = rgb[:, :, 0]
-        g = rgb[:, :, 1]
-        b = rgb[:, :, 2]
-
-        return r, g, b
-
-    @staticmethod
-    def merge_rgb_layers(red_layer, green_layer, blue_layer):
-        return np.stack([red_channel, green_channel, blue_channel], axis=2)
-
-    @staticmethod
-    def normalize_max_value(value, pixel):
+    def __normalize_max_value(value, pixel):
         if value > 255:
             pixel = 255
         else:
@@ -29,9 +19,9 @@ class ColorFilter():
 
     @staticmethod
     def apply_sepia(img):
-        height, width = ImageFilter.get_image_dimensions(img)
-        obtained, img = ImageFilter.get_empty_image_with_same_dimensions(img)
-        r_matrix, g_matrix, b_matrix = ColorFilter.get_rgb_layers(img)
+        height, width = util.get_image_dimensions(img)
+        obtained, img = util.get_empty_image_with_same_dimensions(img)
+        r_matrix, g_matrix, b_matrix = rgb.get_rgb_layers(img)
         for i in range(height):
             for j in range(width):
                 r, g, b = r_matrix[i][j], g_matrix[i][j], b_matrix[i][j]
@@ -39,9 +29,9 @@ class ColorFilter():
                 tg = int(0.349 * r + 0.686 * g + 0.168 * b)
                 tb = int(0.272 * r + 0.534 * g + 0.131 * b)
 
-                r = ColorFilter.normalize_max_value(tr, r)
-                g = ColorFilter.normalize_max_value(tg, g)
-                b = ColorFilter.normalize_max_value(tb, b)
+                r = ColorFilter.__normalize_max_value(tr, r)
+                g = ColorFilter.__normalize_max_value(tg, g)
+                b = ColorFilter.__normalize_max_value(tb, b)
 
                 obtained[i][j] = [r, g, b]
 
@@ -95,7 +85,7 @@ class ColorFilter():
     @staticmethod
     def add_background(background, img, coord=(0, 0)):
         img = img_as_ubyte(img)
-        x_size, y_size = ImageFilter.get_image_dimensions(img)
+        x_size, y_size = util.get_image_dimensions(img)
 
         (y_begin, x_begin) = coord
         x_end = x_begin + x_size
@@ -148,10 +138,82 @@ class ColorFilter():
                 if blue_vs_green < 0:
                     blue_vs_green = 0
                 alpha =  red_vs_green + blue_vs_green * max_pixel_value
-            
+
                 if (alpha <= faixa):
-                    img[i,j,0] = background[i,j,0] 
+                    img[i,j,0] = background[i,j,0]
                     img[i,j,1] = background[i,j,1]
                     img[i,j,2] = background[i,j,2]
 
         return img
+
+    @staticmethod
+    def adjust_saturation (img, factor):
+        '''
+        Adjust image saturation using a mulplication factor.
+        Input: image and factor in [0.0, 1.0].
+        Output: image with saturation adjusted
+        '''
+        height,width = util.get_dimensions(img)
+        obtained = np.zeros_like(img)
+        for row in range(height):
+            for col in range(width):
+                r = img[row][col][0]
+                g = img[row][col][1]
+                b = img[row][col][2]
+                h,s,i = converter.rgb_to_hsi(r,g,b)
+                new_saturation = s * factor #Saturation value is [0, 1]
+                if new_saturation > 1:
+                    new_saturation = 1
+                r,g,b = converter.hsi_to_rgb(h,new_saturation,i)
+                obtained[row][col][0] = r
+                obtained[row][col][1] = g
+                obtained[row][col][2] = b
+        return obtained
+
+    @staticmethod
+    def adjust_hue (img, factor):
+        '''
+        Adjust image hue using a mulplication factor.
+        Input: image and factor in [0.0, 1.0].
+        Output: image with hue adjusted
+        '''
+        height,width = util.get_dimensions(img)
+        obtained = np.zeros_like(img)
+        for row in range(height):
+            for col in range(width):
+                r = img[row][col][0]
+                g = img[row][col][1]
+                b = img[row][col][2]
+                h,s,i = converter.rgb_to_hsi(r,g,b)
+                new_hue = h * factor #Hue value is [0, 360]
+                if new_hue > 360:
+                    new_hue = 360
+                r,g,b = converter.hsi_to_rgb(new_hue,s,i)
+                obtained[row][col][0] = r
+                obtained[row][col][1] = g
+                obtained[row][col][2] = b
+        return obtained
+
+    @staticmethod
+    def adjust_intensity (img, factor):
+        '''
+        Adjust image hue using a mulplication factor.
+        Input: image and factor in [0.0, 1.0].
+        Output: image with intensity adjusted
+        '''
+        height,width = util.get_dimensions(img)
+        obtained = np.zeros_like(img)
+        for row in range(height):
+            for col in range(width):
+                r = img[row][col][0]
+                g = img[row][col][1]
+                b = img[row][col][2]
+                h,s,i = converter.rgb_to_hsi(r,g,b)
+                new_intensity = i * factor #Intensity value is [0, 1]
+                if new_intensity > 1:
+                    new_intensity = 1
+                r,g,b = converter.hsi_to_rgb(h,s,new_intensity)
+                obtained[row][col][0] = r
+                obtained[row][col][1] = g
+                obtained[row][col][2] = b
+        return obtained

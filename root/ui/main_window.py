@@ -1,60 +1,53 @@
-from Window import Window
+from root.ui import Window
 from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5. QtGui import *
-from SideBar import SideBar
-from ImageView import ImageView
-from FourierModal import FourierModal
+from root.ui import SideBar
+from root.ui import ImageView
+from root.ui import FourierModal
 import sys
 import numpy as np
-# sys.path.append('../controllers')
-
-
 
 
 class MainWindow(Window):
-    
+
     def __init__(self):
         super().__init__()
-        
+
         self.main_layout = QHBoxLayout()
         self.initToolBar()
         self.initMenuBar()
         self.setLayouts()
 
-        
-
         # print("Iniciando")
 
     def setLayouts(self):
-        
+
         self.main_layout.addWidget(self.imageView)
         self.main_layout.addWidget(self.side_bar)
         self.main_layout.setStretch(0, 40)
         # self.main_layout.setStretch(1, 200)
 
-
         main_widget = QWidget()
         main_widget.setObjectName("main-widget")
         main_widget.setLayout(self.main_layout)
-        main_widget.setStyleSheet("QWidget#main-widget{ border:2px solid rgb(150,150, 150);} ")
+        main_widget.setStyleSheet(
+            "QWidget#main-widget{ border:2px solid rgb(150,150, 150);} ")
         self.setCentralWidget(main_widget)
-
 
     def initMenuBar(self):
 
-
         self.statusBar()
 
-        #menu
+        # menu
         mainMenu = self.menuBar()
         fileMenu = mainMenu.addMenu("File")
         imageMenu = mainMenu.addMenu("Image")
         windowMenu = mainMenu.addMenu("Window")
         helpMenu = mainMenu.addMenu("Help")
 
-        #fileMenu
+        # fileMenu
         closeAction = QAction("&Exit", self)
         closeAction.setShortcut("Ctrl+Q")
         closeAction.setStatusTip("Leave The App")
@@ -62,16 +55,14 @@ class MainWindow(Window):
 
         fileMenu.addAction(closeAction)
 
-        
-   
-
-        #imagemenu
+        # imagemenu
         colorModeMenu = imageMenu.addMenu("Modos de Cor")
         imageMenu.addSeparator()
         transformMenu = imageMenu.addMenu("Transformações")
         imageMenu.addSeparator()
         filtersMenu = imageMenu.addMenu("Filters")
-        frequenceFiltersMenu = imageMenu.addMenu("Filtro no Domínio da Frequência")
+        frequenceFiltersMenu = imageMenu.addMenu(
+            "Filtro no Domínio da Frequência")
         imageMenu.addSeparator()
         histogramMenu = imageMenu.addMenu("Histogram")
         spacialMenu = imageMenu.addMenu("Transformações Espaciais")
@@ -80,6 +71,7 @@ class MainWindow(Window):
         imageMenu.addMenu(steganographyMenu)
         imageMenu.addSeparator()
         chromaKeyMenu = imageMenu.addMenu("Chroma Key")
+<<<<<<< HEAD:root/ui/MainWindow.py
         
         
         #Transformações espaciais
@@ -101,32 +93,36 @@ class MainWindow(Window):
 
         #Esteganografia
         steganographyAction = QAction("Escrever Mensagem",self)
+=======
+
+        # Esteganografia
+        steganographyAction = QAction("Escrever Mensagem", self)
+>>>>>>> merge_frontend_develop:root/ui/main_window.py
         steganographyAction.triggered.connect(self.steganography)
         steganographyMenu.addAction(steganographyAction)
 
-        steganographyAction = QAction("Ler Mensagem",self)
+        steganographyAction = QAction("Ler Mensagem", self)
         steganographyAction.triggered.connect(self.steganography_read)
         steganographyMenu.addAction(steganographyAction)
-        #chroma key menu
-        chromaKeyAction = QAction("&Aplicar Chroma",self)
+        # chroma key menu
+        chromaKeyAction = QAction("&Aplicar Chroma", self)
         chromaKeyAction.triggered.connect(self.chroma_key)
 
         chromaKeyMenu.addAction(chromaKeyAction)
 
-        #colormode
-        rgbAction = QAction("&RGB",self)
-        
-        grayScaleAction = QAction("&Escala de Cinza",self)
+        # colormode
+        rgbAction = QAction("&RGB", self)
+
+        grayScaleAction = QAction("&Escala de Cinza", self)
         grayScaleAction.triggered.connect(self.rgb_to_gray)
-        hsvAction = QAction("&HSV",self)
+        hsvAction = QAction("&HSV", self)
         hsvAction.triggered.connect(self.rgb_to_hsv)
 
         colorModeMenu.addAction(grayScaleAction)
         colorModeMenu.addAction(rgbAction)
         colorModeMenu.addAction(hsvAction)
 
-
-        #transformations
+        # transformations
         negativeFilterAction = QAction("&Negative", self)
         negativeFilterAction.triggered.connect(self.negative_transform)
 
@@ -140,30 +136,32 @@ class MainWindow(Window):
         transformMenu.addAction(logFilterAction)
         transformMenu.addAction(gammaFilterAction)
 
-        #filters
+        # filters
         sobelFilterAction = QAction("&Sobel", self)
         sobelFilterAction.triggered.connect(self.sobel_filtering)
         gradientFilterAction = QAction("&Gradient Detecção", self)
         gradientFilterAction.triggered.connect(self.gradient_filtering)
-        genericConvolutionFilterAction = QAction("&Genérico por Convolução", self)
-        genericConvolutionFilterAction.triggered.connect(self.generic_convolution)
+        genericConvolutionFilterAction = QAction(
+            "&Genérico por Convolução", self)
+        genericConvolutionFilterAction.triggered.connect(
+            self.generic_convolution)
         medianFilterAction = QAction("&Filtragem por Mediana", self)
         medianFilterAction.triggered.connect(self.median_filter)
         meanFilterAction = QAction("&Suaviazação por Média", self)
         meanFilterAction.triggered.connect(self.mean_filtering)
-        gaussianFilterAction = QAction("&Suavização Gaussiana", self)   
-        sharpFilterAction = QAction("&Aguçamento",self)
-        sepiaFilterAction = QAction("&Sepia",self)
+        gaussianFilterAction = QAction("&Suavização Gaussiana", self)
+        sharpFilterAction = QAction("&Aguçamento", self)
+        sepiaFilterAction = QAction("&Sepia", self)
         sepiaFilterAction.triggered.connect(self.sepia_filter)
-       
+
         geometricFilterAction = QAction("&Média Geométrica", self)
         geometricFilterAction.triggered.connect(self.geometric_filtering)
 
-        #filters/sharp
+        # filters/sharp
         laplaceFilterAction = QAction("&Laplaciano", self)
         highBoostFilterAction = QAction("&HighBoost", self)
         highBoostFilterAction.triggered.connect(self.hi_boost_filtering)
-        ##add filters
+        # add filters
         filtersMenu.addAction(genericConvolutionFilterAction)
         filtersMenu.addAction(medianFilterAction)
         filtersMenu.addSeparator()
@@ -173,51 +171,70 @@ class MainWindow(Window):
         filtersMenu.addAction(sobelFilterAction)
         filtersMenu.addAction(gradientFilterAction)
         filtersMenu.addAction(laplaceFilterAction)
-        filtersMenu.addAction (geometricFilterAction)
+        filtersMenu.addAction(geometricFilterAction)
         filtersMenu.addAction(sepiaFilterAction)
-        ##add filters/sharp   
+        # add filters/sharp
         sharpFilterMenu = filtersMenu.addMenu("Aguçamento")
         sharpFilterMenu.addAction(gaussianFilterAction)
         sharpFilterMenu.addAction(highBoostFilterAction)
 
-        #filtros na frequência
-        spectrumFilterAction = QAction("&Espectro da Transformada de Fourier", self)
+        # filtros na frequência
+        spectrumFilterAction = QAction(
+            "&Espectro da Transformada de Fourier", self)
         spectrumFilterAction.triggered.connect(self.fourier_spectrum)
+<<<<<<< HEAD:root/ui/MainWindow.py
         # radialFilterAction = QAction("&Filtros Radiais(Passa alta, baixa ou faixa)", self)
         
+=======
+        radialFilterAction = QAction(
+            "&Filtros Radiais(Passa alta, baixa ou faixa)", self)
+
+>>>>>>> merge_frontend_develop:root/ui/main_window.py
         harmonicFilterAction = QAction("&Média Harmônica", self)
         harmonicFilterAction.triggered.connect(self.harmonic_filtering)
         counterharmonicFilterAction = QAction("&Média Contra-harmônica", self)
-        counterharmonicFilterAction.triggered.connect(self.contra_harmonic_filtering)
+        counterharmonicFilterAction.triggered.connect(
+            self.contra_harmonic_filtering)
 
-        frequenceFiltersMenu.addAction (spectrumFilterAction)
+        frequenceFiltersMenu.addAction(spectrumFilterAction)
         frequenceFiltersMenu.addSeparator()
+<<<<<<< HEAD:root/ui/MainWindow.py
         # frequenceFiltersMenu.addAction (radialFilterAction)
         # frequenceFiltersMenu.addSeparator()
         
         frequenceFiltersMenu.addAction (harmonicFilterAction)
         frequenceFiltersMenu.addAction (counterharmonicFilterAction)
+=======
+        frequenceFiltersMenu.addAction(radialFilterAction)
+        frequenceFiltersMenu.addSeparator()
+>>>>>>> merge_frontend_develop:root/ui/main_window.py
 
-    
-        #histogram Menu
+        frequenceFiltersMenu.addAction(harmonicFilterAction)
+        frequenceFiltersMenu.addAction(counterharmonicFilterAction)
+
+        # histogram Menu
         equalizationAction = QAction("&Equalização por Histograma", self)
         equalizationAction.triggered.connect(self.histEqualize)
 
         showHistogramAction = QAction("&Ver Histograma", self)
 
-
         histogramMenu.addAction(equalizationAction)
         histogramMenu.addAction(showHistogramAction)
 
-
     def initToolBar(self):
 
-        openAction = QAction(QtGui.QIcon('assets/icons/open.png'),"&Abrir Ctrl+O", self)
-        saveAction = QAction(QtGui.QIcon('assets/icons/save.png'),"Salvar Ctrl+S", self)
-        saveAllAction = QAction(QtGui.QIcon('assets/icons/save-as.png'),"Salvar Como Ctrl+Shift+S", self)
-        undoAction = QAction(QtGui.QIcon('assets/icons/undo.png'),"Desfazer Ctrl+Z", self)
-        redoAction = QAction(QtGui.QIcon('assets/icons/redo.png'),"Desfazer Ctrl+R", self)
-        brushAction = QAction(QtGui.QIcon('assets/icons/brush.png'),"Pincel", self)
+        openAction = QAction(QtGui.QIcon(
+            'assets/icons/open.png'), "&Abrir Ctrl+O", self)
+        saveAction = QAction(QtGui.QIcon(
+            'assets/icons/save.png'), "Salvar Ctrl+S", self)
+        saveAllAction = QAction(QtGui.QIcon(
+            'assets/icons/save-as.png'), "Salvar Como Ctrl+Shift+S", self)
+        undoAction = QAction(QtGui.QIcon(
+            'assets/icons/undo.png'), "Desfazer Ctrl+Z", self)
+        redoAction = QAction(QtGui.QIcon(
+            'assets/icons/redo.png'), "Desfazer Ctrl+R", self)
+        brushAction = QAction(QtGui.QIcon(
+            'assets/icons/brush.png'), "Pincel", self)
 
         openAction.setShortcut("Ctrl+O")
         saveAction.setShortcut("Ctrl+S")
@@ -231,36 +248,35 @@ class MainWindow(Window):
         undoAction.triggered.connect(self.undoLastAction)
         redoAction.triggered.connect(self.redoLastAction)
 
-
         self.toolbar = self.addToolBar("Extraction")
-        
+
         self.toolbar.addAction(openAction)
         self.toolbar.addAction(saveAction)
         self.toolbar.addAction(saveAllAction)
-        self.toolbar.addAction(undoAction)  
-        self.toolbar.addAction(redoAction) 
+        self.toolbar.addAction(undoAction)
+        self.toolbar.addAction(redoAction)
         self.toolbar.addSeparator()
-        self.toolbar.addSeparator()     
-        self.toolbar.addAction(brushAction)       
-
+        self.toolbar.addSeparator()
+        self.toolbar.addAction(brushAction)
 
     def negative_transform(self):
         self.loadImage(self.transformController.negativeTransform())
-      
+
     def logarithmic_transform(self):
         self.loadImage(self.transformController.logarithmicTransform())
 
     def gamma_transform(self):
 
-        gamma, ok = QInputDialog.getText(self, 'Gamma Correction', 
-            'Enter gamma value (real):')
-        
+        gamma, ok = QInputDialog.getText(self, 'Gamma Correction',
+                                         'Enter gamma value (real):')
+
         if ok:
-           self.loadImage(self.transformController.gammaTransform(float(gamma)))
-    
+            self.loadImage(
+                self.transformController.gammaTransform(float(gamma)))
+
     def median_filter(self):
-        size, ok = QInputDialog.getText(self, 'Filtragem por Median', 
-            'Entre com o tamanho do filtro: (deve ser maior que 0)')
+        size, ok = QInputDialog.getText(self, 'Filtragem por Median',
+                                        'Entre com o tamanho do filtro: (deve ser maior que 0)')
         if ok:
             self.loadImage(self.transformController.apply_median(int(size)))
 
@@ -269,7 +285,8 @@ class MainWindow(Window):
 
     def generic_convolution(self):
         try:
-            self.loadImage(self.transformController.apply_convolution(self.getMatrixInput()))
+            self.loadImage(self.transformController.apply_convolution(
+                self.getMatrixInput()))
         except:
             print("Ocorreu um erro")
 
@@ -287,57 +304,85 @@ class MainWindow(Window):
         for l in lines:
             table.append([])
             table[i] = l.split(' ')
-            i = i+1
+            i = i + 1
         try:
             table = np.array(table)
             table = np.float_(table)
             return table
         except:
             return None
-     
+
     def gradient_filtering(self):
         try:
-            self.loadImage(self.transformController.apply_gradient(self.getMatrixInput()))
+            self.loadImage(self.transformController.apply_gradient(
+                self.getMatrixInput()))
         except:
             print("Ocorreu um erro")
-    
+
     def mean_filtering(self):
-        size, ok = QInputDialog.getText(self, 'Filtro por Média Aritimética', 
-            'Entre com o tamanho do filtro: (deve ser maior que 0)')
+        size, ok = QInputDialog.getText(self, 'Filtro por Média Aritimética',
+                                        'Entre com o tamanho do filtro: (deve ser maior que 0)')
         if ok:
-            self.loadImage(self.transformController.apply_arithmetic_mean(int(size)))
-    
+            self.loadImage(
+                self.transformController.apply_arithmetic_mean(int(size)))
+
     def geometric_filtering(self):
-        size, ok = QInputDialog.getText(self, 'Filtro por Média Geométrica', 
-            'Entre com o tamanho do filtro: (deve ser maior que 0)')
+        size, ok = QInputDialog.getText(self, 'Filtro por Média Geométrica',
+                                        'Entre com o tamanho do filtro: (deve ser maior que 0)')
         if ok:
-            self.loadImage(self.transformController.apply_geometric_mean(int(size)))
+            self.loadImage(
+                self.transformController.apply_geometric_mean(int(size)))
 
     def harmonic_filtering(self):
-        size, ok = QInputDialog.getText(self, 'Filtro por Média Harmônica', 
-            'Entre com o tamanho do filtro: (deve ser maior que 0)')
+        size, ok = QInputDialog.getText(self, 'Filtro por Média Harmônica',
+                                        'Entre com o tamanho do filtro: (deve ser maior que 0)')
         if ok:
-            self.loadImage(self.transformController.apply_harmonic_mean(int(size)))
+            self.loadImage(
+                self.transformController.apply_harmonic_mean(int(size)))
 
     def contra_harmonic_filtering(self):
-        size, ok = QInputDialog.getText(self, 'Filtro por Média Contra Harmônica', 
-            'Entre com o tamanho do filtro: (deve ser maior que 0)')
+        size, ok = QInputDialog.getText(self, 'Filtro por Média Contra Harmônica',
+                                        'Entre com o tamanho do filtro: (deve ser maior que 0)')
         if ok:
-            q, ok = QInputDialog.getText(self, 'Filtro por Média Harmônica', 
-            'Entre com o valor de q')
+            q, ok = QInputDialog.getText(self, 'Filtro por Média Harmônica',
+                                         'Entre com o valor de q')
             if ok:
-                self.loadImage(self.transformController.apply_contra_harmonic_mean(int(size),float(q)))
-    
+                self.loadImage(
+                    self.transformController.apply_contra_harmonic_mean(int(size), float(q)))
+
     def hi_boost_filtering(self):
-        size, ok = QInputDialog.getText(self, 'Filtro por Hi Boost', 
-            'Entre com o tamanho do filtro: (deve ser maior que 0)')
+        size, ok = QInputDialog.getText(self, 'Filtro por Hi Boost',
+                                        'Entre com o tamanho do filtro: (deve ser maior que 0)')
         if ok:
-            c, ok = QInputDialog.getText(self, 'Filtro por Média Harmônica', 
-            'Entre com o valor de c')
+            c, ok = QInputDialog.getText(self, 'Filtro por Média Harmônica',
+                                         'Entre com o valor de c')
             if ok:
-                self.loadImage(self.transformController.apply_highboost(int(size),float(c)))
-    
+                self.loadImage(
+                    self.transformController.apply_highboost(int(size), float(c)))
+
     def fourier_spectrum(self):
+<<<<<<< HEAD:root/ui/MainWindow.py
+=======
+        # mag = self.transformController.apply_fourier()
+        # mag = mag.astype(np.uint8)
+        # print("Shape da Magnitude")
+        # print(mag.shape)
+        # print("strides")
+        # print(mag.strides[0])
+        # print(mag.shape[0])
+        # print(mag.shape[1])
+        # print(mag.data)
+
+        # print("IM:")
+        # im = self.transformController.current_image
+        # print(im.shape)
+        # print(im)
+        # print("im data")
+        # print(im.strides[0])
+        # print(im.shape[0])
+        # print(im.shape[1])
+        # print(im.data)
+>>>>>>> merge_frontend_develop:root/ui/main_window.py
         w = FourierModal(self.transformController)
         if w.exec_():
             self.loadImage(self.transformController.apply_inverse_fourier())
@@ -345,12 +390,11 @@ class MainWindow(Window):
         else:
             print("Cancel!")
 
-
-
         # self.side_bar.loadImage(name)
+
     def rgb_to_gray(self):
         self.loadImage(self.transformController.rgb_to_gray())
-    
+
     def rgb_to_hsv(self):
         self.loadImage(self.transformController.rgb_to_hsv())
 
@@ -359,6 +403,7 @@ class MainWindow(Window):
 
     def chroma_key(self):
         # try:
+<<<<<<< HEAD:root/ui/MainWindow.py
             name,_ = QtWidgets.QFileDialog.getOpenFileName(self,"Escolha o fundo da chroma key")
             if name:
                 faixa, ok = QInputDialog.getText(self, 'Chroma Key', 
@@ -366,22 +411,34 @@ class MainWindow(Window):
                 if ok and faixa:
                     background = self.transformController.openImage(name)
                     self.loadImage(self.transformController.apply_chroma_key(background,int(faixa)))
+=======
+        name, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self, "Escolha o fundo da chroma key")
+        if name:
+            background = self.transformController.openImage(name)
+            self.loadImage(
+                self.transformController.apply_chroma_key(background))
+>>>>>>> merge_frontend_develop:root/ui/main_window.py
         # except:
         #     print("Ocorreu um erro")
 
     def steganography(self):
-        name,_ = QtWidgets.QFileDialog.getOpenFileName(self,"Escolha a imagem para esteganografar")
+        name, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self, "Escolha a imagem para esteganografar")
         if name:
-            text, ok = QInputDialog.getText(self, 'Filtro por Hi Boost', 
-            'Entre com o tamanho do filtro: (deve ser maior que 0)')
+            text, ok = QInputDialog.getText(self, 'Filtro por Hi Boost',
+                                            'Entre com o tamanho do filtro: (deve ser maior que 0)')
             if ok and text:
-                image = self.transformController.steganograph_encode(name, text)
-                name2,t = QtWidgets.QFileDialog.getSaveFileName(self, 'Escolha  onde salvar a imagem esteganografada',"","BMP (*.bmp)")
+                image = self.transformController.steganograph_encode(
+                    name, text)
+                name2, t = QtWidgets.QFileDialog.getSaveFileName(
+                    self, 'Escolha  onde salvar a imagem esteganografada', "", "BMP (*.bmp)")
                 if name2:
-                    self.transformController.saveImage(name2,image)
+                    self.transformController.saveImage(name2, image)
 
     def steganography_read(self):
-        name,_ = QtWidgets.QFileDialog.getOpenFileName(self,"Escolha a imagem para esteganografar")
+        name, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self, "Escolha a imagem para esteganografar")
         if name:
             text = self.transformController.steganograph_decode(name)
             msg = QMessageBox()
@@ -392,6 +449,7 @@ class MainWindow(Window):
             msg.exec_()
 
 
+<<<<<<< HEAD:root/ui/MainWindow.py
     def scale_nearest(self):
         scale, ok = QInputDialog.getText(self, 'Escalar por NN', 
             'Entre com o valor de escala')
@@ -416,13 +474,16 @@ class MainWindow(Window):
             self.loadImage(self.transformController.apply_rotate_bilinear(float(angle)))
 
             
+=======
+>>>>>>> merge_frontend_develop:root/ui/main_window.py
 class MatrixDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
 
         self.matrix = QPlainTextEdit(self)
         # self.second = QLineEdit(self)
-        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
+        buttonBox = QDialogButtonBox(
+            QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
 
         layout = QFormLayout(self)
         layout.addRow("Escreva a matriz", self.matrix)
