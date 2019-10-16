@@ -1,5 +1,5 @@
 from cmath import exp, pi
-from root.controllers import ImageManager
+from root.controller import ImageManager
 import numpy as np
 import cmath
 import math

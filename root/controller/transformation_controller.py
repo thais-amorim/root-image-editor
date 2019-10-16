@@ -1,11 +1,11 @@
-from root.controllers import TransformationManager
+from root.controller import TransformationManager
 import numpy as np
 
 from root.filter import ImageFilter as filter
 from root.filter import ColorFilter as color
 from root.filter import SteganographyTool as stegano
 from root.converter import ColorConverter as converter
-from root.controllers import FourierManager
+from root.controller import FourierManager
 
 class TransformationController():
 

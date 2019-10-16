@@ -6,9 +6,9 @@ from PyQt5. QtGui import *
 import imageio
 import numpy as np
 import sys
-sys.path.insert(0, sys.path[0]+'\\..\\controllers')
+sys.path.insert(0, sys.path[0]+'\\..\\controller')
 print(sys.path)
-from root.controllers import TransformationController
+from root.controller import TransformationController
 from root.ui import ImageView
 class FourierModal(QDialog):
 

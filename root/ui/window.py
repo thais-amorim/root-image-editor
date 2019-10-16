@@ -1,4 +1,4 @@
-from root.controllers import TransformationController
+from root.controller import TransformationController
 from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -6,7 +6,7 @@ from PyQt5. QtGui import *
 from root.ui import SideBar
 from root.ui import ImageView
 import sys
-sys.path.insert(0, sys.path[0] + '\\..\\controllers')
+sys.path.insert(0, sys.path[0] + '\\..\\controller')
 print(sys.path)
 
 _FILE_TYPES = "bmp(*.bmp);;jpg(*.jpg);;png(*.png)"
