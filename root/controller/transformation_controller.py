@@ -247,3 +247,8 @@ class TransformationController():
         image = scal.apply_rotate_bilinear(self.current_image,angle)
         self.update_memory_images(image)
         return self.current_image
+
+    def apply_laplacian(self):
+        image,mask = filter.apply_laplacian(self.current_image)
+        self.update_memory_images(image)
+        return self.current_image

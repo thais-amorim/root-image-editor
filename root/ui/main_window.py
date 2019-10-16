@@ -115,8 +115,8 @@ class MainWindow(Window):
         hsvAction.triggered.connect(self.rgb_to_hsv)
 
         colorModeMenu.addAction(grayScaleAction)
-        colorModeMenu.addAction(rgbAction)
-        colorModeMenu.addAction(hsvAction)
+        # colorModeMenu.addAction(rgbAction)
+        # colorModeMenu.addAction(hsvAction)
 
         # transformations
         negativeFilterAction = QAction("&Negative", self)
@@ -155,6 +155,7 @@ class MainWindow(Window):
 
         # filters/sharp
         laplaceFilterAction = QAction("&Laplaciano", self)
+        laplaceFilterAction.triggered.connect(self.laplacian)
         highBoostFilterAction = QAction("&HighBoost", self)
         highBoostFilterAction.triggered.connect(self.hi_boost_filtering)
         # add filters
@@ -244,6 +245,9 @@ class MainWindow(Window):
         self.toolbar.addSeparator()
         self.toolbar.addSeparator()
         self.toolbar.addAction(brushAction)
+
+    def laplacian(self):
+        self.loadImage(self.transformController.apply_laplacian())
 
     def piecewise(self):
         # coordinates, ok = QInputDialog.getText(self, 'Piecewise',
