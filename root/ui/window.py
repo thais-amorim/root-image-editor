@@ -82,7 +82,7 @@ class Window(QMainWindow):
 
 
 class Const():
-    DEFAULT_IMAGE = "images/einstein.jpg"
+    DEFAULT_IMAGE = "images/aranha.png"
     WINDOW_TITLE = "PytoShop"
     ICONS_PATH = "assets/icons/"
     WIDTH = 800

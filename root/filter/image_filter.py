@@ -128,11 +128,20 @@ class ImageFilter():
         filter_size = util.format_filter_size(filter_size)
         obtained, original = util.get_empty_image_with_same_dimensions(
             img)
-        for i in range(len(original)):
-            for j in range(len(original[0])):
-                obtained[i][j] = ImageFilter.get_median(
-                    filter_size, i, j, original)
-
+        if len(img.shape) == 2:
+            for i in range(len(original)):
+                for j in range(len(original[0])):
+                    obtained[i][j] = ImageFilter.get_median(
+                        filter_size, i, j, original)
+        else:
+            R = ImageFilter.apply_median(img[:,:,0],filter_size)
+            G = ImageFilter.apply_median(img[:,:,1],filter_size)
+            B = ImageFilter.apply_median(img[:,:,2],filter_size)
+            output = np.zeros((R.shape[0], R.shape[1], 3), dtype=np.uint8)
+            output[:,:,0] = R
+            output[:,:,1] = G
+            output[:,:,2] = B
+            obtained = output
         return obtained
 
     @staticmethod
@@ -168,7 +177,7 @@ class ImageFilter():
     def apply_convolution(img, filter_matrix):
         obtained, original = util.get_empty_image_with_same_dimensions(
             img)
-        height, width = ImageFilter.get_dimensions(img)
+        height, width =  util.get_dimensions(img)
         #Se for grayscale
         if len(img.shape) == 2:
             for row in range(1, height - 1):
@@ -179,7 +188,7 @@ class ImageFilter():
                     obtained[row, col] = min(max_obtained_value, _MAX_PIXEL)
         else:
             channel = img.shape[2]
-            for c in range (channel-1):
+            for c in range (channel):
                 for row in range(1, height - 1):
                     for col in range(1, width - 1):
                         value = filter_matrix * \
@@ -243,12 +252,10 @@ class ImageFilter():
         new_vertical_image = np.zeros((height, width), np.uint8)
         new_gradient_image = np.zeros((height, width), np.uint8)
         if len(img.shape) == 2:
-
             # # define images with 0s
             # new_horizontal_image = np.zeros((height, width), np.uint8)
             # new_vertical_image = np.zeros((height, width), np.uint8)
             # new_gradient_image = np.zeros((height, width), np.uint8)
-
             for i in range(1, height - 1):
                 for j in range(1, width - 1):
                     horizontal_grad = ImageFilter.apply_gradient_core(
@@ -326,17 +333,41 @@ class ImageFilter():
         return sum_value / (height * width)
 
     @staticmethod
-    def apply_arithmetic_mean(img, filter_size=3):
-        filter_size = util.format_filter_size(filter_size)
-        obtained, original = util.get_empty_image_with_same_dimensions(
-            img)
-        for i in range(len(original)):
-            for j in range(len(original[0])):
-                neighbors = ImageFilter.__get_neighbors_matrix(
-                    filter_size, i, j, original)
-                obtained[i][j] = ImageFilter.get_arithmetic_mean(neighbors)
+    def apply_arithmetic_mean(image, filter_size=3):
+        kernel = np.ones((filter_size, filter_size))*(1.0/(filter_size**2))
+        if len(image.shape) == 2:
+            return ImageFilter.apply_convolution(image, kernel)
+        else:
+            r, g, b = [image[:,:,0],image[:,:,1],image[:,:,2]]
+            R = ImageFilter.apply_convolution(r, kernel)
+            G = ImageFilter.apply_convolution(g, kernel)
+            B = ImageFilter.apply_convolution(b, kernel)
+            output = np.zeros((R.shape[0], R.shape[1], 3), dtype=np.uint8)
+            output[:,:,0] = R
+            output[:,:,1] = G
+            output[:,:,2] = B
 
-        return obtained
+            return output.astype(np.uint8)
+    # def apply_arithmetic_mean(img, filter_size=3):
+    #     filter_size = util.format_filter_size(filter_size)
+    #     obtained, original = util.get_empty_image_with_same_dimensions(
+    #         img)
+    #     if len(img.shape) == 2:
+    #         for i in range(len(original)):
+    #             for j in range(len(original[0])):
+    #                 neighbors = ImageFilter.__get_neighbors_matrix(
+    #                     filter_size, i, j, original)
+    #                 obtained[i][j] = ImageFilter.get_arithmetic_mean(neighbors)
+    #     else:
+    #         channel = img.shape[2]
+    #         for c in range (channel):
+    #             for i in range(len(original)):
+    #                 for j in range(len(original[0])):
+    #                     neighbors = ImageFilter.__get_neighbors_matrix(
+    #                         filter_size, i, j, original)
+    #                     obtained[i][j][c] = ImageFilter.get_arithmetic_mean(neighbors)
+
+    #     return obtained
 
     @staticmethod
     def get_geometric_mean(matrix):
@@ -408,7 +439,6 @@ class ImageFilter():
         mask = image - blurred
         result = image + (c * mask)
         return result, mask
-<<<<<<< HEAD
 
     @staticmethod
     def adjust_brightness (img, br):
@@ -428,5 +458,3 @@ class ImageFilter():
                         b = 255
                     obtained[i][j][k] = b
         return obtained.astype(np.uint8)
-=======
->>>>>>> merge_frontend_develop

@@ -7,11 +7,6 @@ _MAX_PIXEL = 255
 
 
 class ImageUtil():
-<<<<<<< HEAD
-
-    @staticmethod
-    def read_image(image_path, type="RGB"):
-=======
     @staticmethod
     def isGrayScale(img):
         if len(img.shape) == 2:
@@ -25,8 +20,7 @@ class ImageUtil():
         return False
 
     @staticmethod
-    def read_image(image_path, type="RGBA"):
->>>>>>> merge_frontend_develop
+    def read_image(image_path, type="RGB"):
         return imageio.imread(image_path, as_gray=False, pilmode=type)
 
     @staticmethod
@@ -44,9 +38,20 @@ class ImageUtil():
 
     @staticmethod
     def get_empty_image_with_same_dimensions(img):
-        height, width = ImageUtil.get_dimensions(img)
-        empty_image = np.zeros((height, width), np.uint8)
+        # height, width = ImageUtil.get_dimensions(img)
+        # empty_image = np.zeros((height, width), np.uint8)
+        empty_image = np.zeros(np.shape(img))
         return empty_image, img
+
+    @staticmethod
+    def get_image_dimensions(img):
+        data = np.array(img)
+        height = data.shape[0]
+        try:
+            width = data.shape[1]
+        except:
+            width = 1
+        return height, width
 
     @staticmethod
     def get_dimensions(img):

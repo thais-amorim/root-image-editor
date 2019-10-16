@@ -1,4 +1,5 @@
-from util import ImageUtil as util
+from root.util import ImageUtil as util
+
 import numpy as np
 
 
@@ -96,15 +97,9 @@ class ScaleConverter():
 
         return enlargedImg
 
-<<<<<<< HEAD
     
     @staticmethod
     def apply_rotate_nearest(image, angle):
-=======
-
-    #TODO
-    def nnrotate(image, angle):
->>>>>>> merge_frontend_develop
         height, width = image.shape[:2]
         output = np.zeros_like(image, dtype=np.uint8)
         angle = angle * np.pi / 180

@@ -71,7 +71,6 @@ class MainWindow(Window):
         imageMenu.addMenu(steganographyMenu)
         imageMenu.addSeparator()
         chromaKeyMenu = imageMenu.addMenu("Chroma Key")
-<<<<<<< HEAD:root/ui/MainWindow.py
         
         
         #Transformações espaciais
@@ -93,11 +92,6 @@ class MainWindow(Window):
 
         #Esteganografia
         steganographyAction = QAction("Escrever Mensagem",self)
-=======
-
-        # Esteganografia
-        steganographyAction = QAction("Escrever Mensagem", self)
->>>>>>> merge_frontend_develop:root/ui/main_window.py
         steganographyAction.triggered.connect(self.steganography)
         steganographyMenu.addAction(steganographyAction)
 
@@ -147,7 +141,7 @@ class MainWindow(Window):
             self.generic_convolution)
         medianFilterAction = QAction("&Filtragem por Mediana", self)
         medianFilterAction.triggered.connect(self.median_filter)
-        meanFilterAction = QAction("&Suaviazação por Média", self)
+        meanFilterAction = QAction("&Suavização por Média", self)
         meanFilterAction.triggered.connect(self.mean_filtering)
         gaussianFilterAction = QAction("&Suavização Gaussiana", self)
         sharpFilterAction = QAction("&Aguçamento", self)
@@ -182,14 +176,8 @@ class MainWindow(Window):
         spectrumFilterAction = QAction(
             "&Espectro da Transformada de Fourier", self)
         spectrumFilterAction.triggered.connect(self.fourier_spectrum)
-<<<<<<< HEAD:root/ui/MainWindow.py
         # radialFilterAction = QAction("&Filtros Radiais(Passa alta, baixa ou faixa)", self)
         
-=======
-        radialFilterAction = QAction(
-            "&Filtros Radiais(Passa alta, baixa ou faixa)", self)
-
->>>>>>> merge_frontend_develop:root/ui/main_window.py
         harmonicFilterAction = QAction("&Média Harmônica", self)
         harmonicFilterAction.triggered.connect(self.harmonic_filtering)
         counterharmonicFilterAction = QAction("&Média Contra-harmônica", self)
@@ -198,16 +186,11 @@ class MainWindow(Window):
 
         frequenceFiltersMenu.addAction(spectrumFilterAction)
         frequenceFiltersMenu.addSeparator()
-<<<<<<< HEAD:root/ui/MainWindow.py
         # frequenceFiltersMenu.addAction (radialFilterAction)
         # frequenceFiltersMenu.addSeparator()
         
         frequenceFiltersMenu.addAction (harmonicFilterAction)
         frequenceFiltersMenu.addAction (counterharmonicFilterAction)
-=======
-        frequenceFiltersMenu.addAction(radialFilterAction)
-        frequenceFiltersMenu.addSeparator()
->>>>>>> merge_frontend_develop:root/ui/main_window.py
 
         frequenceFiltersMenu.addAction(harmonicFilterAction)
         frequenceFiltersMenu.addAction(counterharmonicFilterAction)
@@ -284,11 +267,11 @@ class MainWindow(Window):
         self.loadImage(self.transformController.apply_equalized_histogram())
 
     def generic_convolution(self):
-        try:
-            self.loadImage(self.transformController.apply_convolution(
-                self.getMatrixInput()))
-        except:
-            print("Ocorreu um erro")
+        # try:
+        self.loadImage(self.transformController.apply_convolution(
+            self.getMatrixInput()))
+        # except:
+        #     print("Ocorreu um erro")
 
     def sobel_filtering(self):
         self.loadImage(self.transformController.apply_sobel())
@@ -361,28 +344,6 @@ class MainWindow(Window):
                     self.transformController.apply_highboost(int(size), float(c)))
 
     def fourier_spectrum(self):
-<<<<<<< HEAD:root/ui/MainWindow.py
-=======
-        # mag = self.transformController.apply_fourier()
-        # mag = mag.astype(np.uint8)
-        # print("Shape da Magnitude")
-        # print(mag.shape)
-        # print("strides")
-        # print(mag.strides[0])
-        # print(mag.shape[0])
-        # print(mag.shape[1])
-        # print(mag.data)
-
-        # print("IM:")
-        # im = self.transformController.current_image
-        # print(im.shape)
-        # print(im)
-        # print("im data")
-        # print(im.strides[0])
-        # print(im.shape[0])
-        # print(im.shape[1])
-        # print(im.data)
->>>>>>> merge_frontend_develop:root/ui/main_window.py
         w = FourierModal(self.transformController)
         if w.exec_():
             self.loadImage(self.transformController.apply_inverse_fourier())
@@ -403,7 +364,6 @@ class MainWindow(Window):
 
     def chroma_key(self):
         # try:
-<<<<<<< HEAD:root/ui/MainWindow.py
             name,_ = QtWidgets.QFileDialog.getOpenFileName(self,"Escolha o fundo da chroma key")
             if name:
                 faixa, ok = QInputDialog.getText(self, 'Chroma Key', 
@@ -411,14 +371,6 @@ class MainWindow(Window):
                 if ok and faixa:
                     background = self.transformController.openImage(name)
                     self.loadImage(self.transformController.apply_chroma_key(background,int(faixa)))
-=======
-        name, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self, "Escolha o fundo da chroma key")
-        if name:
-            background = self.transformController.openImage(name)
-            self.loadImage(
-                self.transformController.apply_chroma_key(background))
->>>>>>> merge_frontend_develop:root/ui/main_window.py
         # except:
         #     print("Ocorreu um erro")
 
@@ -449,7 +401,6 @@ class MainWindow(Window):
             msg.exec_()
 
 
-<<<<<<< HEAD:root/ui/MainWindow.py
     def scale_nearest(self):
         scale, ok = QInputDialog.getText(self, 'Escalar por NN', 
             'Entre com o valor de escala')
@@ -474,8 +425,6 @@ class MainWindow(Window):
             self.loadImage(self.transformController.apply_rotate_bilinear(float(angle)))
 
             
-=======
->>>>>>> merge_frontend_develop:root/ui/main_window.py
 class MatrixDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
