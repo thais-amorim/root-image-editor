@@ -125,7 +125,7 @@ class TransformationController():
         return self.current_image
 
     def apply_highboost(self, filter_size,c):
-        image = filter.apply_contra_harmonic_mean(self.current_image,c,filter_size)
+        image,mask = filter.apply_highboost(self.current_image,c,filter_size)
         self.update_memory_images(image)
         return self.current_image
 
