@@ -5,6 +5,10 @@ from math import floor, cos, radians, degrees, acos
 class ColorConverter():
 
     @staticmethod
+    def rgb_to_gray(rgb):
+        return np.dot(rgb[...,:3], [0.2989, 0.5870, 0.1140])
+
+    @staticmethod
     def rgb_to_gray_via_weighted_average(r, g, b):
         return (r * 0.2989) + (g * 0.5870) + (b * 0.1140)
 

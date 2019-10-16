@@ -15,25 +15,25 @@ class ImageManager():
     def __init__(self):
         super().__init__()
 
-
-    #Abre um arquivo e retorna ???
-    def read_image(self,image_path):
+    # Abre um arquivo e retorna ???
+    def read_image(self, image_path):
         return imageio.imread(image_path, as_gray=False, pilmode="RGB")
 
-    def save_image(self,name, image_as_byte):
+    def save_image(self, name, image_as_byte):
         import matplotlib
-        ##Correção: com esse código, é possível salvar a imagem e conseguir abrir no windows depois
-        matplotlib.image.imsave(_images_path+name, image_as_byte, cmap = matplotlib.cm.gray)
+        # Correção: com esse código, é possível salvar a imagem e conseguir abrir no windows depois
+        matplotlib.image.imsave(_images_path + name,
+                                image_as_byte, cmap=matplotlib.cm.gray)
         # imageio.imwrite(_images_path+name, image_as_byte)
 
-    #Converte a imagem de 8bits para escala de cinza
-    def rgb_to_gray(self,rgb):
-        return np.dot(rgb[...,:3], [0.2989, 0.5870, 0.1140])
+    # Converte a imagem de 8bits para escala de cinza
+    def rgb_to_gray(self, rgb):
+        return np.dot(rgb[..., :3], [0.2989, 0.5870, 0.1140])
         # img = Image.open(rgb).convert('LA')
         # return np.asarray(img.getdata()).reshape(img.size[1], img.size[0], -1)
 
     # Return odd size N, where N >= 3 and filter would be a matrix N x N
-    def format_size(self,size):
+    def format_size(self, size):
         min_size = 3
         if size < 3:
             result = min_size
@@ -47,7 +47,7 @@ class ImageManager():
     def normalize(self, img):
         return np.interp(img, (img.min(), img.max()), (0, 255))
 
-    def get_empty_image_with_same_dimensions(self,img):
+    def get_empty_image_with_same_dimensions(self, img):
         data = np.array(img)
         height = data.shape[0]
         width = data.shape[1]
