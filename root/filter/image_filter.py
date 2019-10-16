@@ -238,10 +238,20 @@ class ImageFilter():
         interp = np.interp(x, coordinates_x, coordinates_y)
         obtained = img.copy()
         height, width = util.get_dimensions(obtained)
-        for i in range(height):
-            for j in range(width):
-                index = int(np.round(obtained[i][j]))
-                obtained[i][j] = interp[index]
+        if len(img.shape) == 2:
+            for i in range(height):
+                for j in range(width):
+                    index = int(np.round(obtained[i][j]))
+                    obtained[i][j] = interp[index]
+        else:
+            R = ImageFilter.apply_piecewise_linear(img[:,:,0],coordinates_x, coordinates_y)
+            G = ImageFilter.apply_piecewise_linear(img[:,:,1],coordinates_x, coordinates_y)
+            B = ImageFilter.apply_piecewise_linear(img[:,:,2],coordinates_x, coordinates_y)
+            output = np.zeros((R.shape[0], R.shape[1], 3), dtype=np.uint8)
+            output[:,:,0] = R
+            output[:,:,1] = G
+            output[:,:,2] = B
+            obtained = output
 
         return obtained
 

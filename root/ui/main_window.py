@@ -72,7 +72,10 @@ class MainWindow(Window):
         imageMenu.addSeparator()
         chromaKeyMenu = imageMenu.addMenu("Chroma Key")
         
-        
+        piecewiseAction = QAction("Piecewise",self)
+        piecewiseAction.triggered.connect(self.piecewise)
+        imageMenu.addAction(piecewiseAction)
+
         #Transformações espaciais
         scalarNearestAction = QAction("Escala Nearest Neighbours",self)
         scalarNearestAction.triggered.connect(self.scale_nearest)
@@ -88,7 +91,6 @@ class MainWindow(Window):
         spacialMenu.addAction(scalarBilinearAction)
         spacialMenu.addAction(rotateNearestAction)
         spacialMenu.addAction(rotateBilinearAction)
-
 
         #Esteganografia
         steganographyAction = QAction("Escrever Mensagem",self)
@@ -243,6 +245,12 @@ class MainWindow(Window):
         self.toolbar.addSeparator()
         self.toolbar.addAction(brushAction)
 
+    def piecewise(self):
+        # coordinates, ok = QInputDialog.getText(self, 'Piecewise',
+        #                                  'Escreva as coordenadas separadas por espaço, x na primeira linnha e y na segunda:')
+        x,y = self.getCoordinateInput()
+        self.loadImage(self.transformController.apply_piecewise_linear(x,y))
+
     def negative_transform(self):
         self.loadImage(self.transformController.negativeTransform())
 
@@ -302,6 +310,17 @@ class MainWindow(Window):
         except:
             return None
 
+    def getCoordinateInput(self):
+        dialog = MatrixDialog()
+        if dialog.exec():
+            print(dialog.getInputs())
+            gamma = dialog.getInputs()
+        lines = gamma.split("\n")
+        x = np.int_(lines[0].split(" "))
+        y = np.int_(lines[1].split(" "))
+        return x,y
+
+
     def gradient_filtering(self):
         try:
             self.loadImage(self.transformController.apply_gradient(
@@ -311,28 +330,28 @@ class MainWindow(Window):
 
     def mean_filtering(self):
         size, ok = QInputDialog.getText(self, 'Filtro por Média Aritimética',
-                                        'Entre com o tamanho do filtro: (deve ser maior que 0)')
+                                        'Entre com o tamanho do filtro: (deve ser maior que 2)')
         if ok:
             self.loadImage(
                 self.transformController.apply_arithmetic_mean(int(size)))
 
     def geometric_filtering(self):
         size, ok = QInputDialog.getText(self, 'Filtro por Média Geométrica',
-                                        'Entre com o tamanho do filtro: (deve ser maior que 0)')
+                                        'Entre com o tamanho do filtro: (deve ser maior que 2)')
         if ok:
             self.loadImage(
                 self.transformController.apply_geometric_mean(int(size)))
 
     def harmonic_filtering(self):
         size, ok = QInputDialog.getText(self, 'Filtro por Média Harmônica',
-                                        'Entre com o tamanho do filtro: (deve ser maior que 0)')
+                                        'Entre com o tamanho do filtro: (deve ser maior que 2)')
         if ok:
             self.loadImage(
                 self.transformController.apply_harmonic_mean(int(size)))
 
     def contra_harmonic_filtering(self):
         size, ok = QInputDialog.getText(self, 'Filtro por Média Contra Harmônica',
-                                        'Entre com o tamanho do filtro: (deve ser maior que 0)')
+                                        'Entre com o tamanho do filtro: (deve ser maior que 2)')
         if ok:
             q, ok = QInputDialog.getText(self, 'Filtro por Média Harmônica',
                                          'Entre com o valor de q')
@@ -342,7 +361,7 @@ class MainWindow(Window):
 
     def hi_boost_filtering(self):
         size, ok = QInputDialog.getText(self, 'Filtro por Hi Boost',
-                                        'Entre com o tamanho do filtro: (deve ser maior que 0)')
+                                        'Entre com o tamanho do filtro: (deve ser maior que 2)')
         if ok:
             c, ok = QInputDialog.getText(self, 'Filtro por Média Harmônica',
                                          'Entre com o valor de c')

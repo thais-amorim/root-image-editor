@@ -217,9 +217,10 @@ class TransformationController():
     #         self.update_memory_images(image)
     #     return self.current_image
 
-    def apply_piecewise_linear(self,img_name, img, coordinates_x, coordinates_y):
-        #TODO
-        return None
+    def apply_piecewise_linear(self, coordinates_x=[0,255], coordinates_y = [255,0]):
+        image = filter.apply_piecewise_linear(self.current_image, coordinates_x, coordinates_y)
+        self.update_memory_images(image)
+        return self.current_image
 
     def steganograph_encode(self, image,text):
         return stegano.encode(image, text)
