@@ -1,11 +1,10 @@
-
-from TransformationManager import TransformationManager
 import numpy as np
 
 from filter import ImageFilter as filter
 from filter import ColorFilter as color
 from filter import SteganographyTool as stegano
 from converter import ColorConverter as converter
+from converter import ScaleConverter as scal
 from FourierManager import FourierManager
 
 class TransformationController():
@@ -212,3 +211,23 @@ class TransformationController():
 
     def steganograph_decode(self, image):
         return stegano.decode(image)
+
+    def apply_scale_nearest(self, scale):
+        image = scal.apply_nearest_neighbour(self.current_image,scale)
+        self.update_memory_images(image)
+        return self.current_image
+
+    def apply_scale_bilinear(self, scale):
+        image = scal.apply_bilinear_interpolation(self.current_image,scale)
+        self.update_memory_images(image)
+        return self.current_image
+
+    def apply_rotation_nearest(self, angle):
+        image = scal.apply_rotate_nearest(self.current_image,angle)
+        self.update_memory_images(image)
+        return self.current_image
+        
+    def apply_rotate_bilinear(self, angle):
+        image = scal.apply_rotate_bilinear(self.current_image,angle)
+        self.update_memory_images(image)
+        return self.current_image

@@ -1,4 +1,4 @@
-from root.util import ImageUtil as util
+from util import ImageUtil as util
 import numpy as np
 
 
@@ -97,24 +97,25 @@ class ScaleConverter():
         return enlargedImg
 
     
-    #TODO
-    def nnrotate(image, angle):
-    height, width = image.shape[:2]
-    output = np.zeros_like(image, dtype=np.uint8)
-    angle = angle * np.pi / 180
+    @staticmethod
+    def apply_rotate_nearest(image, angle):
+        height, width = image.shape[:2]
+        output = np.zeros_like(image, dtype=np.uint8)
+        angle = angle * np.pi / 180
 
-    for x in range(width):
-        for y in range(height):
-            i = int(x+angle)
-            j = int(y+angle)
-            print(i,j)
-            output[x,y] = image[i,j]
+        for x in range(width):
+            for y in range(height):
+                i = int(x+angle)
+                j = int(y+angle)
+                print(i,j)
+                output[x,y] = image[i,j]
 
-    return output
+        return output
 
 
     # RGB and Grayscale Image
-    def bilinearRotate(image, angle):
+    @staticmethod
+    def apply_rotate_bilinear(image, angle):
         width, height = image.shape[:2]
         output = np.zeros_like(image, dtype=np.uint8)
         angle = angle * np.pi / 180 
@@ -126,6 +127,6 @@ class ScaleConverter():
                 xp = int((x - center_x) * np.cos(angle) - (y - center_y) * np.sin(angle) + center_x)
                 yp = int((x - center_x) * np.sin(angle) + (y - center_y) * np.cos(angle) + center_y)
                 if 0 <= xp < width and 0 <= yp < height:
-                    output[x, y] = i[xp, yp]
+                    output[x, y] = image[xp, yp]
 
         return output

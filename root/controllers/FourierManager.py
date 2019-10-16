@@ -1,5 +1,5 @@
     
-from ImageManager import ImageManager
+from filter import ImageFilter as filter
 import numpy as np
 import cmath
 import math
@@ -7,7 +7,7 @@ _max_pixel = 255
 _images_path = 'images/'
 from cmath import exp, pi
 
-class  FourierManager(ImageManager):
+class  FourierManager():
 
     def __init__(self):
         super().__init__()
@@ -241,10 +241,10 @@ class  FourierManager(ImageManager):
 
 
 
-f  = FourierManager()
+# f  = FourierManager()
 
-img = f.read_image("./images/DFT_no_log.jpg")
-img = f.rgb_to_gray(img)
+# img = f.read_image("./images/DFT_no_log.jpg")
+# img = f.rgb_to_gray(img)
 
 
 

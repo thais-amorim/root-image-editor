@@ -74,6 +74,7 @@ class MainWindow(Window):
         frequenceFiltersMenu = imageMenu.addMenu("Filtro no Domínio da Frequência")
         imageMenu.addSeparator()
         histogramMenu = imageMenu.addMenu("Histogram")
+        spacialMenu = imageMenu.addMenu("Transformações Espaciais")
         imageMenu.addSeparator()
         steganographyMenu = imageMenu.addMenu("Esteganografia")
         imageMenu.addMenu(steganographyMenu)
@@ -81,6 +82,23 @@ class MainWindow(Window):
         chromaKeyMenu = imageMenu.addMenu("Chroma Key")
         
         
+        #Transformações espaciais
+        scalarNearestAction = QAction("Escala Nearest Neighbours",self)
+        scalarNearestAction.triggered.connect(self.scale_nearest)
+        scalarBilinearAction = QAction("Escala Bilinear",self)
+        scalarBilinearAction.triggered.connect(self.scale_bilinear)
+
+        rotateNearestAction = QAction("Rotacionar Nearest Neighbours",self)
+        rotateNearestAction.triggered.connect(self.rotate_nearest)
+        rotateBilinearAction = QAction("Rotacionar Bilinear",self)
+        rotateBilinearAction.triggered.connect(self.rotate_bilinear)
+
+        spacialMenu.addAction(scalarNearestAction)
+        spacialMenu.addAction(scalarBilinearAction)
+        spacialMenu.addAction(rotateNearestAction)
+        spacialMenu.addAction(rotateBilinearAction)
+
+
         #Esteganografia
         steganographyAction = QAction("Escrever Mensagem",self)
         steganographyAction.triggered.connect(self.steganography)
@@ -165,7 +183,7 @@ class MainWindow(Window):
         #filtros na frequência
         spectrumFilterAction = QAction("&Espectro da Transformada de Fourier", self)
         spectrumFilterAction.triggered.connect(self.fourier_spectrum)
-        radialFilterAction = QAction("&Filtros Radiais(Passa alta, baixa ou faixa)", self)
+        # radialFilterAction = QAction("&Filtros Radiais(Passa alta, baixa ou faixa)", self)
         
         harmonicFilterAction = QAction("&Média Harmônica", self)
         harmonicFilterAction.triggered.connect(self.harmonic_filtering)
@@ -174,8 +192,8 @@ class MainWindow(Window):
 
         frequenceFiltersMenu.addAction (spectrumFilterAction)
         frequenceFiltersMenu.addSeparator()
-        frequenceFiltersMenu.addAction (radialFilterAction)
-        frequenceFiltersMenu.addSeparator()
+        # frequenceFiltersMenu.addAction (radialFilterAction)
+        # frequenceFiltersMenu.addSeparator()
         
         frequenceFiltersMenu.addAction (harmonicFilterAction)
         frequenceFiltersMenu.addAction (counterharmonicFilterAction)
@@ -320,26 +338,6 @@ class MainWindow(Window):
                 self.loadImage(self.transformController.apply_highboost(int(size),float(c)))
     
     def fourier_spectrum(self):
-        # mag = self.transformController.apply_fourier()
-        # mag = mag.astype(np.uint8)
-        # print("Shape da Magnitude")
-        # print(mag.shape)
-        # print("strides")
-        # print(mag.strides[0])
-        # print(mag.shape[0])
-        # print(mag.shape[1])
-        # print(mag.data)
-
-
-        # print("IM:")
-        # im = self.transformController.current_image
-        # print(im.shape)
-        # print(im)
-        # print("im data")
-        # print(im.strides[0])
-        # print(im.shape[0])
-        # print(im.shape[1])
-        # print(im.data)
         w = FourierModal(self.transformController)
         if w.exec_():
             self.loadImage(self.transformController.apply_inverse_fourier())
@@ -389,6 +387,32 @@ class MainWindow(Window):
             msg.setInformativeText(text)
             msg.setWindowTitle("Esteganografia")
             msg.exec_()
+
+
+    def scale_nearest(self):
+        scale, ok = QInputDialog.getText(self, 'Escalar por NN', 
+            'Entre com o valor de escala')
+        if(ok and scale):
+            self.loadImage(self.transformController.apply_scale_nearest(float(scale)))
+            
+    def scale_bilinear(self):
+        scale, ok = QInputDialog.getText(self, 'Escalar Bilinear', 
+            'Entre com o valor de escala')
+        if(ok and scale):
+            self.loadImage(self.transformController.apply_scale_bilinear(float(scale)))
+    
+    def rotate_nearest(self):
+        angle, ok = QInputDialog.getText(self, 'Rotação por NM', 
+            'Entre com ângulo')
+        if(ok and angle):
+            self.loadImage(self.transformController.apply_rotation_nearest(float(angle)))
+    def rotate_bilinear(self):
+        angle, ok = QInputDialog.getText(self, 'Rotação bilinear', 
+            'Entre com o ãngulo')
+        if(ok and angle):
+            self.loadImage(self.transformController.apply_rotate_bilinear(float(angle)))
+
+            
 class MatrixDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
