@@ -252,3 +252,8 @@ class TransformationController():
         image,mask = filter.apply_laplacian(self.current_image)
         self.update_memory_images(image)
         return self.current_image
+
+    def apply_gaussian(self, filter_size, sigma):
+        image = filter.apply_gaussian(self.current_image,filter_size, sigma)
+        self.update_memory_images(image)
+        return self.current_image

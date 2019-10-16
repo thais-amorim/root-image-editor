@@ -256,28 +256,50 @@ class ImageFilter():
         return obtained
 
     @staticmethod
-    def apply_convolution(img, filter_matrix):
-        obtained, original = util.get_empty_image_with_same_dimensions(
-            img)
-        height, width =  util.get_dimensions(img)
-        #Se for grayscale
-        if len(img.shape) == 2:
-            for row in range(1, height - 1):
-                for col in range(1, width - 1):
-                    value = filter_matrix * \
-                        img[(row - 1):(row + 2), (col - 1):(col + 2)]
-                    max_obtained_value = max(0, value.sum())
-                    obtained[row, col] = min(max_obtained_value, _MAX_PIXEL)
+    def apply_convolution(image, kernel):
+        if len(image.shape) == 2:
+            image_padded = np.zeros((image.shape[0] + 2, image.shape[1] + 2))
+            image_padded[1:-1, 1:-1] = image
+            out = np.zeros_like(image)
+        
+            for x in range(image.shape[1]):
+                for y in range(image.shape[0]):
+                    out[y, x] = (kernel * image_padded[y:y + 3, x:x + 3]).sum()
         else:
-            channel = img.shape[2]
-            for c in range (channel):
-                for row in range(1, height - 1):
-                    for col in range(1, width - 1):
-                        value = filter_matrix * \
-                            img[(row - 1):(row + 2), (col - 1):(col + 2),c]
-                        max_obtained_value = max(0, value.sum())
-                        obtained[row, col,c] = min(max_obtained_value, _MAX_PIXEL)
-        return obtained
+            R = ImageFilter.apply_convolution(image[:,:,0],kernel)
+            G = ImageFilter.apply_convolution(image[:,:,1],kernel)
+            B = ImageFilter.apply_convolution(image[:,:,2],kernel)
+            output = np.zeros((R.shape[0], R.shape[1], 3), dtype=np.uint8)
+            output[:,:,0] = R
+            output[:,:,1] = G
+            output[:,:,2] = B
+            out = output
+
+        return out
+
+    # @staticmethod
+    # def apply_convolution(img, filter_matrix):
+    #     obtained, original = util.get_empty_image_with_same_dimensions(
+    #         img)
+    #     height, width =  util.get_dimensions(img)
+    #     #Se for grayscale
+    #     if len(img.shape) == 2:
+    #         for row in range(1, height - 1):
+    #             for col in range(1, width - 1):
+    #                 value = filter_matrix * \
+    #                     img[(row - 1):(row + 2), (col - 1):(col + 2)]
+    #                 max_obtained_value = max(0, value.sum())
+    #                 obtained[row, col] = min(max_obtained_value, _MAX_PIXEL)
+    #     else:
+    #         channel = img.shape[2]
+    #         for c in range (channel):
+    #             for row in range(1, height - 1):
+    #                 for col in range(1, width - 1):
+    #                     value = filter_matrix * \
+    #                         img[(row - 1):(row + 2), (col - 1):(col + 2),c]
+    #                     max_obtained_value = max(0, value.sum())
+    #                     obtained[row, col,c] = min(max_obtained_value, _MAX_PIXEL)
+    #     return obtained
 
     @staticmethod
     def apply_laplacian(img):
@@ -352,22 +374,14 @@ class ImageFilter():
                     new_gradient_image[i - 1, j - 1] = np.sqrt(
                         pow(horizontal_grad, 2.0) + pow(vertical_grad, 2.0))
         else:
-            new_gradient_image = np.zeros((height, width,3), np.uint8)
-            channel = img.shape[2]
-            for c in range (channel-1):
-                for i in range(1, height - 1):
-                    for j in range(1, width - 1):
-                        horizontal_grad = ImageFilter.apply_gradient_core(
-                            horizontal, img[:,:,c], i, j)
-                        new_horizontal_image[i - 1, j - 1] = abs(horizontal_grad)
-
-                        vertical_grad = ImageFilter.apply_gradient_core(
-                            vertical, img[:,:,c], i, j)
-                        new_vertical_image[i - 1, j - 1] = abs(vertical_grad)
-
-                        # Edge Magnitude
-                        new_gradient_image[i - 1, j - 1,c] = np.sqrt(
-                            pow(horizontal_grad, 2.0) + pow(vertical_grad, 2.0))            
+            R = ImageFilter.apply_sobel(img[:,:,0])
+            G = ImageFilter.apply_sobel(img[:,:,1])
+            B = ImageFilter.apply_sobel(img[:,:,2])
+            output = np.zeros((R.shape[0], R.shape[1], 3), dtype=np.uint8)
+            output[:,:,0] = R
+            output[:,:,1] = G
+            output[:,:,2] = B
+            new_gradient_image = output           
 
         return new_gradient_image
 
@@ -376,23 +390,32 @@ class ImageFilter():
         '''
         Apply gradient using a single filter_matrix (3x3).
         '''
-        filter_height, filter_width = util.get_dimensions(
-            filter_matrix)
-        assert filter_height != 3, "Filter Matrix must have height = 3 instead of" + \
-            string(filter_height)
-        assert filter_width != 3, "Filter Matrix must have width = 3 instead of" + \
-            string(filter_width)
+        # filter_height, filter_width = util.get_dimensions(
+        #     filter_matrix)
+        # assert filter_height != 3, "Filter Matrix must have height = 3 instead of " + \
+        #     str(filter_height)
+        # assert filter_width != 3, "Filter Matrix must have width = 3 instead of " + \
+        #     str(filter_width)
 
         height, width = util.get_dimensions(img)
 
         # define image with 0s
         new_gradient_image = np.zeros((height, width), np.uint8)
-
-        for i in range(1, height - 1):
-            for j in range(1, width - 1):
-                grad = ImageFilter.apply_gradient_core(
-                    filter_matrix, img, i, j)
-                new_gradient_image[i - 1, j - 1] = abs(grad)
+        if len(img.shape) == 2:
+            for i in range(1, height - 1):
+                for j in range(1, width - 1):
+                    grad = ImageFilter.apply_gradient_core(
+                        filter_matrix, img, i, j)
+                    new_gradient_image[i - 1, j - 1] = abs(grad)
+        else:
+            R = ImageFilter.apply_gradient(img[:,:,0],filter_matrix)
+            G = ImageFilter.apply_gradient(img[:,:,1],filter_matrix)
+            B = ImageFilter.apply_gradient(img[:,:,2],filter_matrix)
+            output = np.zeros((R.shape[0], R.shape[1], 3), dtype=np.uint8)
+            output[:,:,0] = R
+            output[:,:,1] = G
+            output[:,:,2] = B
+            new_gradient_image = output
 
         return new_gradient_image
 

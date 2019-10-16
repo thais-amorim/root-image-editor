@@ -146,7 +146,8 @@ class MainWindow(Window):
         meanFilterAction = QAction("&Suavização por Média", self)
         meanFilterAction.triggered.connect(self.mean_filtering)
         gaussianFilterAction = QAction("&Suavização Gaussiana", self)
-        sharpFilterAction = QAction("&Aguçamento", self)
+        gaussianFilterAction.triggered.connect(self.gaussian)
+        # sharpFilterAction = QAction("&Aguçamento", self)
         sepiaFilterAction = QAction("&Sepia", self)
         sepiaFilterAction.triggered.connect(self.sepia_filter)
 
@@ -171,9 +172,10 @@ class MainWindow(Window):
         filtersMenu.addAction(geometricFilterAction)
         filtersMenu.addAction(sepiaFilterAction)
         # add filters/sharp
-        sharpFilterMenu = filtersMenu.addMenu("Aguçamento")
-        sharpFilterMenu.addAction(gaussianFilterAction)
-        sharpFilterMenu.addAction(highBoostFilterAction)
+        # sharpFilterMenu = filtersMenu.addMenu("Aguçamento")
+        # sharpFilterMenu.addAction(gaussianFilterAction)
+        # sharpFilterMenu.addAction(highBoostFilterAction)
+        filtersMenu.addAction(highBoostFilterAction)
 
         # filtros na frequência
         spectrumFilterAction = QAction(
@@ -192,11 +194,11 @@ class MainWindow(Window):
         # frequenceFiltersMenu.addAction (radialFilterAction)
         # frequenceFiltersMenu.addSeparator()
         
-        frequenceFiltersMenu.addAction (harmonicFilterAction)
-        frequenceFiltersMenu.addAction (counterharmonicFilterAction)
+        filtersMenu.addAction (harmonicFilterAction)
+        filtersMenu.addAction (counterharmonicFilterAction)
 
-        frequenceFiltersMenu.addAction(harmonicFilterAction)
-        frequenceFiltersMenu.addAction(counterharmonicFilterAction)
+        # frequenceFiltersMenu.addAction(harmonicFilterAction)
+        # frequenceFiltersMenu.addAction(counterharmonicFilterAction)
 
         # histogram Menu
         equalizationAction = QAction("&Equalização por Histograma", self)
@@ -246,6 +248,15 @@ class MainWindow(Window):
         self.toolbar.addSeparator()
         self.toolbar.addAction(brushAction)
 
+    def gaussian(self):
+        filter_size, ok = QInputDialog.getText(self, 'Suavização Gaussiana',
+                                         'Escolha o tamanho do filtro')
+        if ok and filter_size:
+            sigma, ok = QInputDialog.getText(self, 'Suavização Gaussiana',
+                                         'Escolha o sigma')
+            if ok and sigma:           
+                self.loadImage(self.transformController.apply_gaussian(int(filter_size),float(sigma)))
+
     def laplacian(self):
         self.loadImage(self.transformController.apply_laplacian())
 
@@ -276,7 +287,7 @@ class MainWindow(Window):
 
     def median_filter(self):
         size, ok = QInputDialog.getText(self, 'Filtragem por Median',
-                                        'Entre com o tamanho do filtro: (deve ser maior que 0)')
+                                        'Entre com o tamanho do filtro: (deve ser maior que 2)')
         if ok:
             self.loadImage(self.transformController.apply_median(int(size)))
 
@@ -308,7 +319,7 @@ class MainWindow(Window):
             table[i] = l.split(' ')
             i = i + 1
         try:
-            table = np.array(table)
+            # table = np.array(table)
             table = np.float_(table)
             return table
         except:
@@ -326,11 +337,8 @@ class MainWindow(Window):
 
 
     def gradient_filtering(self):
-        try:
-            self.loadImage(self.transformController.apply_gradient(
+        self.loadImage(self.transformController.apply_gradient(
                 self.getMatrixInput()))
-        except:
-            print("Ocorreu um erro")
 
     def mean_filtering(self):
         size, ok = QInputDialog.getText(self, 'Filtro por Média Aritimética',

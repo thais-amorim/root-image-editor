@@ -123,8 +123,8 @@ class ScaleConverter():
         center_x = width / 2
         center_y = height / 2
 
-        for x in range(width):
-            for y in range(height):
+        for x in range(0,width):
+            for y in range(0,height):
                 xp = int((x - center_x) * np.cos(angle) - (y - center_y) * np.sin(angle) + center_x)
                 yp = int((x - center_x) * np.sin(angle) + (y - center_y) * np.cos(angle) + center_y)
                 if 0 <= xp < width and 0 <= yp < height:
