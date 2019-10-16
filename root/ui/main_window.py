@@ -200,6 +200,7 @@ class MainWindow(Window):
         equalizationAction.triggered.connect(self.histEqualize)
 
         showHistogramAction = QAction("&Ver Histograma", self)
+        showHistogramAction.triggered.connect(self.showHistogram)
 
         histogramMenu.addAction(equalizationAction)
         histogramMenu.addAction(showHistogramAction)
@@ -269,6 +270,8 @@ class MainWindow(Window):
 
     def histEqualize(self):
         self.loadImage(self.transformController.apply_equalized_histogram())
+    def showHistogram(self):
+        self.loadImage(self.transformController.show_histogram())
 
     def generic_convolution(self):
         # try:

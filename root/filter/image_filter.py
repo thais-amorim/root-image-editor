@@ -76,6 +76,27 @@ class ImageFilter():
         plt.close()
 
     @staticmethod
+    def histogram(image, bins=256):
+        if len(image.shape) == 2:  # Grayscale Image
+            hist = np.zeros(bins, dtype=np.int)
+            flat = np.asarray(image)
+            flat = flat.flatten()
+
+            for pxl in flat:
+                hist[int(round(pxl,5))] += 1
+
+            return hist
+        else:  # RGB Image
+            r, g, b = np.zeros(bins), np.zeros(bins), np.zeros(bins)
+            for row in range(image.shape[0]):
+                for col in range(image.shape[1]):
+                    r[image[row, col][0]] += 1
+                    g[image[row, col][1]] += 1
+                    b[image[row, col][2]] += 1
+
+            return (r, g, b)
+
+    @staticmethod
     def apply_histogram_equalization(img):
         # Getting the pixel values of the image
         original = np.array(img)
@@ -92,13 +113,63 @@ class ImageFilter():
         # Multiplying the cummulative frequency by the maximum value of the pixels
         mul = sk * np.max(original)
         roundVal = np.round(mul)
-        # Mapping the pixels for the equalization
-        for i in range(len(original)):
-            for j in range(len(original[0])):
-                equalized_img[i][j] = roundVal[np.where(
-                    unique_pixels == original[i][j])]
+        if len(img.shape) == 2:
+            # Mapping the pixels for the equalization
+            for i in range(len(original)):
+                for j in range(len(original[0])):
+                    equalized_img[i][j] = roundVal[np.where(
+                        unique_pixels == original[i][j])]
+        else:
+            R = ImageFilter.apply_histogram_equalization(img[:,:,0])
+            G = ImageFilter.apply_histogram_equalization(img[:,:,1])
+            B = ImageFilter.apply_histogram_equalization(img[:,:,2])
+            output = np.zeros((R.shape[0], R.shape[1], 3), dtype=np.uint8)
+            output[:,:,0] = R
+            output[:,:,1] = G
+            output[:,:,2] = B
+            equalized_img = output
 
         return equalized_img
+    
+    
+    
+    # @staticmethod
+    # def equalize_hist(image, hist):
+    #     if len(image.shape) == 2:  # Grayscale Image
+    #         hist = histogram(image)
+            
+    #         x = iter(hist)
+    #         y = [next(x)]
+
+    #         for i in x:
+    #             y.append(y[-1] + i)
+
+    #         y = np.array(y)
+    #         y = ((y - y.min()) * 255) / (y.max() - y.min())
+    #         y = y.astype(np.uint8)
+    #         cdf = y
+
+    #         img = (np.asarray(image)).flatten()
+    #         flat = np.zeros_like(img, dtype=np.uint8)
+    #         for i in range(len(flat)):
+    #             flat[i] = int(round(img[i],5))
+    #         output = cdf[flat]
+    #         output = np.reshape(output, image.shape)
+    #         output[np.where(output > MAX_PIXEL)] = MAX_PIXEL
+
+    #         return output.astype(np.uint8)
+    #     else:
+    #         R = ImageFilter.equalize_hist(hist)
+    #         G = ImageFilter.equalize_hist(hist)
+    #         B = ImageFilter.equalize_hist(hist)
+    #         output = np.zeros((R.shape[0], R.shape[1], 3), dtype=np.uint8)
+    #         output[:,:,0] = R
+    #         output[:,:,1] = G
+    #         output[:,:,2] = B
+    #         obtained = output
+
+    #         return obtained
+
 
     @staticmethod
     def __get_neighbors_matrix(filter_size, i, j, data):
@@ -404,11 +475,21 @@ class ImageFilter():
         filter_size = util.format_filter_size(filter_size)
         obtained, original = util.get_empty_image_with_same_dimensions(
             img)
-        for i in range(len(original)):
-            for j in range(len(original[0])):
-                neighbors = ImageFilter.__get_neighbors_matrix(
-                    filter_size, i, j, original)
-                obtained[i][j] = ImageFilter.get_harmonic_mean(neighbors)
+        if len(img.shape) == 2:
+            for i in range(len(original)):
+                for j in range(len(original[0])):
+                    neighbors = ImageFilter.__get_neighbors_matrix(
+                        filter_size, i, j, original)
+                    obtained[i][j] = ImageFilter.get_harmonic_mean(neighbors)
+        else:
+            R = ImageFilter.apply_harmonic_mean(img[:,:,0],filter_size)
+            G = ImageFilter.apply_harmonic_mean(img[:,:,1],filter_size)
+            B = ImageFilter.apply_harmonic_mean(img[:,:,2],filter_size)
+            output = np.zeros((R.shape[0], R.shape[1], 3), dtype=np.uint8)
+            output[:,:,0] = R
+            output[:,:,1] = G
+            output[:,:,2] = B
+            obtained = output
 
         return obtained
 
@@ -418,6 +499,7 @@ class ImageFilter():
         denominator = np.sum(float_matrix ** q, where=(float_matrix != 0))
         numerator = np.sum(float_matrix ** (q + 1), where=(float_matrix != 0))
         result = np.where((denominator == 0.0), 0.0, (numerator / denominator))
+        
         return np.around(result, decimals=3)
 
     @staticmethod
@@ -425,12 +507,23 @@ class ImageFilter():
         filter_size = util.format_filter_size(filter_size)
         obtained, original = util.get_empty_image_with_same_dimensions(
             img)
-        for i in range(len(original)):
-            for j in range(len(original[0])):
-                neighbors = ImageFilter.__get_neighbors_matrix(
-                    filter_size, i, j, original)
-                obtained[i][j] = ImageFilter.get_contra_harmonic_mean(
-                    neighbors, q)
+
+        if len(img.shape) == 2:
+            for i in range(len(original)):
+                for j in range(len(original[0])):
+                    neighbors = ImageFilter.__get_neighbors_matrix(
+                        filter_size, i, j, original)
+                    obtained[i][j] = ImageFilter.get_contra_harmonic_mean(
+                        neighbors, q)
+        else:
+            R = ImageFilter.apply_contra_harmonic_mean(img[:,:,0],filter_size,q)
+            G = ImageFilter.apply_contra_harmonic_mean(img[:,:,1],filter_size,q)
+            B = ImageFilter.apply_contra_harmonic_mean(img[:,:,2],filter_size,q)
+            output = np.zeros((R.shape[0], R.shape[1], 3), dtype=np.uint8)
+            output[:,:,0] = R
+            output[:,:,1] = G
+            output[:,:,2] = B
+            obtained = output
 
         return obtained
 

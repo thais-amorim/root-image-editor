@@ -1,5 +1,6 @@
 from root.controller import TransformationManager
 import numpy as np
+import matplotlib.pyplot as plt
 
 from root.filter import ImageFilter as filter
 from root.filter import RgbFilter as rgbFilter
@@ -7,6 +8,7 @@ from root.filter import ColorFilter as color
 from root.filter import SteganographyTool as stegano
 from root.util import ImageUtil as util
 from root.converter import ColorConverter as converter
+from root.converter import ScaleConverter as scal
 from root.controller import FourierManager
 
 class TransformationController():
@@ -82,6 +84,17 @@ class TransformationController():
         image = filter.apply_histogram_equalization(self.current_image)
         self.update_memory_images(image)
         return self.current_image
+
+    def show_histogram(self):
+        a = filter.histogram(self.current_image)
+        f = plt.figure()
+        _ = plt.hist(a, bins='auto')  # arguments are passed to np.histogram
+        plt.title("Histogram")
+        
+        self.update_memory_images(self.current_image)
+
+        return util.fig2img(f)
+
 
     def apply_median(self,filter_size):
         image = filter.apply_median(self.current_image, filter_size)
