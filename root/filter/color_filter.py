@@ -2,6 +2,7 @@ import imageio
 import numpy as np
 from root.util import ImageUtil as util
 from root.util import RgbUtil as rgb
+from root.converter import ColorConverter as converter
 from PIL import Image
 from skimage import img_as_ubyte
 
@@ -108,20 +109,73 @@ class ColorFilter():
         return ColorFilter.add_background(background, obtained, coord)
 
     @staticmethod
-    def adjust_brightness (img, br):
-        """
-        0 < br < 1: decrease brightness
-        br = 1: no changes
-        br >: increase brightness
-        """
+    def adjust_saturation (img, factor):
+        '''
+        Adjust image saturation using a mulplication factor.
+        Input: image and factor in [0.0, 1.0].
+        Output: image with saturation adjusted
+        '''
         height,width = util.get_dimensions(img)
-        obtained = np.zeros((height, width, 3), np.uint8)
+        obtained = np.zeros_like(img)
+        for row in range(height):
+            for col in range(width):
+                r = img[row][col][0]
+                g = img[row][col][1]
+                b = img[row][col][2]
+                h,s,i = converter.rgb_to_hsi(r,g,b)
+                new_saturation = s * factor #Saturation value is [0, 1]
+                if new_saturation > 1:
+                    new_saturation = 1
+                r,g,b = converter.hsi_to_rgb(h,new_saturation,i)
+                obtained[row][col][0] = r
+                obtained[row][col][1] = g
+                obtained[row][col][2] = b
+        return obtained
 
-        for i in range(height):
-            for j in range(width):
-                for k in range(img.shape[2]):
-                    b = img[i][j][k] * br
-                    if b > 255:
-                        b = 255
-                    obtained[i][j][k] = b
-        return obtained.astype(np.uint8)
+    @staticmethod
+    def adjust_hue (img, factor):
+        '''
+        Adjust image hue using a mulplication factor.
+        Input: image and factor in [0.0, 1.0].
+        Output: image with hue adjusted
+        '''
+        height,width = util.get_dimensions(img)
+        obtained = np.zeros_like(img)
+        for row in range(height):
+            for col in range(width):
+                r = img[row][col][0]
+                g = img[row][col][1]
+                b = img[row][col][2]
+                h,s,i = converter.rgb_to_hsi(r,g,b)
+                new_hue = h * factor #Hue value is [0, 360]
+                if new_hue > 360:
+                    new_hue = 360
+                r,g,b = converter.hsi_to_rgb(new_hue,s,i)
+                obtained[row][col][0] = r
+                obtained[row][col][1] = g
+                obtained[row][col][2] = b
+        return obtained
+
+    @staticmethod
+    def adjust_intensity (img, factor):
+        '''
+        Adjust image hue using a mulplication factor.
+        Input: image and factor in [0.0, 1.0].
+        Output: image with intensity adjusted
+        '''
+        height,width = util.get_dimensions(img)
+        obtained = np.zeros_like(img)
+        for row in range(height):
+            for col in range(width):
+                r = img[row][col][0]
+                g = img[row][col][1]
+                b = img[row][col][2]
+                h,s,i = converter.rgb_to_hsi(r,g,b)
+                new_intensity = i * factor #Intensity value is [0, 1]
+                if new_intensity > 1:
+                    new_intensity = 1
+                r,g,b = converter.hsi_to_rgb(h,s,new_intensity)
+                obtained[row][col][0] = r
+                obtained[row][col][1] = g
+                obtained[row][col][2] = b
+        return obtained
