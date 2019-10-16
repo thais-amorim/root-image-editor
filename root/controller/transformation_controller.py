@@ -68,8 +68,8 @@ class TransformationController():
         self.update_memory_images(image)
         return self.current_image
 
-    def logarithmicTransform(self):
-        image  = filter.apply_logarithmic(self.current_image)
+    def logarithmicTransform(self,c):
+        image  = filter.apply_logarithmic(self.current_image,c)
         self.update_memory_images(image)
         return self.current_image
 

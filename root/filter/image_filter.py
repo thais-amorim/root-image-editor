@@ -52,9 +52,10 @@ class ImageFilter():
             return i
 
     @staticmethod
-    def apply_logarithmic(img):
+    def apply_logarithmic(img,c = 0):
         max_obtained = np.max(img)
-        c = (_MAX_PIXEL/np.log(1+_MAX_PIXEL))
+        if c == 0:
+            c = (_MAX_PIXEL/np.log(1+_MAX_PIXEL))
         log_img = c * np.log(img.astype(np.double)+1)
         return log_img.astype(np.uint8)
 

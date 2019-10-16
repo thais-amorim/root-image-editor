@@ -246,7 +246,11 @@ class MainWindow(Window):
         self.loadImage(self.transformController.negativeTransform())
 
     def logarithmic_transform(self):
-        self.loadImage(self.transformController.logarithmicTransform())
+        
+        c, ok = QInputDialog.getText(self, 'Logaritmcic',
+                                         'Enter c value(real):')
+        if ok and c:
+            self.loadImage(self.transformController.logarithmicTransform(float(c)))
 
     def gamma_transform(self):
 
