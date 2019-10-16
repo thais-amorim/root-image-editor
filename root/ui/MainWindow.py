@@ -361,8 +361,11 @@ class MainWindow(Window):
         # try:
             name,_ = QtWidgets.QFileDialog.getOpenFileName(self,"Escolha o fundo da chroma key")
             if name:
-                background = self.transformController.openImage(name)
-                self.loadImage(self.transformController.apply_chroma_key(background))
+                faixa, ok = QInputDialog.getText(self, 'Chroma Key', 
+            'Entre com o tamanho do filtro: (deve ser maior que 0)')
+                if ok and faixa:
+                    background = self.transformController.openImage(name)
+                    self.loadImage(self.transformController.apply_chroma_key(background,int(faixa)))
         # except:
         #     print("Ocorreu um erro")
 

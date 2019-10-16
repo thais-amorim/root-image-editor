@@ -127,14 +127,13 @@ class TransformationController():
         return self.current_image
 
     def rgb_to_gray(self):
-        print("RGBA:")
+        # print("RGBA:")
         print(self.current_image.shape)
-        if self.current_image.shape[2] == 4:
-            print("Shape é RGBA")
-            img =self.current_image[:,:,:3]
-            print(img.shape)
-            image = converter.rgb_to_gray(img)
-            self.update_memory_images(image)
+        # print("Shape é RGBA")
+        img =self.current_image
+        print(img.shape)
+        image = converter.rgb_to_gray(img)
+        self.update_memory_images(image)
         return self.current_image
 
     def rgb_to_hsv(self):

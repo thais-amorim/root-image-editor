@@ -24,7 +24,7 @@ class ImageFilter():
         return False
 
     @staticmethod
-    def read_image(image_path, type="RGBA"):
+    def read_image(image_path, type="RGB"):
         return imageio.imread(image_path, as_gray=False, pilmode=type)
 
     @staticmethod
@@ -201,7 +201,7 @@ class ImageFilter():
                     obtained[row, col] = min(max_obtained_value, _MAX_PIXEL)
         else:
             channel = img.shape[2]
-            for c in range (channel):
+            for c in range (channel-1):
                 for row in range(1, height - 1):
                     for col in range(1, width - 1):
                         value = filter_matrix * \
@@ -244,20 +244,43 @@ class ImageFilter():
         new_horizontal_image = np.zeros((height, width), np.uint8)
         new_vertical_image = np.zeros((height, width), np.uint8)
         new_gradient_image = np.zeros((height, width), np.uint8)
+        if len(img.shape) == 2:
 
-        for i in range(1, height - 1):
-            for j in range(1, width - 1):
-                horizontal_grad = ImageFilter.apply_gradient_core(
-                    horizontal, img, i, j)
-                new_horizontal_image[i - 1, j - 1] = abs(horizontal_grad)
+            # # define images with 0s
+            # new_horizontal_image = np.zeros((height, width), np.uint8)
+            # new_vertical_image = np.zeros((height, width), np.uint8)
+            # new_gradient_image = np.zeros((height, width), np.uint8)
 
-                vertical_grad = ImageFilter.apply_gradient_core(
-                    vertical, img, i, j)
-                new_vertical_image[i - 1, j - 1] = abs(vertical_grad)
+            for i in range(1, height - 1):
+                for j in range(1, width - 1):
+                    horizontal_grad = ImageFilter.apply_gradient_core(
+                        horizontal, img, i, j)
+                    new_horizontal_image[i - 1, j - 1] = abs(horizontal_grad)
 
-                # Edge Magnitude
-                new_gradient_image[i - 1, j - 1] = np.sqrt(
-                    pow(horizontal_grad, 2.0) + pow(vertical_grad, 2.0))
+                    vertical_grad = ImageFilter.apply_gradient_core(
+                        vertical, img, i, j)
+                    new_vertical_image[i - 1, j - 1] = abs(vertical_grad)
+
+                    # Edge Magnitude
+                    new_gradient_image[i - 1, j - 1] = np.sqrt(
+                        pow(horizontal_grad, 2.0) + pow(vertical_grad, 2.0))
+        else:
+            new_gradient_image = np.zeros((height, width,3), np.uint8)
+            channel = img.shape[2]
+            for c in range (channel-1):
+                for i in range(1, height - 1):
+                    for j in range(1, width - 1):
+                        horizontal_grad = ImageFilter.apply_gradient_core(
+                            horizontal, img[:,:,c], i, j)
+                        new_horizontal_image[i - 1, j - 1] = abs(horizontal_grad)
+
+                        vertical_grad = ImageFilter.apply_gradient_core(
+                            vertical, img[:,:,c], i, j)
+                        new_vertical_image[i - 1, j - 1] = abs(vertical_grad)
+
+                        # Edge Magnitude
+                        new_gradient_image[i - 1, j - 1,c] = np.sqrt(
+                            pow(horizontal_grad, 2.0) + pow(vertical_grad, 2.0))            
 
         return new_gradient_image
 
@@ -387,7 +410,7 @@ class ImageFilter():
         result = image + (c * mask)
         return result, mask
 
-   @staticmethod
+    @staticmethod
     def adjust_brightness (img, br):
         """
         0 < br < 1: decrease brightness
