@@ -5,12 +5,21 @@ from root.converter import ColorConverter as converter
 from root.converter import ScaleConverter as scale
 from root.util import ImageUtil as util
 from root.util import RgbUtil as rgb
+from PyQt5 import QtWidgets, QtGui
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+import sys
+sys.path.insert(0, sys.path[0]+'\\ui')
+print(sys.path)
+
+from root.ui import MainWindow
 
 
 def main():
-    img_rgb = util.read_image("images/aranha_trevosa.jpeg")
-    obtained = color.adjust_intensity(img_rgb,0.1)
-    util.save_image("images/laplacian/output_br.jpg", obtained)
+    app = QApplication([])
+    GUI = MainWindow()
+    app.exec_()
 
 
 if __name__ == "__main__":

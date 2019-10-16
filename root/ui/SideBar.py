@@ -2,12 +2,12 @@ from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5. QtGui import *
-from ImageView import ImageView
+from root.ui import ImageView
 import sys
 
 class SideBar(QWidget):
     def __init__(self, image_path):
-        super().__init__()        
+        super().__init__()
         self.originalImageView = ImageView(image_path)
         self.originalImageView.scale(self.width()/3,self.height()/3)
 
@@ -28,9 +28,9 @@ class SideBar(QWidget):
 
 
         self.setLayout(side_layout)
-       
-        
-        
+
+
+
         # self.setLayout(side_layout)
         # self.setAutoFillBackground(True)
         # p = self.palette()
@@ -48,7 +48,7 @@ class SideBar(QWidget):
         self.properties = QWidget()
         self.properties.setObjectName('properties')
         self.properties.setStyleSheet("QWidget#properties { border:2px solid rgb(150,150, 150) } ")
-        
+
 
 
         title = QLabel('Propriedade1')
@@ -74,8 +74,8 @@ class SideBar(QWidget):
 
         grid.addWidget(review)
         grid.addWidget(reviewEdit)
-        
-        self.properties.setLayout(grid) 
-        
+
+        self.properties.setLayout(grid)
+
         # self.setGeometry(300, 300, 350, 300)
-        # self.setWindowTitle('Review') 
+        # self.setWindowTitle('Review')

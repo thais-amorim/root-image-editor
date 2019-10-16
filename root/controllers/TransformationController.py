@@ -1,12 +1,11 @@
-
-from TransformationManager import TransformationManager
+from root.controllers import TransformationManager
 import numpy as np
 
-from filter import ImageFilter as filter
-from filter import ColorFilter as color
-from filter import SteganographyTool as stegano
-from converter import ColorConverter as converter
-from FourierManager import FourierManager
+from root.filter import ImageFilter as filter
+from root.filter import ColorFilter as color
+from root.filter import SteganographyTool as stegano
+from root.converter import ColorConverter as converter
+from root.controllers import FourierManager
 
 class TransformationController():
 
@@ -20,7 +19,7 @@ class TransformationController():
         self.undo_image = self.current_image
         self.current_image  = image
         self.redo_image = self.current_image.copy()
-    
+
     def update_fourier_memory_images(self,image):
         self.undo_fourier = self.fourier_image
         self.fourier_image  = image
@@ -57,7 +56,7 @@ class TransformationController():
 
     def saveImage(self, name,image):
         filter.save_image(name,image)
-    
+
     def save(self, name):
         filter.save_image(name,self.current_image)
 
@@ -144,7 +143,7 @@ class TransformationController():
             image = converter.rgb_to_hsv(r,g,b)
             self.update_memory_images(image)
         return self.current_image
-    
+
     def apply_fourier(self):
         ft = self.fourierManager.fft2(self.current_image)
         shift = self.fourierManager.fftshift(ft)
@@ -154,7 +153,7 @@ class TransformationController():
         mag = np.log(mag)
         mag = filter.normalize_image(mag)
         mag = mag.astype(np.uint8).copy()
-        
+
         self.update_fourier_memory_images(mag)
 
         return self.fourier_image
@@ -164,7 +163,7 @@ class TransformationController():
         # self.current_complete_fourier = self.fourierManager.lowPassFilter(self.current_complete_fourier,radius)
         self.update_fourier_memory_images(image)
         return self.fourier_image
-        
+
     def apply_high_pass(self, radius):
         image = self.fourierManager.highPassFilter(self.fourier_image,radius)
         # self.current_complete_fourier = self.fourierManager.highPassFilter(self.current_complete_fourier,radius)
@@ -182,7 +181,7 @@ class TransformationController():
         ishift = self.fourierManager.ifftshift(shift)
         p_img = abs(self.fourierManager.ifft2(ishift))
         # image = self.fourierManager
-        return p_img 
+        return p_img
 
     def apply_sepia(self):
         if len(self.current_image.shape) == 3:

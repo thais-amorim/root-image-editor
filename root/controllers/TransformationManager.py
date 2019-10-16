@@ -1,4 +1,3 @@
-    
 from ImageManager import ImageManager
 import numpy as np
 

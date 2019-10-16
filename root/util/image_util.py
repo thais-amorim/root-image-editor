@@ -14,7 +14,7 @@ class ImageUtil():
         return False
 
     @staticmethod
-    def isRGB(img):
+    def isRgb(img):
         if len(img.shape) == 3:
             return True
         return False

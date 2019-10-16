@@ -99,18 +99,18 @@ class ScaleConverter():
 
     #TODO
     def nnrotate(image, angle):
-    height, width = image.shape[:2]
-    output = np.zeros_like(image, dtype=np.uint8)
-    angle = angle * np.pi / 180
+        height, width = image.shape[:2]
+        output = np.zeros_like(image, dtype=np.uint8)
+        angle = angle * np.pi / 180
 
-    for x in range(width):
-        for y in range(height):
-            i = int(x+angle)
-            j = int(y+angle)
-            print(i,j)
-            output[x,y] = image[i,j]
+        for x in range(width):
+            for y in range(height):
+                i = int(x+angle)
+                j = int(y+angle)
+                print(i,j)
+                output[x,y] = image[i,j]
 
-    return output
+        return output
 
 
     # RGB and Grayscale Image
