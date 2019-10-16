@@ -1,4 +1,4 @@
-from ImageManager import ImageManager
+from root.controller import ImageManager
 import numpy as np
 
 _max_pixel = 255

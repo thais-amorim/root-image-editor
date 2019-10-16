@@ -2,8 +2,10 @@ from root.controller import TransformationManager
 import numpy as np
 
 from root.filter import ImageFilter as filter
+from root.filter import RgbFilter as rgbFilter
 from root.filter import ColorFilter as color
 from root.filter import SteganographyTool as stegano
+from root.util import ImageUtil as util
 from root.converter import ColorConverter as converter
 from root.controller import FourierManager
 
@@ -45,7 +47,7 @@ class TransformationController():
         return self.fourier_image
 
     def openImage(self,image):
-        img = filter.read_image(image)
+        img = util.read_image(image)
         if len(img.shape) == 2:
             img = converter.rgb_to_gray(self.original_image)
         return img
@@ -77,7 +79,7 @@ class TransformationController():
         return self.current_image
 
     def apply_equalized_histogram(self):
-        image = filter.apply_equalized_histogram(self.current_image)
+        image = filter.apply_histogram_equalization(self.current_image)
         self.update_memory_images(image)
         return self.current_image
 
@@ -101,6 +103,7 @@ class TransformationController():
         image = filter.apply_gradient(self.current_image, filter_matrix)
         self.update_memory_images(image)
         return self.current_image
+
     def apply_arithmetic_mean(self, filter_size=3):
         image = filter.apply_arithmetic_mean(self.current_image,filter_size)
         self.update_memory_images(image)
