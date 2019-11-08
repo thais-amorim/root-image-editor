@@ -83,7 +83,7 @@ class Window(QMainWindow):
 
 class Const():
     DEFAULT_IMAGE = "images/aranha.png"
-    WINDOW_TITLE = "PytoShop"
+    WINDOW_TITLE = "Root Image Editor"
     ICONS_PATH = "assets/icons/"
     WIDTH = 800
     HEIGHT = 600
